@@ -38,8 +38,7 @@ body {
     font-weight: bold;
 }
 
-.content-block:nth-child(odd) {
-}
-
-.content-block:nth-child(even) {
+.link-table thead {
+    font-weight: bold;
+    font-size: 115%;
 }
