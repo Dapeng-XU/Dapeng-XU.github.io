@@ -1,0 +1,51 @@
+body {
+    padding-top: 50px;
+}
+.starter-template {
+    text-align: center;
+}
+
+.pic-text {
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.pic-text img {
+    height: 100%;
+    width: 100%;
+}
+
+.pic-text p {
+    font-size: 110%;
+}
+
+.wifi {
+    font-weight: bold;
+}
+
+.content-block {
+    position: relative;
+    overflow: hidden;
+    padding-bottom: 30px;
+}
+
+.content-block-title {
+    padding-bottom: 3px;
+    border-bottom-style: solid;
+    border-bottom-width: thin;
+    border-bottom-color: #8c8c8c;
+}
+
+.content-block p {
+    font-size: 110%;
+}
+
+.content-block-definition {
+    font-weight: bold;
+}
+
+.content-block:nth-child(odd) {
+}
+
+.content-block:nth-child(even) {
+}
