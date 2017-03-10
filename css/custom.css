@@ -1,9 +1,6 @@
 body {
     padding-top: 50px;
 }
-.starter-template {
-    text-align: center;
-}
 
 .pic-text {
     padding-top: 20px;
@@ -13,10 +10,6 @@ body {
 .pic-text img {
     height: 100%;
     width: 100%;
-}
-
-.pic-text p {
-    font-size: 110%;
 }
 
 .wifi {
@@ -38,6 +31,7 @@ body {
 
 .content-block p {
     font-size: 110%;
+    font-family: arial, sans-serif;
 }
 
 .content-block-definition {
