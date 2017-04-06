@@ -1,6 +1,6 @@
 # HomePages
 
-Using a template from Bootstrap, here is the hyperlink to that page:
+I've used a template from Bootstrap, and here is the hyperlink to that page:
 
 [link to the Bootstrap template](http://getbootstrap.com/getting-started/#examples)
 
