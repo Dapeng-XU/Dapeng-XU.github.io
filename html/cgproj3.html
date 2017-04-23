@@ -31,6 +31,7 @@
     <script src="../third-party/syntaxhighlighter/scripts/shCore.js"></script>
     <!-- support for the specific programming language -->
     <script src="../third-party/syntaxhighlighter/scripts/shBrushCpp.js"></script>
+    <script src="../third-party/syntaxhighlighter/scripts/shBrushJScript.js"></script>
     <link href="../third-party/syntaxhighlighter/styles/shCore.css" rel="stylesheet">
     <!-- theme -->
     <link href="../third-party/syntaxhighlighter/styles/shThemeDefault.css" rel="stylesheet">
@@ -72,36 +73,173 @@
     <br />
     <p>Note: This page is written in Chinese, because recently I don't have enough time to translate. </p>
     <br />
-    <h3>计算机图形学实验三：技术细节介绍</h3>
+    <h1>计算机图形学实验三：技术细节介绍</h1>
     <br />
-    <p>Formula: $|+x|=|-x|$</p>
-    <p>When $a \ne 0$, there are two solutions to \(ax^2 + bx + c = 0\) and they are
-        $$x = {-b \pm \sqrt{b^2-4ac} \over 2a}.$$</p>
-    <br/>
-    <!--<code>-->
-    <!--var x = 5;<br/>-->
-    <!--var y = 6;<br/>-->
-    <!--document.getElementById("demo").innerHTML = x + y;-->
-    <!--</code>-->
-    <br/>
-    <pre class="brush: cpp">
-        int main() {
-            int n;
-            vector&lt int &gt v;
-            scanf("%d", &ampn);
-            v.reserve(n);
-            for (int i = 0;i&lt n;i++) {
-                v.push_back(0);
-                int tmp;
-                scanf("%d", &amptmp);
-                weight.push_back(tmp);
-            }
-            bitsLength = lowerLog(n-1)+1;
-            split(v, n-1, power(bitsLength), -1);
-            printf("%d", minval);
-            return 0;
+    <h3 class="content-block-title">目标</h3>
+    <p>实现Gouraud着色模型和Phong着色模型</p>
+    <h3 class="content-block-title">1 在Three.js中编写OpenGL Shading Language</h3>
+    <p>在Three.js中，利用已经封装好的函数，向场景中添加一个物体的方式是：</p>
+    <pre class="brush: javascript">
+        // scene = new THREE.Scene();
+        var geometry = new THREE.BoxBufferGeometry(width, height, depth, segments, segments, segments);
+        var material = new THREE.PhongMaterial({color: 0x101010});
+        var mesh = new THREE.Mesh(geometry, material);
+        scene.add(mesh);
+    </pre>
+    <p>在这里，geometry是几何形状，主要描述了几何体的顶点、平面和法向量；material是表面材质，描述了着色和纹理映射。这里
+        我们的目标是使用OpenGL Shading Language（简称GLSL）编写自己的着色器，实现两种着色模型。因此需要使用一种特殊的
+        material。</p>
+    <pre class="brush: javascript">
+        var material = new THREE.ShaderMaterial({
+            uniforms: {
+                ...
+            },
+            ...,
+            vertexShader: ...,
+            fragmentShader: ...
+        });
+    </pre>
+    <p>使用Three.js自带的ShaderMaterial类，它封装了CPU到GPU的代码绑定和数据绑定，并且自带了调试功能，非常便于使用。只需
+        在vertexShader属性中指定一个顶点着色器的代码字符串，在fragmentShader属性中指定一个片元着色器的代码字符串，就可
+        以了。</p>
+    <h3 class="content-bloc
+    k-title">2 逆转置矩阵</h3>
+    <p>手动编写GLSL，必须要编写一个转置矩阵，并且我们将在稍后看到，</p>
+    <pre class="brush: c++">
+        vec3 wsNormal = normalize(vec3(  transpose(viewMatrix) * vec4(normalMatrix * normal 0.0)) );
+    </pre>
+    <p>法向量必须做这样的变换。因为这里是我踩过的一个坑，有必要详细介绍一下。假设有两个顶点$A(1,0)$和$B(0,1)$，他们
+        将构成一条线段，向量表示是$\overrightarrow{AB} = \overrightarrow{OB} - \overrightarrow{OA} = (-1,1)$，它的法向量
+        是$\overrightarrow{n} = (1,1)$。现在对它们做齐次坐标下的拉伸变换$$S=\left[\begin{array}{ccc}1&0&0\\0&2&0\\0&0&1
+        \end{array}\right]$$ 这个变换的结果是$A(1,0)$，$B(0,2)$，$\overrightarrow{AB}=(-1,2)$，
+        $\overrightarrow{n}=(1,2)$。此时，如果计算$$\overrightarrow{AB}\cdot\overrightarrow{n}=(-1)\times 1+2
+        \times 2=3$$这就说明法向量$\overrightarrow{n}$和线段AB不垂直了。
+    </p>
+    <p>这会让最终的着色结果变得难以理解。</p>
+    <p>解决方法是使用逆转置矩阵对向量做变换。矩阵$X$的逆转置矩阵定义为$(X^{-1})^T$。在下文中，所有的变换都是在世界坐标系
+        进行的。因此需要将每个顶点从模型坐标系变换到世界坐标系，记这个变换矩阵是$M$。并记将世界坐标系的点变换到观察坐标系的
+        变换矩阵为$V$。在Three.js中，矩阵$M$、$VM$、$V$、$((VM)^{-1})^T$是内置的。现在我们想利用这四个内置的矩阵，经过
+        最少量的运算求出$(M^{-1})^T$。</p>
+    <p>展开$((VM)^{-1})^T$，得到$$((VM)^{-1})^T=(M^{-1}V^{-1})^T=(V^{-1})^T(M^{-1})^T$$现在出现了目标$(M^{-1})^T$。现在
+        构造$(V^{-1})^T$的逆矩阵，通过$$I=(V^{-1}V)^T=V^T(V^{-1})^T$$，我们得到$$\begin{align}(M^{-1})^T&=((V^{-1})^T)^
+        {-1}((VM)^{-1})^T\\ &=V^T((VM)^{-1})^T\end{align} $$这样，根据内置的变换矩阵，我们只需要求$V$的转置。下面是求转置
+        矩阵的GLSL代码。</p>
+    <pre class="brush: c++">
+        highp mat4 transpose(in highp mat4 inMatrix) {
+           highp vec4 i0 = inMatrix[0];
+           highp vec4 i1 = inMatrix[1];
+           highp vec4 i2 = inMatrix[2];
+           highp vec4 i3 = inMatrix[3];
+
+           highp mat4 outMatrix = mat4(
+                       vec4(i0.x, i1.x, i2.x, i3.x),
+                       vec4(i0.y, i1.y, i2.y, i3.y),
+                       vec4(i0.z, i1.z, i2.z, i3.z),
+                       vec4(i0.w, i1.w, i2.w, i3.w)
+                       );
+
+           return outMatrix;
         }
     </pre>
+    <h3 class="content-block-title">3 Gouraud着色的GLSL实现</h3>
+    <p>关于Gouraud着色，我没有找到很详实的讲解资料，因此参考了John F.Hughes、Andries Van Dam等人编写的Computer Graphics:
+        Principles and Practice(Third Edition)中给出的Gouraud shading的伪代码。以下直接解读用GLSL实现的代码。</p>
+    <p>顶点着色器的GLSL代码。</p>
+    <pre class="brush: c++">
+        uniform vec3 lightPosition;
+        varying float gouraudFactor;
+
+        highp mat4 transpose(in highp mat4 inMatrix) {...}
+
+        void main(void) {
+           vec3 wsPosition = vec3( modelMatrix * vec4(position, 1.0) );
+           vec3 wsLight = lightPosition - wsPosition;
+           vec3 wsNormal = normalize(vec3(  transpose(viewMatrix) * vec4(normalMatrix * normal, 0.0)) );
+           gouraudFactor = dot(wsNormal, wsLight);
+           gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+    </pre>
+    <p>第1行lightPosition是传入的光源位置，第2行gouraudFactor是需要经过插值再传递到片元着色器的一个系数，这个系数
+        $g=\overrightarrow{N}\cdot\overrightarrow{L}$，显然是只考虑了漫反射，没有考虑环境光和镜面反射。第4行是矩阵转置的
+        子函数。
+    </p>
+    <p>
+        第7、8、9行是求入射光向量和法向量的世界坐标系表示。顶点直接乘以modelMatrix就得到了世界坐标系表示，然后作差。
+        法向量要乘以modelMatrix的逆转置矩阵。
+    </p>
+    <p>片元着色器的GLSL代码。</p>
+    <pre class="brush: c++">
+        uniform vec3 diffuseColor;
+        uniform float diffuse;
+        uniform vec3 lightColor;
+        varying float gouraudFactor;
+
+        void main(void) {
+           gl_FragColor = vec4( diffuse * diffuseColor * max(gouraudFactor, 0.0) * lightColor, 1.0);
+        }
+    </pre>
+    <p>这一个Gouraud着色模型只考虑了漫反射的影响，直接将各个组成部分相乘即可。这里两个向量的乘法是对应坐标相乘。</p>
+    <h3 class="content-block-title">4 Phong着色的GLSL实现</h3>
+    <p>为了取得更好的效果，我选择实现逐片元的Phong着色。把已知的最基本的观察向量$\overrightarrow{V}$、
+        法向量$\overrightarrow{N}$、光源向量$\overrightarrow{L}$在顶点着色器中计算出来，然后经过插值之后，发送到片元着色
+        器，在片元着色器中进行颜色混合。</p>
+    <p>顶点着色器的GLSL代码。</p>
+    <pre class="brush: c++">
+        uniform vec3 lightPosition;
+        varying vec3 wsInterpolatedView;
+        varying vec3 wsInterpolatedNormal;
+        varying vec3 wsInterpolatedLight;
+
+        highp mat4 transpose(in highp mat4 inMatrix) {...}
+
+        void main(void) {
+           vec3 wsPosition = vec3( modelMatrix * vec4( position, 1.0 ) );
+           wsInterpolatedView = cameraPosition - wsPosition;
+           wsInterpolatedLight = lightPosition - wsPosition;
+           wsInterpolatedNormal = vec3( transpose(viewMatrix) * vec4(normalMatrix * normal, 0.0 ) );
+           gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+        }
+    </pre>
+    <p>片元着色器的GLSL代码。</p>
+    <pre class="brush: c++">
+        precision highp float;
+        uniform vec3 faceColor;
+        uniform vec4 k_values;               /* k_a, k_d, k_s, alpha */
+        uniform vec3 ambientColor;
+        uniform vec3 diffuseColor;
+        uniform vec3 specularColor;
+        varying vec3 wsInterpolatedView;
+        varying vec3 wsInterpolatedNormal;
+        varying vec3 wsInterpolatedLight;
+        attribute vec3 lightPos;
+
+        void main(void) {
+           vec3 wsView = normalize(wsInterpolatedView);
+           vec3 wsNormal = normalize(wsInterpolatedNormal);
+           vec3 wsLight = normalize(wsInterpolatedLight);
+           float dot_light_normal = dot(wsLight, wsNormal);
+
+           vec3 ambient = k_values.x * ambientColor;
+
+           vec3 wsReflect = 2.0 * dot_light_normal * wsNormal - wsLight;
+           if (dot_light_normal > 0.0) {
+               vec3 diffuse = k_values.y * dot_light_normal * diffuseColor;
+               vec3 specular = k_values.z * pow( max(dot(wsReflect, wsView), 0.0) , k_values.w ) * specularColor;
+               gl_FragColor = vec4( (ambient + diffuse + specular) * faceColor, 1.0);
+           } else { // color mix
+               gl_FragColor = vec4( ambient * faceColor, 1.0);
+           }
+        }
+    </pre>
+    <p>上述两个着色器的基本原理已经介绍过了。唯一需要指出的是，要过滤掉角度大于或等于直角的情况。Phong着色模型使用的计算公式是
+        $$I_p=k_ii_a+\sum_{m\in lights}(k_d(\hat{L_m}\cdot\hat{N})i_{m,d}+k_s(\hat{R_m}\cdot\hat{V})^\alpha i_{m,s})$$
+        ，其中$\hat{X}$表示$X$是单位向量。
+    </p>
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
 </div>
 
 <!-- container ends -->
