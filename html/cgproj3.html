@@ -116,7 +116,12 @@
         \times 2=3$$这就说明法向量$\overrightarrow{n}$和线段AB不垂直了。
     </p>
     <p>这会让最终的着色结果变得难以理解。</p>
-    <p>解决方法是使用逆转置矩阵对向量做变换。矩阵$X$的逆转置矩阵定义为$(X^{-1})^T$。在下文中，所有的变换都是在世界坐标系
+    <p>解决方法是使用逆转置矩阵对向量做变换。矩阵$X$的逆转置矩阵定义为$(X^{-1})^T$，使用逆转置矩阵对向量做变换，可以得到
+        正确的结果。
+        $$\begin{align}(X\cdot\overrightarrow{AB})^T((X^{-1})^T\cdot\overrightarrow{n})&=\overrightarrow{AB}^T\cdot
+        X^T(X^{-1})^T\cdot\overrightarrow{n}\\&=\overrightarrow{AB}^T\cdot (X^T(X^T)^{-1})\cdot \overrightarrow{n}\\
+        &=\overrightarrow{AB}^T\cdot I\cdot\overrightarrow{n}\\&=\overrightarrow{AB}^T\cdot\overrightarrow{n}=0\end{align}$$
+        在下文中，所有的变换都是在世界坐标系
         进行的。因此需要将每个顶点从模型坐标系变换到世界坐标系，记这个变换矩阵是$M$。并记将世界坐标系的点变换到观察坐标系的
         变换矩阵为$V$。在Three.js中，矩阵$M$、$VM$、$V$、$((VM)^{-1})^T$是内置的。现在我们想利用这四个内置的矩阵，经过
         最少量的运算求出$(M^{-1})^T$。</p>
@@ -233,7 +238,8 @@
     </pre>
     <p>上述两个着色器的基本原理已经介绍过了。唯一需要指出的是，要过滤掉角度大于或等于直角的情况。Phong着色模型使用的计算公式是
         $$I_p=k_ii_a+\sum_{m\in lights}(k_d(\hat{L_m}\cdot\hat{N})i_{m,d}+k_s(\hat{R_m}\cdot\hat{V})^\alpha i_{m,s})$$
-        ，其中$\hat{X}$表示$X$是单位向量。
+        ，其中$\hat{X}$表示$X$是单位向量，$\hat{R_m}$是第m个光源的镜面反射的单位向量，并且
+        $$\hat{R_m}=2(\hat{L_m}\cdot\hat{N})\hat{N}-\hat{L_m}$$
     </p>
     <br />
     <br />
