@@ -23,10 +23,19 @@ body {
 }
 
 .content-block-title {
+    font-weight: bold;
     padding-bottom: 3px;
     border-bottom-style: solid;
     border-bottom-width: thin;
     border-bottom-color: #8c8c8c;
+}
+
+.content-block-subtitle-1 {
+    padding: 4px;
+    margin: 10px;
+    border: 1px solid gray;
+    font-weight: bold;
+    font-size: 120%;
 }
 
 .content-block p {
@@ -49,4 +58,9 @@ body {
 .link-table thead {
     font-weight: bold;
     font-size: 115%;
+}
+
+.img-in-center {
+    margin: 5px;
+    text-align: center;
 }
