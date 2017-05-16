@@ -98,9 +98,9 @@
     <p>So the relationship in the extinction coefficient, the absorption coefficient, and the scattering coefficient can
         be easily gotten.</p>
     <p>The <span class="text-bold">extinction coefficient</span>, $\sigma_t(x’)$, is the sum of the <span class="text-bold">
-        absorption coefficient</span> $\sigma_a$ and the <span class="text-bold">scattering coefficient</span> $\sigma_s$.
+        absorption coefficient</span> $\sigma_a(x’)$ and the <span class="text-bold">scattering coefficient</span> $\sigma_s(x’)`$.
         $$ \sigma_t = \sigma_s + \sigma_a, \quad \sigma_t = \frac{N\pi r^2}{E\cdot \Delta s} $$
-        $\sigma_t(x’)$ is also the projection area of all the particulars in the unit volume.
+        $\sigma_t(x’)$ is also the projection area of all the particles in the unit volume.
         </p>
     <p class="img-in-center"><img src="base_area.JPG"></p>
     <p>
@@ -111,7 +111,7 @@
         $$L_m(x,\omega)=\frac{\sigma_a}{\sigma_s + \sigma_a}L_e(x,\omega)+\frac{\sigma_s}{\sigma_s + \sigma_a} L_i(x,\omega)$$
         $L_e$ – emissive light(A known parameter from the input data), $L_i$ – in-scattered light can be given by
         $$L_i(x,\omega)=\frac1{4\pi}\int_\Omega P(\omega',\omega)L(x,\omega')d\omega'$$
-        where $\Omega$ is the solid angle, $P(\omega',\omega)/4\pi$ is the phase function.
+        where $\Omega$ is the solid angle, $P(\omega',\omega)/4\pi$ is the <span class="text-bold">phase function</span>.
     </p>
     <p>
         Where T is the transmittance item:
@@ -119,10 +119,10 @@
         It represents the attenuation between the point x1 and x2, obviously we have
         $$\int_{x_1}^{x_2}\sigma_t(x')dx'>0,\quad 0 < T(x_1,x_2)<1$$
         In a computing task, $x$, $x_b$ and $\omega$ is what we have already known. $L_b(x_b, \omega)$ is gotten from
-        the last step or the boundary conditions. Therefore, for the rendering equation, $\sigma_t$ and $L_m$ are still unknown.
+        the last step or the boundary conditions. Therefore, for this rendering equation, $\sigma_t$ and $L_m$ are still unknown.
     </p>
 
-    <p class="content-block-subtitle-1">3.2 Ambient Light Transfer (Observe first)</p>
+    <p class="content-block-subtitle-1">3.2 Ambient Light Transfer (At first, observe equations in 3.1)</p>
     <p>Combine these formulas, we have:
         $$\begin{align}L(x,\omega)&=e^{-\int_{x_b}^x\sigma_t(x')dx'}L_b(x_b,\omega)\\&+\int_{x_b}^xe^{-\int_{x'}^x
         \sigma_t(x')dx'}\sigma_t(x')\left[\frac{\sigma_a}{\sigma_t}L_e(x,\omega)
@@ -133,9 +133,14 @@
     <p>3. Phase function $P(\omega’, \omega)$ and coefficients $\sigma_t$, $\sigma_s$, and $\sigma_a$ are either unknown
         or complicated to compute. (Possible to compute accurately, or necessary to find a substitution? )
     </p>
+    <p>4. The attenuation is exponentially with the growing distance due to absorption and out-scattering.
+        $$T(x_1,x_2)=e^{-\int_{x_1}^{x_2}\sigma_t(x')dx'}$$
+        A simple and ordinary idea is that we only compute multiple scattering only in the ambient region of each sample point.</p>
+    <p>5. The computation and sampling techniques of ambient occlusion cannot be employed for ambient scattering.</p>
+    <p>As a consequence, we opt for a Monte-Carlo preintegration by means of volumetric path tracing.</p>
 
     <p class="content-block-subtitle-1">3.2.1 Ambient Scattering (Some Approximating Strategies)</p>
-    <p class="img-in-center"><img src="spherical_region.jpg"></p>
+    <p class="img-in-center"><img src="spherical_region_1.jpg"></p>
     <p>The spatial distribution of the extinction coefficient inside the sphere does not heavily influence the result.
         The <span class="text-bold">average of extinction coefficient</span> is enough:
         $$\sigma_t(x)\rightarrow\widetilde{\sigma}_t=\frac3{4\pi r^3}\int_V\sigma_t(x')dV, \quad x'\in V$$
@@ -144,11 +149,14 @@
         \widetilde{T}(x',x_o)\widetilde{\sigma}_t(x')\widetilde{L}_m(x',\omega_o)dx'$$
     </p>
 
+    <p class="content-block-subtitle-1">Scattering effects are restricted to a spherical region</p>
+    <p class="img-in-center"><img src="spherical_region_0.jpg"></p>
+
     <p class="content-block-subtitle-1">3.2.2 Soft Shadows with Tube Marching</p>
     <p class="img-in-center"><img src="figure3.JPG"></p>
     Recall that the sphere is selected so that the light outside the sphere is so dim that it can be ignored.
 
-
+    <h3 class="content-block-title">4 Algorithm</h3>
     <p class="content-block-subtitle-1">4.1.1 The Parameter Space</p>
     <p>Free parameters: $r, \, \widetilde{\sigma}_t, \,P,\,\widetilde{L}_s,\,\theta $</p>
     <p>The radius r can be merged into $\sigma_t$:
@@ -164,11 +172,17 @@
 
     <p class="content-block-subtitle-1">Phase Function</p>
     <p>In this paper, the author employ the Henyey-Greenstein(HG) phase function. This function can be found in [L.Henye
-        y and J. Greenstein] Diffuse radiation in the galaxy. It is very doubtable that for any kinds of volume data we
-        can always get a great phase function with some symmetry.
+        y and J. Greenstein] Diffuse radiation in the galaxy.
         $$P_{HG}(\alpha,g)=\frac{1-g^2}{(1+g^2-2g\cos\alpha)^\frac32}$$
         Where g is the anisotropy parameter.</p>
-    <p><span class="text-bold">May 16th</span>: Now the question is solved when reading Wojciech Jarosz’s Ph.D. It says:...........</p>
+    <p>In Wojciech Jarosz’s Ph.D. dissertation, it says:
+        The Henyey-Greenstein phase function has been <span class="text-bold">successfully applied for simulating many
+        other</span> scattering materials, such as oceans, clouds, and skin.</p>
+    <p>And there are many other phase function in different form, for example:
+    $$\text{The Schlick phase function: }p_S(x,\theta)=\frac{1-k^2}{4\pi(1+k\cos\theta)^2}$$ and
+        $$\text{Rayleigh Scattering: }p_R(x,\theta)=\frac3{16\pi}(1+\cos^2\theta)$$
+    </p>
+    <p>But it may be still doubtable that for any kinds of volume data we could always get a great phase function with some symmetry.</p>
 
     <p class="content-block-subtitle-1">4.1.2 Volumetric Path Tracing</p>
 
@@ -199,7 +213,7 @@
         SAT method performed well in practice, as the author say in this paper.
     </p>
 
-
+    <h3 class="content-block-title">5 Implementation</h3>
     <br />
     <br />
     <br />
