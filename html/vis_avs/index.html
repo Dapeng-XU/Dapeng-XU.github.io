@@ -99,12 +99,16 @@
     <p>The <span class="text-bold">extinction coefficient</span>, $\sigma_t(x’)$, is the sum of the <span class="text-bold">
         absorption coefficient</span> $\sigma_a(x’)$ and the <span class="text-bold">scattering coefficient</span> $\sigma_s(x’)$.
         $$ \sigma_t(x') = \sigma_s(x') + \sigma_a(x')$$
-        The meanings of these coefficients is that, for example, for a small cylinder with length $\Delta x'$ , the number
+        The meanings of these coefficients is that, for example, for a small cylinder with length $\Delta x'$, the number
         of absorbed particles is about
         $$N_a(x_1',x_2') = \sigma_a(x')\cdot (x_2'-x_1') = \sigma_a(x')\cdot\Delta x'$$
+        If we choose the $\Delta x'$ so small that $$x' = x_1'\approx x_2'$$, we can get $$\sigma_a(x')=\frac{N_a(x')}{\Delta x'}$$
     </p><p class="img-in-center"><img src="base_area.JPG"></p>
-    <p>Let $\rho(x')$ be the density as the number of particles occluding light in a unit volume, so we get
+    <p>Let $\rho(x')$ be the density as the number of particles occluding light in a unit volume, r be the radius of
+        each particle, and A be the projection area on E of one particle, so we get
         $$\rho(x')=\frac{N}{E\cdot\Delta s}$$
+        and
+        $$A=\pi r^2$$
         <!-- 这里需要改，看到这里了 -->
         $$\sigma_t = \frac{N\pi r^2}{E\cdot \Delta s}$$
         </p>
