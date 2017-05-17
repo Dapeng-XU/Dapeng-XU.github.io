@@ -91,7 +91,7 @@
 
     <h3 class="content-block-title">3 Volumetric Illumination</h3>
 
-    <p class="content-block-subtitle-1">3.1 Global Light Transfer</p>
+    <p class="content-block-subtitle-1">Transmittance and Extinction Coefficient</p>
     <p>Four kinds of light interaction at a particle:</p>
     <p class="img-in-center"><img src="four_kinds_of_interaction.JPG"></p>
     <p>So the relationship in the extinction coefficient, the absorption coefficient, and the scattering coefficient can
@@ -99,19 +99,31 @@
     <p>The <span class="text-bold">extinction coefficient</span>, $\sigma_t(x’)$, is the sum of the <span class="text-bold">
         absorption coefficient</span> $\sigma_a(x’)$ and the <span class="text-bold">scattering coefficient</span> $\sigma_s(x’)$.
         $$ \sigma_t(x') = \sigma_s(x') + \sigma_a(x')$$
-        The meanings of these coefficients is that, for example, for a small cylinder with length $\Delta x'$, the number
-        of absorbed particles is about
-        $$N_a(x_1',x_2') = \sigma_a(x')\cdot (x_2'-x_1') = \sigma_a(x')\cdot\Delta x'$$
-        If we choose the $\Delta x'$ so small that $$x' = x_1'\approx x_2'$$, we can get $$\sigma_a(x')=\frac{N_a(x')}{\Delta x'}$$
+        But what is the meanings of these coefficients?
     </p><p class="img-in-center"><img src="base_area.JPG"></p>
-    <p>Let $\rho(x')$ be the density as the number of particles occluding light in a unit volume, r be the radius of
+    <p>Let $\rho(x)$ be the density as the number of particles occluding light in a unit volume, r be the radius of
         each particle, and A be the projection area on E of one particle, so we get
-        $$\rho(x')=\frac{N}{E\cdot\Delta s}$$
+        $$\rho(s)=\frac{N(s)}{E\cdot\Delta s}$$
         and
         $$A=\pi r^2$$
-        <!-- 这里需要改，看到这里了 -->
-        $$\sigma_t = \frac{N\pi r^2}{E\cdot \Delta s}$$
+
+        For simplicity, we define the light intensity before entering this ideal cylinder as $I(x_1)$, exiting this cylinder as
+        $I(x_2)$, and those light exiting this cylinder must have not interactive with these particles in it.
+        $$\begin{align}I(x_2)&=I(x_1)\cdot(1-\frac{\sum_i A}{E})\\&=I(x_1)-\frac{N(x_1,x_2)A}{E}\cdot I(x_1)\end{align}$$
+        Move $I(x_1)$ to another side, $$\frac{I(x_2)-I(x_1)}{\Delta x}=-\frac{N(x_1,x_2)AI(x_1)}{E\cdot\Delta x}$$
+
+        By $\Delta x\rightarrow 0$, we get $$x = x_1\approx x_2$$
+        so, $$\frac{dI(x)}{dx}=\lim_{\Delta x\rightarrow0}\frac{I(x_2)-I(x_1)}{\Delta x}
+        =-\frac{N(x)A\cdot I(x)}{E\cdot\Delta x} = -\rho(x)A\cdot I(x)$$
+        by defining $\sigma_t = \rho(x)A$,
+        $$\frac{dI(x)}{dx}=-\rho(x)A\cdot I(x)$$
+        solve this ODE, $$I(x)=I_0\cdot e^{-\int_0^x\sigma_t(x) dx}$$
+        and obviously, $$T(x_1,x_2)=e^{-\int_{x_1}^{x_2}\sigma_t(x')dx'}$$
+        where $T(x_1,x_2)$ presents the transmittance(also attenuation) between $x_1$ and $x_2$.
         </p>
+    <p>$T(x_1, x_2)$ has following properties: $$\begin{align}&\text{(1) }0 < T(x_1,x_2)<1 \\ &\text{(2) }T(x_1,x_3)=
+        T(x_1,x_2)T(x_2,x_3)\end{align}$$</p>
+    <p class="content-block-subtitle-1">3.1 Global Light Transfer</p>
     <p>$L_m(x, \omega)$ is the <span class="text-bold">source radiance of the medium</span>, which can be integrated along the view ray:
         $$L_m(x,\omega)=\frac{\sigma_a}{\sigma_s + \sigma_a}L_e(x,\omega)+\frac{\sigma_s}{\sigma_s + \sigma_a} L_i(x,\omega)$$
         $L_e$ – emissive light(A known parameter from the input data), $L_i$ – in-scattered light can be given by
@@ -119,10 +131,6 @@
         where $\Omega$ is the solid angle, $P(\omega',\omega)/4\pi$ is the <span class="text-bold">phase function</span>.
     </p>
     <p>
-        Where T is the transmittance item:
-        $$T(x_1,x_2)=e^{-\int_{x_1}^{x_2}\sigma_t(x')dx'}$$
-        It represents the attenuation between the point x1 and x2, obviously we have
-        $$\int_{x_1}^{x_2}\sigma_t(x')dx'>0,\quad 0 < T(x_1,x_2)<1$$
         In a computing task, $x$, $x_b$ and $\omega$ is what we have already known. $L_b(x_b, \omega)$ is gotten from
         the last step or the boundary conditions. Therefore, for this rendering equation, $\sigma_t$ and $L_m$ are still unknown.
     </p>
