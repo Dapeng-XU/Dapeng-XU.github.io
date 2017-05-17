@@ -24,7 +24,8 @@ body {
 
 .content-block-title {
     font-weight: bold;
-    padding-bottom: 3px;
+    padding-bottom: 4px;
+    margin-top: 10px;
     border-bottom-style: solid;
     border-bottom-width: thin;
     border-bottom-color: #8c8c8c;

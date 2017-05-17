@@ -97,16 +97,18 @@
     <p>So the relationship in the extinction coefficient, the absorption coefficient, and the scattering coefficient can
         be easily gotten.</p>
     <p>The <span class="text-bold">extinction coefficient</span>, $\sigma_t(x’)$, is the sum of the <span class="text-bold">
-        absorption coefficient</span> $\sigma_a(x’)$ and the <span class="text-bold">scattering coefficient</span> $\sigma_s(x’)`$.
-        $$ \sigma_t = \sigma_s + \sigma_a, \quad \sigma_t = \frac{N\pi r^2}{E\cdot \Delta s} $$
-        $\sigma_t(x’)$ is also the projection area of all the particles in the unit volume.
-        </p>
-    <p class="img-in-center"><img src="base_area.JPG"></p>
-    <p>
-        The meanings of these coefficients is that, for example, for a small cylinder with length $\Delta x$ , the number
+        absorption coefficient</span> $\sigma_a(x’)$ and the <span class="text-bold">scattering coefficient</span> $\sigma_s(x’)$.
+        $$ \sigma_t(x') = \sigma_s(x') + \sigma_a(x')$$
+        The meanings of these coefficients is that, for example, for a small cylinder with length $\Delta x'$ , the number
         of absorbed particles is about
-        $$\sigma_a(x)\cdot\Delta x$$
-        $L_m(x, \omega)$ is the <span class="text-bold">source radiance of the medium</span>, which can be integrated along the view ray:
+        $$N_a(x_1',x_2') = \sigma_a(x')\cdot (x_2'-x_1') = \sigma_a(x')\cdot\Delta x'$$
+    </p><p class="img-in-center"><img src="base_area.JPG"></p>
+    <p>Let $\rho(x')$ be the density as the number of particles occluding light in a unit volume, so we get
+        $$\rho(x')=\frac{N}{E\cdot\Delta s}$$
+        <!-- 这里需要改，看到这里了 -->
+        $$\sigma_t = \frac{N\pi r^2}{E\cdot \Delta s}$$
+        </p>
+    <p>$L_m(x, \omega)$ is the <span class="text-bold">source radiance of the medium</span>, which can be integrated along the view ray:
         $$L_m(x,\omega)=\frac{\sigma_a}{\sigma_s + \sigma_a}L_e(x,\omega)+\frac{\sigma_s}{\sigma_s + \sigma_a} L_i(x,\omega)$$
         $L_e$ – emissive light(A known parameter from the input data), $L_i$ – in-scattered light can be given by
         $$L_i(x,\omega)=\frac1{4\pi}\int_\Omega P(\omega',\omega)L(x,\omega')d\omega'$$
