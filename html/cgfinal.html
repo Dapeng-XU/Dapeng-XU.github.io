@@ -76,16 +76,48 @@
     <br />
     <h3 class="content-block-title">Objective</h3>
     <p>Null. </p>
-    <h3 class="content-block-title">Part 1/h3>
-    <p>Need to update here.</p>
+    <h3 class="content-block-title">Part 1: Architecture</h3>
+    <p>From the top view of this project, we will run ray tracing several times for each pixel, and next compute the average
+        color, drawing this pixel. All pixels are filled one by one. So implementing ray tracing in the global scene, we
+        must need to create the canvas element first, then get and use the canvas 2D context. </p>
     <pre class="brush: javascript">
-        // scene = new THREE.Scene();
-        var geometry = new THREE.BoxBufferGeometry(width, height, depth, segments, segments, segments);
-        var material = new THREE.PhongMaterial({color: 0x101010});
-        var mesh = new THREE.Mesh(geometry, material);
-        scene.add(mesh);
+        DOM = document.getElementById('canvas-2d-wheel');
+        context = DOM.getContext('2d');
     </pre>
+    <p>All code relative to this final project has been included in only one JavaScript file, located in js/finalWheel.js. </p>
 
+    <h3 class="content-block-title">Part 2: General Problem about Canvas 2D</h3>
+
+    <p class="content-block-subtitle-1">2.1 What functions do the canvas 2D API contains?</p>
+    <p>For generality, all the functions called in this projected are well supported by lots of modern browsers, and another
+        condition these functions satisfied is that they are described by some web standard. The former condition keeps the
+        compatibility, the last condition condition confirms the function will have been supported by lots of platform for
+        a long term. </p>
+    <p>The sets of this kind of functions in canvas rendering 2D context are: drawing rectangles, drawing text, line styles,
+        text styles, fill and stroke styles, gradients and patterns, shadows, paths, drawing paths, compositing, the
+        canvas state. Note that all functions listed will not be used in this project.</p>
+
+    <p class="content-block-subtitle-1">2.2 How do we deal with the canvas resizing correctly?</p>
+    <p>If we consider the canvas elements as a sort of normal HTML element, we will make a mistake. We should understand
+        canvas a little more. That is to say, there is a buffer attached to each canvas element in the memory. Every time
+        we draw something on the canvas, it will first modify the buffer, then the buffer will be drawn on the canvas element.
+        Therefore, when a canvas resizing, the default manner is resize the canvas element, but keep the size of the buffer
+        same as ever. The key is we should manually update the size of buffer. </p>
+    <p>It is implemented in dpConvas2D.setPosition(). If you would like to get more details, see [2]. </p>
+
+    <p class="content-block-subtitle-1">2.3 Is there any library you used? And what are they? </p>
+    <p>This project is so important that it is the final project of the class computer graphics, of which the contents
+        are really interesting. While we are supposed not to make a wheel and always to make full use of our life time to
+        do meaningful things, the THREE.js library is used again. THREE.js provided a set of mathematical objects and
+        functions with full abilities, even the bounding box, the detecting intersection, and the interpolation are
+        implemented. </p>
+    <p>I guarantee for no using out of the basic mathematical functions, and you can also check the code. </p>
+
+    <h3 class="content-block-title">Reference</h3>
+    <p>1. Canvas Rendering Context 2D, Mozilla Developer Network
+        [<a href="https://developer.mozilla.org/en/docs/Web/API/CanvasRenderingContext2D">Link</a>]</p>
+    <p>2. WebGL Resizing the Canvas.
+        [<a href="https://webglfundamentals.org/webgl/lessons/webgl-resizing-the-canvas.html">Link</a>]</p>
     <br />
     <br />
     <br />
