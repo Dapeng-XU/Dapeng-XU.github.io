@@ -2,24 +2,25 @@ body {
     padding-top: 50px;
 }
 
-.pic-text {
+.cv-text {
     padding-top: 20px;
     padding-bottom: 20px;
 }
 
-.pic-text img {
-    height: 100%;
-    width: 100%;
+.pic-text {
+    text-align: center;
+    border-right: 1px dashed lightgrey;
 }
 
-.wifi {
-    font-weight: bold;
+.pic-text img {
+    height: 80%;
+    width: 80%;
 }
 
 .content-block {
     position: relative;
     overflow: hidden;
-    padding-bottom: 30px;
+    padding-bottom: 24px;
 }
 
 .content-block-title {
@@ -31,21 +32,35 @@ body {
     border-bottom-color: #8c8c8c;
 }
 
-.content-block-subtitle-1 {
-    padding: 4px;
-    margin: 10px;
-    border: 1px solid gray;
-    font-weight: bold;
-    font-size: 120%;
+.content-block p:not(.content-block-subtitle-1) {
+    font-size: 110%;
+    margin-left: 16px;
+    margin-right: 16px;
+    font-family: arial, sans-serif;
 }
 
-.content-block p {
-    font-size: 110%;
-    font-family: arial, sans-serif;
+.name-text {
+    margin-left: 16px;
+    display: block;
+}
+
+.content-block-subtitle-1 {
+    padding: 4px;
+    margin-left: 6px;
+    margin-right: 6px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    border: 1px solid gray;
+    font-weight: bold;
+    font-size: 125%;
 }
 
 .content-block-definition {
     font-weight: bold;
+}
+
+.personal-brief-text {
+    float: left;
 }
 
 .text-bold {
@@ -56,9 +71,13 @@ body {
     font-style: italic;
 }
 
-.link-table thead {
+.table thead {
     font-weight: bold;
-    font-size: 115%;
+    font-size: 120%;
+}
+
+.link-table tr td:first-child {
+    border-right: 1px dashed gray;
 }
 
 .img-in-center {
