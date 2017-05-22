@@ -9,7 +9,7 @@ body {
 
 .pic-text {
     text-align: center;
-    border-right: 1px dashed lightgrey;
+    border: 1px dashed lightgrey;
 }
 
 .pic-text img {
@@ -22,6 +22,16 @@ body {
 }
 
 .name-and-personal-brief-text {
+    float: left;
+    margin-left: 16px;
+}
+
+.name-text {
+    display: block;
+}
+
+.personal-brief-text {
+    float: left;
 }
 
 .content-block {
@@ -46,11 +56,6 @@ body {
     font-family: arial, sans-serif;
 }
 
-.name-text {
-    margin-left: 16px;
-    display: block;
-}
-
 .content-block-subtitle-1 {
     padding: 4px;
     margin-left: 6px;
@@ -66,9 +71,6 @@ body {
     font-weight: bold;
 }
 
-.personal-brief-text {
-    float: left;
-}
 
 .text-bold {
     font-weight: bold;
