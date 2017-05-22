@@ -17,6 +17,13 @@ body {
     width: 80%;
 }
 
+.pic-text a {
+    display: block;
+}
+
+.name-and-personal-brief-text {
+}
+
 .content-block {
     position: relative;
     overflow: hidden;
