@@ -56,6 +56,14 @@ body {
     font-family: arial, sans-serif;
 }
 
+.standard-size-text {
+    font-size: 100%;
+}
+
+.smaller-size-text {
+    font-size: 80%;
+}
+
 .content-block-subtitle-1 {
     padding: 4px;
     margin-left: 6px;
