@@ -45,12 +45,42 @@
 % does not look nice, try deleting the line with the fontenc.
 
 
+
+
+\usepackage{listings}
+\usepackage{color}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=Pascal,
+  aboveskip=3mm,
+  belowskip=3mm,
+  breaklines=true,
+  breakatwhitespace=true,
+  basicstyle={\footnotesize\ttfamily},
+  showstringspaces=false,
+  columns=flexible,
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  tabsize=4
+}
+
+
+
+
+
 \title[Path-based DFS] % (optional, use only with long paper titles)
 {Path-based depth-first search for strong and biconnected components}
 
 \author[Harold N. Gabow] % (optional, use only with lots of authors)
-{\textbf{Author of paper: Harold N. Gabow}\newline\newline
- {Reported by: T.T.Liu \& D.P. Xu \& B.Y. Chen } }
+{\textbf{Author of the paper: Harold N. Gabow}\newline\newline
+ {Reported by: T.T. Liu \and D.P. Xu \and B.Y. Chen } }
 % - Give the names in the same order as the appear in the paper.
 % - Use the \inst{?} command only if the authors have different
 %   affiliation.
@@ -67,8 +97,8 @@
 % is a graphic format that can be processed by latex or pdflatex,
 % resp., then you can add a logo as follows:
 
-% \pgfdeclareimage[height=0.5cm]{university-logo}{university-logo-filename}
-% \logo{\pgfuseimage{university-logo}}
+\pgfdeclareimage[height=0.75cm]{university-logo}{sdulogo}
+\logo{\pgfuseimage{university-logo}}
 
 
 
@@ -90,8 +120,43 @@
 
 \begin{document}
 
+
+
+
+
+\defverbatim[colored]\mycodea{%
+\begin{lstlisting}[frame=single, emphstyle={\color{blue}}]
+H = G;
+while H still has a vertex v
+	start a new path P = (v);
+	while P is not empty
+		if the last vertex of P has an edge (v_k, w)
+			if w belongs to P
+				find v_i in P, which w and v_i are identical;
+				contract the cycle v_i, v_(i+1), ... , v_k, both in H and in P;
+			else
+				add w to P, as the new last vertex of P;
+			end if
+\end{lstlisting}
+}
+
+\defverbatim[colored]\mycodeb{%
+\begin{lstlisting}[frame=single, emphstyle={\color{blue}}, firstnumber=last]
+		else
+			output v_k as a vertex of the strong component graph;
+			// v_k may be a set of multiple vetices in the original graph
+		end if
+	end
+end
+\end{lstlisting}
+}
+
+
+
+
+
 \begin{frame}
-  \titlepagep
+  \titlepage
 \end{frame}
 
 \begin{frame}{Outline}
@@ -117,88 +182,56 @@
 % - If you omit details that are vital to the proof/implementation,
 %   just say so once. Everybody will be happy with that.
 
-\section{Motivation}
+\section{Introduction}
 
-\subsection{The Basic Problem That We Studied}
+\begin{frame}{Several Questions}
+	\begin{itemize}
+		\item
+		One-pass or two-pass?
+		\item
+		LOWPOINT?
+		\item
+		Ear decomposition?
+		\item
+		Compele version?
+		\item
+		Robbin's Theorem?
+	\end{itemize}
+\end{frame}
 
-\begin{frame}{Make Titles Informative. Use Uppercase Letters.}{Subtitles are optional.}
+\section{Strong Components}
+
+\begin{frame}{Questions}
+	\begin{itemize}
+		\item
+		"Equivalently the strong component graph is the acyclic digraph,
+		formed by contracting vertices of G, that has an many vertices as possible."
+		What is the meanings of this sentence?
+	\end{itemize}
+\end{frame}
+
+\subsection{Purdom and Munro's high-level algorithm}
+
+\begin{frame}{Pseudo-Code}%[fragile]
+	\mycodea
+\end{frame}
+
+\begin{frame}{Pseudo-Code (Continue.)}%[fragile]
+	\mycodeb
+\end{frame}
+
+\subsection{Contribution}
+
+\begin{frame}{His Contribution}%{Subtitles are optional.}
   % - A title should summarize the slide in an understandable fashion
   %   for anyone how does not follow everything on the slide itself.
 
   \begin{itemize}
   \item
-    Use \texttt{itemize} a lot.
-  \item
-    Use very short sentences or short phrases.
+    He gave a simple list-based implementation that achieves linear time.
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Make Titles Informative.}
-
-  You can create overlays\dots
-  \begin{itemize}
-  \item using the \texttt{pause} command:
-    \begin{itemize}
-    \item
-      First item.
-      \pause
-    \item
-      Second item.
-    \end{itemize}
-  \item
-    using overlay specifications:
-    \begin{itemize}
-    \item<3->
-      First item.
-    \item<4->
-      Second item.
-    \end{itemize}
-  \item
-    using the general \texttt{uncover} command:
-    \begin{itemize}
-      \uncover<5->{\item
-        First item.}
-      \uncover<6->{\item
-        Second item.}
-    \end{itemize}
-  \end{itemize}
-\end{frame}
-
-
-\subsection{Previous Work}
-
-\begin{frame}{Make Titles Informative.}
-\end{frame}
-
-\begin{frame}{Make Titles Informative.}
-\end{frame}
-
-
-
-\section{Our Results/Contribution}
-
-\subsection{Main Results}
-
-\begin{frame}{Make Titles Informative.}
-\end{frame}
-
-\begin{frame}{Make Titles Informative.}
-\end{frame}
-
-\begin{frame}{Make Titles Informative.}
-\end{frame}
-
-
-\subsection{Basic Ideas for Proofs/Implementation}
-
-\begin{frame}{Make Titles Informative.}
-\end{frame}
-
-\begin{frame}{Make Titles Informative.}
-\end{frame}
-
-\begin{frame}{Make Titles Informative.}
-\end{frame}
 
 
 
