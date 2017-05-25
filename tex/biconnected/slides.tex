@@ -68,6 +68,7 @@
   keywordstyle=\color{blue},
   commentstyle=\color{dkgreen},
   stringstyle=\color{mauve},
+  emphstyle={\color{blue}\textbf},
   tabsize=4
 }
 
@@ -125,7 +126,8 @@
 
 
 \defverbatim[colored]\mycodea{%
-\begin{lstlisting}[frame=single, emphstyle={\color{blue}}]
+\begin{lstlisting}[frame=single, emph={P, v, v_k, v_i, w, G, H}, 
+deletekeywords={new, and, in, to, not, of, set}]
 H = G;
 while H still has a vertex v
 	start a new path P = (v);
@@ -133,7 +135,7 @@ while H still has a vertex v
 		if the last vertex of P has an edge (v_k, w)
 			if w belongs to P
 				find v_i in P, which w and v_i are identical;
-				contract the cycle v_i, v_(i+1), ... , v_k, both in H and in P;
+				contract the cycle v_i, ... , v_k, both in H and in P;
 			else
 				add w to P, as the new last vertex of P;
 			end if
@@ -141,10 +143,11 @@ while H still has a vertex v
 }
 
 \defverbatim[colored]\mycodeb{%
-\begin{lstlisting}[frame=single, emphstyle={\color{blue}}, firstnumber=last]
+\begin{lstlisting}[frame=single, emph={P, v, v_k, v_i, w, G, H},
+firstnumber=last, deletekeywords={new, and, in, to, not, of, set}]
 		else
 			output v_k as a vertex of the strong component graph;
-			// v_k may be a set of multiple vetices in the original graph
+			{* v_k may be a set of multiple vetices in the original graph *}
 		end if
 	end
 end
