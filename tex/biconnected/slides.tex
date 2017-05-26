@@ -76,6 +76,14 @@
 
 
 
+\usepackage{tikz}
+\usepgflibrary{arrows.meta}
+\usetikzlibrary{arrows.meta}
+% \usetikzlibrary{graphs}
+
+
+
+
 \title[Path-based DFS] % (optional, use only with long paper titles)
 {Path-based depth-first search for strong and biconnected components}
 
@@ -204,6 +212,19 @@ end
 
 \section{Strong Components}
 
+\subsection{Thinking about Strong Components}
+
+\begin{frame}{Review: What have we learned from the textbook?}
+	\begin{itemize}
+		\item
+		Run DFS twice. Once on the original graph $G$, once on the \emph{tranposition} of $G^T$.
+		\item
+		The trick is using \emph{finishing times} of each vertex computed by the first DFS.
+		\item
+		Linear time complexity: $O(V+E)$
+	\end{itemize}
+\end{frame}
+
 \begin{frame}{Questions}
 	\begin{itemize}
 		\item
@@ -219,9 +240,65 @@ end
 	\mycodea
 \end{frame}
 
-\begin{frame}{Pseudo-Code (Continue.)}%[fragile]
+\begin{frame}{Pseudo-Code (Continued)}%[fragile]
 	\mycodeb
 \end{frame}
+
+
+
+
+\begin{frame}{Examples}
+	\begin{columns}
+		\begin{column}{5.5cm}
+			\begin{exampleblock}{Block B}
+				The second line. \newline
+				\begin{tikzpicture}
+					[scale=.5,auto=left]
+					% text
+					\draw node at (0.5, 0.5) {B};
+					\draw node at (2.5, 0.5) {S};
+					\draw node at (4.5, 0.5) {I};
+					% grid					
+					\foreach \x in {0,-1,-2,-3,-4,-5} {
+						\draw [semithick] (0, \x) rectangle (1,\x-1);
+						\draw [semithick] (2, \x) rectangle (3,\x-1);
+						\draw [semithick] (4, \x) rectangle (5,\x-1);
+					}
+					% rightarrow
+					\foreach \x in {-2, -3}
+						\draw node at (1.5, \x-0.5) {$\rightarrow$};
+					% leftarrow
+					\foreach \x in {-3, -4}
+						\draw node at (3.5, \x-0.5) {$\leftarrow$};
+				\end{tikzpicture}
+			\end{exampleblock}
+		\end{column}
+		\begin{column}{5.5cm}
+			\begin{exampleblock}{Block C}
+				The third line. \newline
+				\begin{tikzpicture}
+					[scale=.5,auto=left,every node/.style={circle,draw,semithick,fill=blue!20,radius=0.4}]
+					\node (n2) at (1,5)	{2};
+					\node (n5) at (2,1)	{5};
+					\node (n1) at (4,7)	{1};
+					\node (n4) at (4,3)	{4};
+					\node (n6) at (6,1)	{6};
+					\node (n3) at (7,5)	{3};
+
+					% black edge
+					\foreach \from/\to in {n1/n3, n2/n3, n2/n4,n4/n3, n4/n5,n5/n2, n5/n6, n6/n3, n6/n4}
+						\draw [black, thick, -{Stealth[length=2mm]}] (\from) -- (\to);
+					% red edge
+					\foreach \from/\to in {n1/n2}
+						\draw [red, thick, -{Stealth[length=2mm]}] (\from) -- (\to);
+				\end{tikzpicture}
+			\end{exampleblock}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+
+
 
 \subsection{Contribution}
 
