@@ -72,6 +72,8 @@
   tabsize=4
 }
 
+\usefonttheme[onlymath]{serif}
+
 \usepackage[ruled, vlined, noend, procnumbered]{algorithm2e}
 
 
@@ -374,7 +376,43 @@ contract the cycle v_i(w), ... , v_k, both in H and in P; /* w and v_i are ident
 		He gave a simple list-based implementation that achieves linear time.
 		\item
 		Use only stacks and arrays as data structure. % Mentioned in introduction.
-		% Do not need a disjoint set merging data structure.
+		\item
+		Do not need a disjoint set merging data structure.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Data Structure Used in Algorithm}
+	\begin{itemize}
+		\item
+		In DFS, the \alert{path P} from root to each node is almost always significant. So it is in this algorithm.
+		\item
+		A \alert{stack S} contains the sequence of vertices in P.
+		\item
+		A \alert{stack B} contains the boundaries between contracted vertices.
+		\item
+		An array I\alert{$[1\ldots n]$} is used to store stack indices corresponding to vertices.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Contraction Makes Much Difference}
+	\begin{itemize}
+		\item
+		When contraction is excuted, some vertices merges into a set.
+		\item
+		It is possible that several elements in stack S are in the same vertex in path P.
+		More formal, 
+		\begin{center}
+			$v_i={S[j]:\, B[i]\leq j< B[i+1]}$
+		\end{center}
+		\item
+		By the way, the formal definition of $I[v]$ is
+		\begin{center} % TODO
+			$I[j]=\begin{cases}
+			0, & \text{if} \\
+			j, & \text{if} \\
+			c, & \text{if}
+			\end{cases}$
+		\end{center}
 	\end{itemize}
 \end{frame}
 
