@@ -278,10 +278,16 @@ contract the cycle v_i(w), ... , v_k, both in H and in P; /* w and v_i are ident
 
 \section{Introduction}
 
-\begin{frame}{Several Questions}
+\begin{frame}{Characterastics of Gabow's Algorithms}
 	\begin{itemize}
 		\item
-		One-pass or two-pass?
+		\alert{One-pass algorithm.} But for the algorithm of strong components, what we have learned from
+		the textbook is a two-pass algorithm, by which we must traverse the whole graph twice. 
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Several Questions}
+	\begin{itemize}
 		\item
 		LOWPOINT?
 		\item
@@ -306,9 +312,9 @@ contract the cycle v_i(w), ... , v_k, both in H and in P; /* w and v_i are ident
 	\begin{exampleblock}{Example}
 	\begin{center}
 	\mygrapha{n1/n2, n1/n3, n2/n3, n2/n4,n4/n3, n4/n5,n5/n2, n5/n6, n6/n3, n6/n4}{}{
-		\fill [yellow, semitransparent] (1,0) -- (0,5) -- (1,7) -- (8,0) -- cycle;
-		\fill [yellow, semitransparent] (3,6) rectangle (5,8);
-		\fill [yellow, semitransparent] (6,4) rectangle (8,6);
+		\fill [yellow, nearly transparent] (1,0) -- (0,5) -- (1,7) -- (8,0) -- cycle;
+		\fill [yellow, nearly transparent] (3,6) rectangle (5,8);
+		\fill [yellow, nearly transparent] (6,4) rectangle (8,6);
 	}
 	\end{center}
 	\end{exampleblock}
@@ -354,24 +360,6 @@ contract the cycle v_i(w), ... , v_k, both in H and in P; /* w and v_i are ident
 		\item
 		Therefore, a good data structure for disjoint set merging is needed.
 	\end{itemize}
-\end{frame}
-
-\begin{frame}{Examples}
-	\begin{columns}
-		\begin{column}{4cm}
-			\begin{exampleblock}{Block B}
-				The second line. \newline
-				\mygraphb{1/2}{2}{3/4}{5}{4/5}{
-					
-				}
-			\end{exampleblock}
-		\end{column}
-		\begin{column}{5.5cm}
-			\begin{exampleblock}{Block C}
-				The third line. \newline
-			\end{exampleblock}
-		\end{column}
-	\end{columns}
 \end{frame}
 
 
@@ -1018,7 +1006,7 @@ contract the cycle v_i(w), ... , v_k, both in H and in P; /* w and v_i are ident
 	\end{columns}
 	\begin{itemize}
 		\item
-		Call Stack: STRONG()$\rightarrow$DFS(1)$\rightarrow$DFS(2)
+		Call Stack: STRONG()$\rightarrow$DFS(1)
 		\item
 		Code: \texttt{
 			\textbf{while} I[v]$\leq$TOP(S) \textbf{do} I[POP(S)]=c;
