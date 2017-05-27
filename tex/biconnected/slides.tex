@@ -55,7 +55,7 @@
 \definecolor{mauve}{rgb}{0.58,0,0.82}
 
 \lstset{frame=tb,
-  language=Pascal,
+  language=C++,
   aboveskip=3mm,
   belowskip=3mm,
   breaklines=true,
@@ -72,6 +72,7 @@
   tabsize=4
 }
 
+\usepackage[ruled, vlined, noend, procnumbered]{algorithm2e}
 
 
 
@@ -80,6 +81,33 @@
 \usepgflibrary{arrows.meta}
 \usetikzlibrary{arrows.meta}
 % \usetikzlibrary{graphs}
+
+
+
+
+
+% {n1/n3, n2/n3, n2/n4,n4/n3, n4/n5,n5/n2, n5/n6, n6/n3, n6/n4}
+% {n1/n2}
+\newcommand{\mygrapha}[3]{
+	\begin{tikzpicture}
+		[scale=.5,auto=left,every node/.style={circle,draw,semithick,fill=blue!20,radius=0.4}]
+		\node (n2) at (1,5)	{2};
+		\node (n5) at (2,1)	{5};
+		\node (n1) at (4,7)	{1};
+		\node (n4) at (4,3)	{4};
+		\node (n6) at (6,1)	{6};
+		\node (n3) at (7,5)	{3};
+
+		% black edge
+		\foreach \from/\to in #1
+			\draw [black, thick, -{Stealth[length=2mm]}] (\from) -- (\to);
+		% red edge
+		\foreach \from/\to in #2
+			\draw [red, thick, -{Stealth[length=2mm]}] (\from) -- (\to);
+		#3
+	\end{tikzpicture}
+}
+
 
 
 
@@ -135,15 +163,14 @@
 
 \defverbatim[colored]\mycodea{%
 \begin{lstlisting}[frame=single, emph={P, v, v_k, v_i, w, G, H}, 
-deletekeywords={new, and, in, to, not, of, set}]
+deletekeywords={new, and, in, to, not, of, set, delete}, morekeywords={end, end if}]
 H = G;
 while H still has a vertex v
 	start a new path P = (v);
 	while P is not empty
-		if the last vertex of P has an edge (v_k, w)
+		if the last vertex v_k of P has an edge (v_k, w)
 			if w belongs to P
-				find v_i in P, which w and v_i are identical;
-				contract the cycle v_i, ... , v_k, both in H and in P;
+				contract the cycle v_i(w), ... , v_k, both in H and in P; /* w and v_i are identical. */
 			else
 				add w to P, as the new last vertex of P;
 			end if
@@ -152,15 +179,26 @@ while H still has a vertex v
 
 \defverbatim[colored]\mycodeb{%
 \begin{lstlisting}[frame=single, emph={P, v, v_k, v_i, w, G, H},
-firstnumber=last, deletekeywords={new, and, in, to, not, of, set}]
+firstnumber=last, deletekeywords={new, and, in, to, not, of, set, delete}, morekeywords={end, end if}]
 		else
 			output v_k as a vertex of the strong component graph;
-			{* v_k may be a set of multiple vetices in the original graph *}
+			delete v_k from both H and P;
 		end if
 	end
 end
 \end{lstlisting}
 }
+
+\defverbatim[colored]\mycodec{%
+\begin{lstlisting}[frame=single, emph={P, v, v_k, v_i, w, G, H}, 
+firstnumber=7, deletekeywords={new, and, in, to, not, of, set, delete}, morekeywords={end, end if}]
+contract the cycle v_i(w), ... , v_k, both in H and in P; /* w and v_i are identical. */
+\end{lstlisting}
+}
+
+% \defverbatim[colored]\mycoded{%
+% \begin{lstlisting}[frame=single, emph={G,S,B,v,I,c,n}]
+% }
 
 
 
@@ -214,38 +252,64 @@ end
 
 \subsection{Thinking about Strong Components}
 
-\begin{frame}{Review: What have we learned from the textbook?}
+
+\begin{frame}{Review: What have we learned from the textbook?}{Concepts of Strong Components}
 	\begin{itemize}
 		\item
-		Run DFS twice. Once on the original graph $G$, once on the \emph{tranposition} of $G^T$.
+		Two \alert{mutually reachable} vertices are in the same \emph{strong component}.
+	\end{itemize}
+	\begin{exampleblock}{Example}
+	\begin{center}
+	\mygrapha{{n1/n2, n1/n3, n2/n3, n2/n4,n4/n3, n4/n5,n5/n2, n5/n6, n6/n3, n6/n4}}{{}}{
+		\fill [yellow, semitransparent] (1,0) -- (0,5) -- (1,7) -- (8,0) -- cycle;
+		\fill [yellow, semitransparent] (3,6) rectangle (5,8);
+		\fill [yellow, semitransparent] (6,4) rectangle (8,6);
+	}
+	\end{center}
+	\end{exampleblock}
+\end{frame}
+
+\begin{frame}{Review: What have we learned from the textbook?}{Algorithms to Find Strong Components}
+	\begin{itemize}
 		\item
-		The trick is using \emph{finishing times} of each vertex computed by the first DFS.
+		Idea: Run DFS twice. Once on the original graph $G$, once on the \emph{tranposition} of $G^T$.
+		\item
+		Trick: Using \emph{finishing times} of each vertex computed by the first DFS.
 		\item
 		Linear time complexity: $O(V+E)$
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Questions}
-	\begin{itemize}
-		\item
-		"Equivalently the strong component graph is the acyclic digraph,
-		formed by contracting vertices of G, that has an many vertices as possible."
-		What is the meanings of this sentence?
-	\end{itemize}
-\end{frame}
 
 \subsection{Purdom and Munro's high-level algorithm}
+% This high-level algorithm was originally proposed by Purdom and Munro, mentioned after the pseudo-code in the paper.
 
 \begin{frame}{Pseudo-Code}%[fragile]
 	\mycodea
+	\begin{itemize}
+		\item
+		Note that \emph{contracting} means selecting one vertex as a representation and \alert{merging} others rather than deleting them.
+	\end{itemize}
 \end{frame}
 
 \begin{frame}{Pseudo-Code (Continued)}%[fragile]
 	\mycodeb
 \end{frame}
 
-
-
+\begin{frame}{Assessment}
+	\begin{itemize}
+		\item
+		The time consumption of each statement in the pseudo-code is clear. Total time complexity is linear.
+		except the statement in line 7:
+	\end{itemize}
+	\mycodec
+	\begin{itemize}
+		\item
+		Problem is how to merge in linear time while keeping the next time accessing this vertex still in constant time.
+		\item
+		Therefore, a good data structure for disjoint set merging is needed.
+	\end{itemize}
+\end{frame}
 
 \begin{frame}{Examples}
 	\begin{columns}
@@ -276,28 +340,10 @@ end
 		\begin{column}{5.5cm}
 			\begin{exampleblock}{Block C}
 				The third line. \newline
-				\begin{tikzpicture}
-					[scale=.5,auto=left,every node/.style={circle,draw,semithick,fill=blue!20,radius=0.4}]
-					\node (n2) at (1,5)	{2};
-					\node (n5) at (2,1)	{5};
-					\node (n1) at (4,7)	{1};
-					\node (n4) at (4,3)	{4};
-					\node (n6) at (6,1)	{6};
-					\node (n3) at (7,5)	{3};
-
-					% black edge
-					\foreach \from/\to in {n1/n3, n2/n3, n2/n4,n4/n3, n4/n5,n5/n2, n5/n6, n6/n3, n6/n4}
-						\draw [black, thick, -{Stealth[length=2mm]}] (\from) -- (\to);
-					% red edge
-					\foreach \from/\to in {n1/n2}
-						\draw [red, thick, -{Stealth[length=2mm]}] (\from) -- (\to);
-				\end{tikzpicture}
 			\end{exampleblock}
 		\end{column}
 	\end{columns}
 \end{frame}
-
-
 
 
 \subsection{Contribution}
@@ -306,14 +352,53 @@ end
   % - A title should summarize the slide in an understandable fashion
   %   for anyone how does not follow everything on the slide itself.
 
-  \begin{itemize}
-  \item
-    He gave a simple list-based implementation that achieves linear time.
-  \end{itemize}
+	\begin{itemize}
+		\item
+		He gave a simple list-based implementation that achieves linear time.
+		\item
+		Use only stacks and arrays as data structure. % Mentioned in introduction.
+		% Do not need a disjoint set merging data structure.
+	\end{itemize}
 \end{frame}
 
+\begin{frame}[fragile]{New algorithm to discover strong components}
+	\begin{procedure}[H]
+		\small
+		\caption{STRONG(G)}
+		empty stacks S and B\;
+		\For{$v\in V$}{
+			$I[v]=0$\;
+		}
+		$c=n$\;
+		\For{$v\in V$}{
+			\If{$I[v]=0$}{
+				DFS($v$)\;
+			}
+		}
+	\end{procedure}
+\end{frame}
 
-
+\begin{frame}[fragile]{New algorithm to discover strong components}
+	\begin{procedure}[H]
+		\scriptsize
+		\caption{DFS(v)}
+		PUSH(v,S);\quad I[v]$=$TOP(S);\quad PUSH(I[v],B)\;
+		\tcc{add v to the end of P}
+		\For{egdes$(v,w)\in E$}{
+			\uIf{$I[v]=0$}{
+				DFS(w)\;
+			}\Else(\tcc*[h]{contract if necessary}){
+				\While{$I[w]<B[TOP[B]]$}{POP(B)\;}
+			}
+			\If{$I[v]=B[TOP(B)]$} {
+				\tcc{number vertices of the next strong component}
+				POP(B)\;
+				increase c by 1\;
+				\While{$I[v]\leq TOP[S]$}{I[POP(S)]$=$c\;}
+			}
+		}
+	\end{procedure}
+\end{frame}
 
 \section*{Summary}
 
