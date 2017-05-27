@@ -80,6 +80,7 @@
 \usepackage{tikz}
 \usepgflibrary{arrows.meta}
 \usetikzlibrary{arrows.meta}
+\usetikzlibrary{calc}
 % \usetikzlibrary{graphs}
 
 
@@ -99,14 +100,58 @@
 		\node (n3) at (7,5)	{3};
 
 		% black edge
-		\foreach \from/\to in #1
+		\foreach \from/\to in {#1}
 			\draw [black, thick, -{Stealth[length=2mm]}] (\from) -- (\to);
 		% red edge
-		\foreach \from/\to in #2
+		\foreach \from/\to in {#2}
 			\draw [red, thick, -{Stealth[length=2mm]}] (\from) -- (\to);
 		#3
 	\end{tikzpicture}
 }
+
+\newcommand{\mygraphb}[6]{
+	\begin{tikzpicture}
+		[scale=.5,auto=left]
+		% text
+		\draw node at (0.5, 0.5) {B};
+		\draw node at (2.5, 0.5) {S};
+		\draw node at (5.5, 0.5) {I};
+		\foreach \x in {1,2,3,4,5,6} {
+			\draw node at (4.5, -\x+0.5) {\x};
+		}
+		% vertical line
+		\draw [gray, thick, dashed] (4,1) -- (4,-6);
+		% grid					
+		\foreach \x in {0,-1,-2,-3,-4,-5} {
+			\draw [semithick] (0, \x) rectangle (1, \x-1);
+			\draw [semithick] (2, \x) rectangle (3, \x-1);
+			\draw [semithick] (5, \x) rectangle (6, \x-1);
+		}
+		% stack B text
+		\foreach \x/\y in {#1} {
+			\draw node at (0.5, -\x+0.5) {\y};
+		}
+		% rightarrow
+		\foreach \x in {#2}
+			\draw node at (1.5, -\x+0.5) {$\rightarrow$};
+		% stack S text
+		\foreach \x/\y in {#3} {
+			\draw node at (2.5, -\x+0.5) {\y};
+		}
+		% leftarrow
+		\foreach \x in {#4}
+			\draw node at (3.5, -\x+0.5) {$\leftarrow$};
+		% array I text
+		\foreach \x/\y in {#5} {
+			\draw node at (5.5, -\x+0.5) {\y};
+		}
+		#6
+	\end{tikzpicture}
+}
+
+
+
+
 
 
 
@@ -260,7 +305,7 @@ contract the cycle v_i(w), ... , v_k, both in H and in P; /* w and v_i are ident
 	\end{itemize}
 	\begin{exampleblock}{Example}
 	\begin{center}
-	\mygrapha{{n1/n2, n1/n3, n2/n3, n2/n4,n4/n3, n4/n5,n5/n2, n5/n6, n6/n3, n6/n4}}{{}}{
+	\mygrapha{n1/n2, n1/n3, n2/n3, n2/n4,n4/n3, n4/n5,n5/n2, n5/n6, n6/n3, n6/n4}{}{
 		\fill [yellow, semitransparent] (1,0) -- (0,5) -- (1,7) -- (8,0) -- cycle;
 		\fill [yellow, semitransparent] (3,6) rectangle (5,8);
 		\fill [yellow, semitransparent] (6,4) rectangle (8,6);
@@ -313,28 +358,12 @@ contract the cycle v_i(w), ... , v_k, both in H and in P; /* w and v_i are ident
 
 \begin{frame}{Examples}
 	\begin{columns}
-		\begin{column}{5.5cm}
+		\begin{column}{4cm}
 			\begin{exampleblock}{Block B}
 				The second line. \newline
-				\begin{tikzpicture}
-					[scale=.5,auto=left]
-					% text
-					\draw node at (0.5, 0.5) {B};
-					\draw node at (2.5, 0.5) {S};
-					\draw node at (4.5, 0.5) {I};
-					% grid					
-					\foreach \x in {0,-1,-2,-3,-4,-5} {
-						\draw [semithick] (0, \x) rectangle (1,\x-1);
-						\draw [semithick] (2, \x) rectangle (3,\x-1);
-						\draw [semithick] (4, \x) rectangle (5,\x-1);
-					}
-					% rightarrow
-					\foreach \x in {-2, -3}
-						\draw node at (1.5, \x-0.5) {$\rightarrow$};
-					% leftarrow
-					\foreach \x in {-3, -4}
-						\draw node at (3.5, \x-0.5) {$\leftarrow$};
-				\end{tikzpicture}
+				\mygraphb{1/2}{2}{3/4}{5}{4/5}{
+					
+				}
 			\end{exampleblock}
 		\end{column}
 		\begin{column}{5.5cm}
@@ -398,6 +427,605 @@ contract the cycle v_i(w), ... , v_k, both in H and in P; /* w and v_i are ident
 			}
 		}
 	\end{procedure}
+\end{frame}
+
+\begin{frame}{Demo: Gabow's strong components algorithm}
+	\begin{columns}
+		\begin{column}{4cm}
+			\begin{exampleblock}{Data in memory}
+				B and S: stack. I: array. \newline
+				\mygraphb{}{}{}{}{1/0,2/0,3/0,4/0,5/0,6/0}{
+					
+				}
+			\end{exampleblock}
+		\end{column}
+		\begin{column}{5.5cm}
+			\begin{exampleblock}{Graph H}
+				\mygrapha{n1/n2, n1/n3, n2/n3, n2/n4,n4/n3, n4/n5,n5/n2, n5/n6, n6/n3, n6/n4}{}{
+					
+				}
+			\end{exampleblock}
+		\end{column}
+	\end{columns}
+	\begin{itemize}
+		\item
+		Call Stack: STRONG()
+		\item
+		This state is the first after initialized. DFS(1) is going to be called.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Demo: Gabow's strong components algorithm}
+	\begin{columns}
+		\begin{column}{4cm}
+			\begin{exampleblock}{Data in memory}
+				B and S: stack. I: array. \newline
+				\mygraphb{1/1}{}{1/1}{}{1/1,2/0,3/0,4/0,5/0,6/0}{
+					
+				}
+			\end{exampleblock}
+		\end{column}
+		\begin{column}{5.5cm}
+			\begin{exampleblock}{Graph H}
+				\mygrapha{n1/n2, n1/n3, n2/n3, n2/n4,n4/n3, n4/n5,n5/n2, n5/n6, n6/n3, n6/n4}{}{
+					
+				}
+			\end{exampleblock}
+		\end{column}
+	\end{columns}
+	\begin{itemize}
+		\item
+		Call Stack: STRONG()$\rightarrow$DFS(1)
+		\item
+		Code: \texttt{
+			\textbf{for} edges(v,w)$\in$E \textbf{do} ...
+		}
+		\item
+		$w=2$.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Demo: Gabow's strong components algorithm}
+	\begin{columns}
+		\begin{column}{4cm}
+			\begin{exampleblock}{Data in memory}
+				B and S: stack. I: array. \newline
+				\mygraphb{1/1,2/2}{}{1/1,2/2}{}{1/1,2/2,3/0,4/0,5/0,6/0}{
+					
+				}
+			\end{exampleblock}
+		\end{column}
+		\begin{column}{5.5cm}
+			\begin{exampleblock}{Graph H}
+				\mygrapha{n1/n3, n2/n3, n2/n4,n4/n3, n4/n5,n5/n2, n5/n6, n6/n3, n6/n4}{n1/n2}{
+					
+				}
+			\end{exampleblock}
+		\end{column}
+	\end{columns}
+	\begin{itemize}
+		\item
+		Call Stack: STRONG()$\rightarrow$DFS(1)$\rightarrow$DFS(2)
+		\item
+		Code: \texttt{
+			\textbf{for} edges(v,w)$\in$E \textbf{do} ...
+		}
+		\item
+		$w=3$.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Demo: Gabow's strong components algorithm}
+	\begin{columns}
+		\begin{column}{4cm}
+			\begin{exampleblock}{Data in memory}
+				B and S: stack. I: array. \newline
+				\mygraphb{1/1,2/2,3/3}{}{1/1,2/2,3/3}{}{1/1,2/2,3/3,4/0,5/0,6/0}{
+					
+				}
+			\end{exampleblock}
+		\end{column}
+		\begin{column}{5.5cm}
+			\begin{exampleblock}{Graph H}
+				\mygrapha{n1/n3, n2/n4,n4/n3, n4/n5,n5/n2, n5/n6, n6/n3, n6/n4}{n1/n2, n2/n3}{
+					
+				}
+			\end{exampleblock}
+		\end{column}
+	\end{columns}
+	\begin{itemize}
+		\item
+		Call Stack: STRONG()$\rightarrow$DFS(1)$\rightarrow$DFS(2)$\rightarrow$DFS(3)
+		\item
+		Code: \texttt{
+			\textbf{if} I[v]$=$B[TOP(B)] \textbf{then} ...
+		}
+		\item
+		Go back.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Demo: Gabow's strong components algorithm}
+	\begin{columns}
+		\begin{column}{4cm}
+			\begin{exampleblock}{Data in memory}
+				B and S: stack. I: array. \newline
+				\mygraphb{1/1,2/2,3/3}{}{1/1,2/2,3/4}{}{1/1,2/2,3/7,4/3,5/0,6/0}{
+					
+				}
+			\end{exampleblock}
+		\end{column}
+		\begin{column}{5.5cm}
+			\begin{exampleblock}{Graph H}
+				\mygrapha{n1/n3, n4/n3, n4/n5,n5/n2, n5/n6, n6/n3, n6/n4, n2/n3}{n1/n2, n2/n4}{
+					% component node 3
+					\fill [yellow, nearly transparent] (6,4) rectangle (8,6);
+					% discard node 3
+					\draw [thick, red] (6.5, 5.5) -- (7.5, 4.5);
+					\draw [thick, red] (6.5, 4.5) -- (7.5, 5.5);
+				}
+			\end{exampleblock}
+		\end{column}
+	\end{columns}
+	\begin{itemize}
+		\item
+		Call Stack: STRONG()$\rightarrow$DFS(1)$\rightarrow$DFS(2)$\rightarrow$DFS(4)
+		\item
+		Code: \texttt{
+			\textbf{for} edges(v,w)$\in$E \textbf{do} ...
+		}
+		\item
+		$w=5$.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Demo: Gabow's strong components algorithm}
+	\begin{columns}
+		\begin{column}{4cm}
+			\begin{exampleblock}{Data in memory}
+				B and S: stack. I: array. \newline
+				\mygraphb{1/1,2/2,3/3,4/4}{}{1/1,2/2,3/4,4/5}{}{1/1,2/2,3/7,4/3,5/4,6/0}{
+					
+				}
+			\end{exampleblock}
+		\end{column}
+		\begin{column}{5.5cm}
+			\begin{exampleblock}{Graph H}
+				\mygrapha{n1/n3, n4/n3, n5/n2, n5/n6, n6/n3, n6/n4, n2/n3}{n1/n2, n2/n4, n4/n5}{
+					% component node 3
+					\fill [yellow, nearly transparent] (6,4) rectangle (8,6);
+					% discard node 3
+					\draw [thick, red] (6.5, 5.5) -- (7.5, 4.5);
+					\draw [thick, red] (6.5, 4.5) -- (7.5, 5.5);
+				}
+			\end{exampleblock}
+		\end{column}
+	\end{columns}
+	\begin{itemize}
+		\item
+		Call Stack: $\cdots\rightarrow$DFS(1)$\rightarrow$DFS(2)$\rightarrow$DFS(4)$\rightarrow$DFS(5)
+		\item
+		Code: \texttt{
+			\textbf{for} edges(v,w)$\in$E \textbf{do} ...
+		}
+		\item
+		$w=2$.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Demo: Gabow's strong components algorithm}
+	\begin{columns}
+		\begin{column}{4cm}
+			\begin{exampleblock}{Data in memory}
+				B and S: stack. I: array. \newline
+				\mygraphb{1/1,2/2,3/3,4/4}{}{1/1,2/2,3/4,4/5}{}{1/1,2/2,3/7,4/3,5/4,6/0}{
+					
+				}
+			\end{exampleblock}
+		\end{column}
+		\begin{column}{5.5cm}
+			\begin{exampleblock}{Graph H}
+				\mygrapha{n1/n3, n4/n3, n5/n6, n6/n3, n6/n4, n2/n3}{n1/n2, n2/n4, n4/n5, n5/n2}{
+					% component node 3
+					\fill [yellow, nearly transparent] (6,4) rectangle (8,6);
+					% discard node 3
+					\draw [thick, red] (6.5, 5.5) -- (7.5, 4.5);
+					\draw [thick, red] (6.5, 4.5) -- (7.5, 5.5);
+				}
+			\end{exampleblock}
+		\end{column}
+	\end{columns}
+	\begin{itemize}
+		\item
+		Call Stack: $\cdots\rightarrow$DFS(1)$\rightarrow$DFS(2)$\rightarrow$DFS(4)$\rightarrow$DFS(5)
+		\item
+		Code: \texttt{
+			\textbf{while} I[w]$ < $B[TOP(B)] \textbf{do} POP(B);
+		}
+		\item
+		Now, $w=2$, contract!
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Demo: Gabow's strong components algorithm}
+	\begin{columns}
+		\begin{column}{4cm}
+			\begin{exampleblock}{Data in memory}
+				B and S: stack. I: array. \newline
+				\mygraphb{1/1,2/2}{}{1/1,2/2,3/4,4/5}{}{1/1,2/2,3/7,4/3,5/4,6/0}{
+					
+				}
+			\end{exampleblock}
+		\end{column}
+		\begin{column}{5.5cm}
+			\begin{exampleblock}{Graph H}
+				\mygrapha{n1/n3, n4/n3, n5/n6, n6/n3, n6/n4, n2/n3}{n1/n2, n2/n4, n4/n5, n5/n2}{
+					% component node 3
+					\fill [yellow, nearly transparent] (6,4) rectangle (8,6);
+					% discard node 3
+					\draw [thick, red] (6.5, 5.5) -- (7.5, 4.5);
+					\draw [thick, red] (6.5, 4.5) -- (7.5, 5.5);
+				}
+			\end{exampleblock}
+		\end{column}
+	\end{columns}
+	\begin{itemize}
+		\item
+		Call Stack: $\cdots\rightarrow$DFS(1)$\rightarrow$DFS(2)$\rightarrow$DFS(4)$\rightarrow$DFS(5)
+		\item
+		Code: \texttt{
+			\textbf{while} I[w]$ < $B[TOP(B)] \textbf{do} POP(B);
+		}
+		\item
+		Now, $w=2$, contract!
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Demo: Gabow's strong components algorithm}
+	\begin{columns}
+		\begin{column}{4cm}
+			\begin{exampleblock}{Data in memory}
+				B and S: stack. I: array. \newline
+				\mygraphb{1/1,2/2}{}{1/1,2/2,3/4,4/5}{}{1/1,2/2,3/7,4/3,5/4,6/0}{
+					
+				}
+			\end{exampleblock}
+		\end{column}
+		\begin{column}{5.5cm}
+			\begin{exampleblock}{Graph H}
+				\mygrapha{n1/n3, n4/n3, n6/n3, n6/n4, n2/n3, n5/n2, n5/n6}{n1/n2, n2/n4, n4/n5}{
+					% component node 3
+					\fill [yellow, nearly transparent] (6,4) rectangle (8,6);
+					% discard node 3
+					\draw [thick, red] (6.5, 5.5) -- (7.5, 4.5);
+					\draw [thick, red] (6.5, 4.5) -- (7.5, 5.5);
+					% component nodes 2,4,5
+					\fill [yellow, nearly transparent] (1,0) -- (0,5) -- (1,7) -- (6,3) -- (3,0) -- cycle;
+				}
+			\end{exampleblock}
+		\end{column}
+	\end{columns}
+	\begin{itemize}
+		\item
+		Call Stack: $\cdots\rightarrow$DFS(1)$\rightarrow$DFS(2)$\rightarrow$DFS(4)$\rightarrow$DFS(5)
+		\item
+		Code: \texttt{
+			\textbf{if} I[w]$ =0$ \textbf{then} DFS(w);
+		}
+		\item
+		$w=6$.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Demo: Gabow's strong components algorithm}
+	\begin{columns}
+		\begin{column}{4cm}
+			\begin{exampleblock}{Data in memory}
+				B and S: stack. I: array. \newline
+				\mygraphb{1/1,2/2,3/5}{}{1/1,2/2,3/4,4/5,5/6}{}{1/1,2/2,3/7,4/3,5/4,6/5}{
+					
+				}
+			\end{exampleblock}
+		\end{column}
+		\begin{column}{5.5cm}
+			\begin{exampleblock}{Graph H}
+				\mygrapha{n1/n3, n4/n3, n6/n3, n6/n4, n2/n3, n5/n2}{n1/n2, n2/n4, n4/n5, n5/n6}{
+					% component node 3
+					\fill [yellow, nearly transparent] (6,4) rectangle (8,6);
+					% discard node 3
+					\draw [thick, red] (6.5, 5.5) -- (7.5, 4.5);
+					\draw [thick, red] (6.5, 4.5) -- (7.5, 5.5);
+					% component nodes 2,4,5
+					\fill [yellow, nearly transparent] (1,0) -- (0,5) -- (1,7) -- (6,3) -- (3,0) -- cycle;
+				}
+			\end{exampleblock}
+		\end{column}
+	\end{columns}
+	\begin{itemize}
+		\item
+		Call Stack: $\cdots\rightarrow$DFS(2)$\rightarrow$DFS(4)$\rightarrow$DFS(5)$\rightarrow$DFS(6)
+		\item
+		Code: \texttt{
+			\textbf{for} edges(v,w)$\in$E \textbf{do} ...
+		}
+		\item
+		$w=4$.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Demo: Gabow's strong components algorithm}
+	\begin{columns}
+		\begin{column}{4cm}
+			\begin{exampleblock}{Data in memory}
+				B and S: stack. I: array. \newline
+				\mygraphb{1/1,2/2,3/5}{}{1/1,2/2,3/4,4/5,5/6}{}{1/1,2/2,3/7,4/3,5/4,6/5}{
+					
+				}
+			\end{exampleblock}
+		\end{column}
+		\begin{column}{5.5cm}
+			\begin{exampleblock}{Graph H}
+				\mygrapha{n1/n3, n4/n3, n6/n3, n2/n3, n5/n2}{n1/n2, n2/n4, n4/n5, n5/n6, n6/n4}{
+					% component node 3
+					\fill [yellow, nearly transparent] (6,4) rectangle (8,6);
+					% discard node 3
+					\draw [thick, red] (6.5, 5.5) -- (7.5, 4.5);
+					\draw [thick, red] (6.5, 4.5) -- (7.5, 5.5);
+					% component nodes 2,4,5
+					\fill [yellow, nearly transparent] (1,0) -- (0,5) -- (1,7) -- (6,3) -- (3,0) -- cycle;
+				}
+			\end{exampleblock}
+		\end{column}
+	\end{columns}
+	\begin{itemize}
+		\item
+		Call Stack: $\cdots\rightarrow$DFS(2)$\rightarrow$DFS(4)$\rightarrow$DFS(5)$\rightarrow$DFS(6)
+		\item
+		Code: \texttt{
+			\textbf{while} I[w]$ < $B[TOP(B)] \textbf{do} POP(B);
+		}
+		\item
+		Now, $w=4$, contract!
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Demo: Gabow's strong components algorithm}
+	\begin{columns}
+		\begin{column}{4cm}
+			\begin{exampleblock}{Data in memory}
+				B and S: stack. I: array. \newline
+				\mygraphb{1/1,2/2}{}{1/1,2/2,3/4,4/5,5/6}{}{1/1,2/2,3/7,4/3,5/4,6/5}{
+					
+				}
+			\end{exampleblock}
+		\end{column}
+		\begin{column}{5.5cm}
+			\begin{exampleblock}{Graph H}
+				\mygrapha{n1/n3, n4/n3, n6/n3, n2/n3, n5/n2, n6/n4}{n1/n2, n2/n4, n4/n5, n5/n6}{
+					% component node 3
+					\fill [yellow, nearly transparent] (6,4) rectangle (8,6);
+					% discard node 3
+					\draw [thick, red] (6.5, 5.5) -- (7.5, 4.5);
+					\draw [thick, red] (6.5, 4.5) -- (7.5, 5.5);
+					% component nodes 2,4,5,6
+					\fill [yellow, nearly transparent] (1,0) -- (0,5) -- (1,7) -- (8,0) -- cycle;
+				}
+			\end{exampleblock}
+		\end{column}
+	\end{columns}
+	\begin{itemize}
+		\item
+		Call Stack: $\cdots\rightarrow$DFS(2)$\rightarrow$DFS(4)$\rightarrow$DFS(5)$\rightarrow$DFS(6)
+		\item
+		Code: \texttt{
+			\textbf{if} I[v]$=$B[TOP(B)] \textbf{then} ...
+		}
+		\item
+		Go back.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Demo: Gabow's strong components algorithm}
+	\begin{columns}
+		\begin{column}{4cm}
+			\begin{exampleblock}{Data in memory}
+				B and S: stack. I: array. \newline
+				\mygraphb{1/1,2/2}{}{1/1,2/2,3/4,4/5,5/6}{}{1/1,2/2,3/7,4/3,5/4,6/5}{
+					
+				}
+			\end{exampleblock}
+		\end{column}
+		\begin{column}{5.5cm}
+			\begin{exampleblock}{Graph H}
+				\mygrapha{n1/n3, n4/n3, n6/n3, n2/n3, n5/n2, n6/n4, n5/n6}{n1/n2, n2/n4, n4/n5}{
+					% component node 3
+					\fill [yellow, nearly transparent] (6,4) rectangle (8,6);
+					% discard node 3
+					\draw [thick, red] (6.5, 5.5) -- (7.5, 4.5);
+					\draw [thick, red] (6.5, 4.5) -- (7.5, 5.5);
+					% component nodes 2,4,5,6
+					\fill [yellow, nearly transparent] (1,0) -- (0,5) -- (1,7) -- (8,0) -- cycle;
+				}
+			\end{exampleblock}
+		\end{column}
+	\end{columns}
+	\begin{itemize}
+		\item
+		Call Stack: $\cdots\rightarrow$DFS(2)$\rightarrow$DFS(4)$\rightarrow$DFS(5)
+		\item
+		Code: \texttt{
+			\textbf{if} I[v]$=$B[TOP(B)] \textbf{then} ...
+		}
+		\item
+		Go back.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Demo: Gabow's strong components algorithm}
+	\begin{columns}
+		\begin{column}{4cm}
+			\begin{exampleblock}{Data in memory}
+				B and S: stack. I: array. \newline
+				\mygraphb{1/1,2/2}{}{1/1,2/2,3/4,4/5,5/6}{}{1/1,2/2,3/7,4/3,5/4,6/5}{
+					
+				}
+			\end{exampleblock}
+		\end{column}
+		\begin{column}{5.5cm}
+			\begin{exampleblock}{Graph H}
+				\mygrapha{n1/n3, n4/n3, n6/n3, n2/n3, n5/n2, n6/n4, n5/n6, n4/n5}{n1/n2, n2/n4}{
+					% component node 3
+					\fill [yellow, nearly transparent] (6,4) rectangle (8,6);
+					% discard node 3
+					\draw [thick, red] (6.5, 5.5) -- (7.5, 4.5);
+					\draw [thick, red] (6.5, 4.5) -- (7.5, 5.5);
+					% component nodes 2,4,5,6
+					\fill [yellow, nearly transparent] (1,0) -- (0,5) -- (1,7) -- (8,0) -- cycle;
+				}
+			\end{exampleblock}
+		\end{column}
+	\end{columns}
+	\begin{itemize}
+		\item
+		Call Stack: $\cdots\rightarrow$DFS(2)$\rightarrow$DFS(4)
+		\item
+		Code: \texttt{
+			\textbf{if} I[v]$=$B[TOP(B)] \textbf{then} ...
+		}
+		\item
+		Go back.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Demo: Gabow's strong components algorithm}
+	\begin{columns}
+		\begin{column}{4cm}
+			\begin{exampleblock}{Data in memory}
+				B and S: stack. I: array. \newline
+				\mygraphb{1/1,2/2}{}{1/1,2/2,3/4,4/5,5/6}{}{1/1,2/2,3/7,4/3,5/4,6/5}{
+					
+				}
+			\end{exampleblock}
+		\end{column}
+		\begin{column}{5.5cm}
+			\begin{exampleblock}{Graph H}
+				\mygrapha{n1/n3, n4/n3, n6/n3, n2/n3, n5/n2, n6/n4, n5/n6, n4/n5, n2/n4}{n1/n2}{
+					% component node 3
+					\fill [yellow, nearly transparent] (6,4) rectangle (8,6);
+					% discard node 3
+					\draw [thick, red] (6.5, 5.5) -- (7.5, 4.5);
+					\draw [thick, red] (6.5, 4.5) -- (7.5, 5.5);
+					% component nodes 2,4,5,6
+					\fill [yellow, nearly transparent] (1,0) -- (0,5) -- (1,7) -- (8,0) -- cycle;
+				}
+			\end{exampleblock}
+		\end{column}
+	\end{columns}
+	\begin{itemize}
+		\item
+		Call Stack: STRONG()$\rightarrow$DFS(1)$\rightarrow$DFS(2)
+		\item
+		Code: \texttt{
+			\textbf{if} I[v]$=$B[TOP(B)] \textbf{then} ...
+		}
+		\item
+		Go back. But this time, \alert{Condition in last line is satisfied!}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Demo: Gabow's strong components algorithm}
+	\begin{columns}
+		\begin{column}{4cm}
+			\begin{exampleblock}{Data in memory}
+				B and S: stack. I: array. \newline
+				\mygraphb{1/1}{}{1/1}{}{1/1,2/8,3/7,4/8,5/8,6/8}{
+					
+				}
+			\end{exampleblock}
+		\end{column}
+		\begin{column}{5.5cm}
+			\begin{exampleblock}{Graph H}
+				\mygrapha{n1/n3, n4/n3, n6/n3, n2/n3, n5/n2, n6/n4, n5/n6, n4/n5, n2/n4}{n1/n2}{
+					% component node 3
+					\fill [yellow, nearly transparent] (6,4) rectangle (8,6);
+					% discard node 3
+					\draw [thick, red] (6.5, 5.5) -- (7.5, 4.5);
+					\draw [thick, red] (6.5, 4.5) -- (7.5, 5.5);
+					% component nodes 2,4,5,6
+					\fill [yellow, nearly transparent] (1,0) -- (0,5) -- (1,7) -- (8,0) -- cycle;
+					% discard nodes 2,4,5,6
+					\draw [thick, red] (0.5, 5.5) -- (1.5, 4.5);
+					\draw [thick, red] (0.5, 4.5) -- (1.5, 5.5);
+					\draw [thick, red] (3.5, 3.5) -- (4.5, 2.5);
+					\draw [thick, red] (3.5, 2.5) -- (4.5, 3.5);
+					\draw [thick, red] (1.5, 1.5) -- (2.5, 0.5);
+					\draw [thick, red] (1.5, 0.5) -- (2.5, 1.5);
+					\draw [thick, red] (5.5, 1.5) -- (6.5, 0.5);
+					\draw [thick, red] (5.5, 0.5) -- (6.5, 1.5);
+				}
+			\end{exampleblock}
+		\end{column}
+	\end{columns}
+	\begin{itemize}
+		\item
+		Call Stack: STRONG()$\rightarrow$DFS(1)$\rightarrow$DFS(2)
+		\item
+		Code: \texttt{
+			\textbf{while} I[v]$\leq$TOP(S) \textbf{do} I[POP(S)]=c;
+		}
+		\item
+		Pop 2 from B, while 2, 4, 5, 6 in S are also popped.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Demo: Gabow's strong components algorithm}
+	\begin{columns}
+		\begin{column}{4cm}
+			\begin{exampleblock}{Data in memory}
+				B and S: stack. I: array. \newline
+				\mygraphb{}{}{}{}{1/9,2/8,3/7,4/8,5/8,6/8}{
+					
+				}
+			\end{exampleblock}
+		\end{column}
+		\begin{column}{5.5cm}
+			\begin{exampleblock}{Graph H}
+				\mygrapha{n1/n3, n4/n3, n6/n3, n2/n3, n5/n2, n6/n4, n5/n6, n4/n5, n2/n4, n1/n2}{}{
+					% component node 3
+					\fill [yellow, nearly transparent] (6,4) rectangle (8,6);
+					% discard node 3
+					\draw [thick, red] (6.5, 5.5) -- (7.5, 4.5);
+					\draw [thick, red] (6.5, 4.5) -- (7.5, 5.5);
+					% component nodes 2,4,5,6
+					\fill [yellow, nearly transparent] (1,0) -- (0,5) -- (1,7) -- (8,0) -- cycle;
+					% discard nodes 2,4,5,6
+					\draw [thick, red] (0.5, 5.5) -- (1.5, 4.5);
+					\draw [thick, red] (0.5, 4.5) -- (1.5, 5.5);
+					\draw [thick, red] (3.5, 3.5) -- (4.5, 2.5);
+					\draw [thick, red] (3.5, 2.5) -- (4.5, 3.5);
+					\draw [thick, red] (1.5, 1.5) -- (2.5, 0.5);
+					\draw [thick, red] (1.5, 0.5) -- (2.5, 1.5);
+					\draw [thick, red] (5.5, 1.5) -- (6.5, 0.5);
+					\draw [thick, red] (5.5, 0.5) -- (6.5, 1.5);
+					% discard node 1
+					\draw [thick, red] (3.5, 7.5) -- (4.5, 6.5);
+					\draw [thick, red] (3.5, 6.5) -- (4.5, 7.5);
+					% component node 1
+					\fill [yellow, nearly transparent] (3,6) rectangle (5,8);
+				}
+			\end{exampleblock}
+		\end{column}
+	\end{columns}
+	\begin{itemize}
+		\item
+		Call Stack: STRONG()$\rightarrow$DFS(1)$\rightarrow$DFS(2)
+		\item
+		Code: \texttt{
+			\textbf{while} I[v]$\leq$TOP(S) \textbf{do} I[POP(S)]=c;
+		}
+		\item
+		Pop the last one both in B and in S. \emph{Finished!!}
+	\end{itemize}
 \end{frame}
 
 \section*{Summary}
