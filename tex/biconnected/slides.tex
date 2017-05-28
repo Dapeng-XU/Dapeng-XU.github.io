@@ -47,35 +47,11 @@
 
 
 
-\usepackage{listings}
+
 \usepackage{color}
-
-\definecolor{dkgreen}{rgb}{0,0.6,0}
-\definecolor{gray}{rgb}{0.5,0.5,0.5}
-\definecolor{mauve}{rgb}{0.58,0,0.82}
-
-\lstset{frame=tb,
-  language=C++,
-  aboveskip=3mm,
-  belowskip=3mm,
-  breaklines=true,
-  breakatwhitespace=true,
-  basicstyle={\footnotesize\ttfamily},
-  showstringspaces=false,
-  columns=flexible,
-  numbers=left,
-  numberstyle=\tiny\color{gray},
-  keywordstyle=\color{blue},
-  commentstyle=\color{dkgreen},
-  stringstyle=\color{mauve},
-  emphstyle={\color{blue}\textbf},
-  tabsize=4
-}
-
 \usefonttheme[onlymath]{serif}
 
 \usepackage[ruled, vlined, noend, procnumbered]{algorithm2e}
-
 
 
 
@@ -83,7 +59,6 @@
 \usepgflibrary{arrows.meta}
 \usetikzlibrary{arrows.meta}
 \usetikzlibrary{calc}
-% \usetikzlibrary{graphs}
 
 
 
@@ -202,54 +177,9 @@
 %\beamerdefaultoverlayspecification{<+->}
 
 
+
+
 \begin{document}
-
-
-
-
-
-\defverbatim[colored]\mycodea{%
-\begin{lstlisting}[frame=single, emph={P, v, v_k, v_i, w, G, H}, 
-deletekeywords={new, and, in, to, not, of, set, delete}, morekeywords={end, end if}]
-H = G;
-while H still has a vertex v
-	start a new path P = (v);
-	while P is not empty
-		if the last vertex v_k of P has an edge (v_k, w)
-			if w belongs to P
-				contract the cycle v_i(w), ... , v_k, both in H and in P; /* w and v_i are identical. */
-			else
-				add w to P, as the new last vertex of P;
-			end if
-\end{lstlisting}
-}
-
-\defverbatim[colored]\mycodeb{%
-\begin{lstlisting}[frame=single, emph={P, v, v_k, v_i, w, G, H},
-firstnumber=last, deletekeywords={new, and, in, to, not, of, set, delete}, morekeywords={end, end if}]
-		else
-			output v_k as a vertex of the strong component graph;
-			delete v_k from both H and P;
-		end if
-	end
-end
-\end{lstlisting}
-}
-
-\defverbatim[colored]\mycodec{%
-\begin{lstlisting}[frame=single, emph={P, v, v_k, v_i, w, G, H}, 
-firstnumber=7, deletekeywords={new, and, in, to, not, of, set, delete}, morekeywords={end, end if}]
-contract the cycle v_i(w), ... , v_k, both in H and in P; /* w and v_i are identical. */
-\end{lstlisting}
-}
-
-% \defverbatim[colored]\mycoded{%
-% \begin{lstlisting}[frame=single, emph={G,S,B,v,I,c,n}]
-% }
-
-
-
-
 
 \begin{frame}
   \titlepage
@@ -285,21 +215,12 @@ contract the cycle v_i(w), ... , v_k, both in H and in P; /* w and v_i are ident
 		\item
 		\alert{One-pass algorithm.} But for the algorithm of strong components, what we have learned from
 		the textbook is a two-pass algorithm, by which we must traverse the whole graph twice. 
+		\item
+		\alert{Lower time and space complexity.} This algorithm only use stacks and an array, and do not
+		employ a disjoint-set data structure.
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Several Questions}
-	\begin{itemize}
-		\item
-		LOWPOINT?
-		\item
-		Ear decomposition?
-		\item
-		Compele version?
-		\item
-		Robbin's Theorem?
-	\end{itemize}
-\end{frame}
 
 \section{Strong Components}
 
@@ -334,33 +255,57 @@ contract the cycle v_i(w), ... , v_k, both in H and in P; /* w and v_i are ident
 \end{frame}
 
 
-\subsection{Purdom and Munro's high-level algorithm}
+\subsection{Purdom and Munro's High-Level Algorithm}
 % This high-level algorithm was originally proposed by Purdom and Munro, mentioned after the pseudo-code in the paper.
 
-\begin{frame}{Pseudo-Code}%[fragile]
-	\mycodea
+\begin{frame}{Purdom and Munro's High-Level Algorithm}
+	\SetAlFnt{\small}
+	\begin{algorithm}[H]
+		\caption{Strong Components}
+		$H=G$\;
+		\While{$H$ still has a vertex $v$}{
+			start a new path $P = (v)$\;
+			\While(\tcc*[h]{Grows path $P$}){$P$ is not empty}{
+				\If{the last vertex $v_k$ of $P$ has an edge $(v_k, w)$ }{
+					\If(\tcc*[h]{$w$ and $v_i$ are identical.}){$w\notin P$}{
+						add $w$ to $P$, as the new last vertex of $P$\;
+					}\Else{
+						contract the cycle $v_i,\, v_{i+1},\,\cdots \,,v_k$, both in $H$ and in $P$\;
+					}
+				}\Else{
+					output $v_k$ as a vertex of the strong component graph\;
+					delete $v_k$ from both $H$ and $P$\;
+				}
+			}
+		}
+	\end{algorithm}
+\end{frame}
+
+\begin{frame}{Assessment}
 	\begin{itemize}
 		\item
 		Note that \emph{contracting} means selecting one vertex as a representation and \alert{merging} others rather than deleting them.
+		\item
+		Correctness: If no edge leaves $v_k$ then $v_k$ is a vertex of the finest acyclic contraction.
 	\end{itemize}
-\end{frame}
-
-\begin{frame}{Pseudo-Code (Continued)}%[fragile]
-	\mycodeb
 \end{frame}
 
 \begin{frame}{Assessment}
 	\begin{itemize}
 		\item
 		The time consumption of each statement in the pseudo-code is clear. Total time complexity is linear.
-		except the statement in line 7:
+		except this statement:
 	\end{itemize}
-	\mycodec
+	\begin{center}
+		\texttt{\small 
+		contract the cycle $v_i,\, v_{i+1},\,\cdots \,,v_k$, both in $H$ and in $P$;
+		}
+	\end{center}	
 	\begin{itemize}
 		\item
 		Problem is how to merge in linear time while keeping the next time accessing this vertex still in constant time.
 		\item
-		Therefore, a good data structure for disjoint set merging is needed.
+		Therefore, a good data structure for disjoint-set merging is needed usually.
 	\end{itemize}
 \end{frame}
 
@@ -406,7 +351,7 @@ contract the cycle v_i(w), ... , v_k, both in H and in P; /* w and v_i are ident
 		\end{center}
 		\item
 		By the way, the formal definition of $I[v]$ is
-		\begin{center} % TODO
+		\begin{center}
 			$I[j]=\begin{cases}
 			0, & \text{if }v\text{ has never been in P;} \\
 			j, & \text{if }v\text{ is currently in P and }S[j]=v\text{;} \\
@@ -419,8 +364,8 @@ contract the cycle v_i(w), ... , v_k, both in H and in P; /* w and v_i are ident
 \end{frame}
 
 \begin{frame}[fragile]{New algorithm to discover strong components}
+	\SetAlFnt{\normalsize}
 	\begin{procedure}[H]
-		\small
 		\caption{STRONG(G)}
 		empty stacks $S$ and $B$\;
 		\For{$v\in V$}{
@@ -428,7 +373,7 @@ contract the cycle v_i(w), ... , v_k, both in H and in P; /* w and v_i are ident
 		}
 		$c=n$\;
 		\For{$v\in V$}{
-			\If{$I[v]=0$}{
+			\If(\tcc*[h]{vertex $v$ has never been accessed yet}){$I[v]=0$}{
 				DFS$(v)$\;
 			}
 		}
@@ -436,8 +381,8 @@ contract the cycle v_i(w), ... , v_k, both in H and in P; /* w and v_i are ident
 \end{frame}
 
 \begin{frame}[fragile]{New algorithm to discover strong components}
+	\SetAlFnt{\small}
 	\begin{procedure}[H]
-		\scriptsize
 		\caption{DFS(v)}
 		PUSH$(v,S)$;\quad $I[v]=$TOP$(S)$;\quad PUSH$([v],B)$\;
 		\tcc{add $v$ to the end of $P$}
@@ -447,12 +392,11 @@ contract the cycle v_i(w), ... , v_k, both in H and in P; /* w and v_i are ident
 			}\Else(\tcc*[h]{contract if necessary}){
 				\While{$I[w]<B[$TOP$[B]]$}{POP$(B)$\;}
 			}
-			\If{$I[v]=B[$TOP$(B)]$} {
-				\tcc{number vertices of the next strong component}
-				POP$(B)$\;
-				$c = c + 1$\;
-				\While{$I[v]\leq $TOP$[S]$}{$I[$POP$(S)]=c$\;}
-			}
+		}
+		\If(\tcc*[h]{number vertices of the next strong component}){$I[v]=B[$TOP$(B)]$} {
+			POP$(B)$\;
+			$c = c + 1$\;
+			\While{$I[v]\leq $TOP$[S]$}{$I[$POP$(S)]=c$\;}
 		}
 	\end{procedure}
 \end{frame}
@@ -1056,6 +1000,155 @@ contract the cycle v_i(w), ... , v_k, both in H and in P; /* w and v_i are ident
 	\end{itemize}
 \end{frame}
 
+
+\subsection{Discussion}
+
+\begin{frame}{Correctness of Gabow's Strong Components Algorithm}
+	\begin{theorem}[Correctness and Time Complexity]
+		When STRONG(G) halts each vertex $v\in V$ belongs to the strong component numbered $I[v]$.
+		The time and space are both $O(V+E)$.
+	\end{theorem}
+	\begin{itemize}
+		\item
+		The key of proof is to show that STRONG(G) is a valid implementation of the P\&M's high-level algorithm.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Framework of STRONG(G)}
+	\SetAlFnt{\small}
+	\begin{algorithm}[H]
+		\caption{Framework of High-Level Algorithm}
+		$H=G$\;
+		\While{$H$ still has a vertex $v$}{
+			start a new path $P = (v)$\;
+			$\cdots$\;
+		}
+	\end{algorithm}
+		\begin{procedure}[H]
+		\caption{STRONG(G)}
+		empty stacks $S$ and $B$\;
+		\For{$v\in V$}{
+			$I[v]=0$\;
+		}
+		$c=n$\;
+		\For{$v\in V$}{
+			\If(\tcc*[h]{$v$ has never been accessed}){$I[v]=0$}{
+				DFS$(v)$\;
+			}
+		}
+	\end{procedure}
+\end{frame}
+
+\begin{frame}{Growing Path P}
+	\SetAlFnt{\small}
+	\begin{algorithm}[H]
+		\caption{A Part of High-Level Algorithm}
+		\If{the last vertex $v_k$ of $P$ has an edge $(v_k, w)$ }{
+			\If(\tcc*[h]{$w$ and $v_i$ are identical.}){$w\notin P$}{
+				add $w$ to $P$, as the new last vertex of $P$\;
+			}\Else{
+				contract the cycle $v_i,\, v_{i+1},\,\cdots \,,v_k$, both in $H$ and in $P$\;
+			}
+		}
+	\end{algorithm}
+	\begin{procedure}[H]
+		\caption{A Part of DFS(v)}
+		\For{egdes$(v,w)\in E$}{
+			\uIf{$I[v]=0$}{
+				DFS$(w)$\;
+			}\Else(\tcc*[h]{contract if necessary}){
+				\While{$I[w]<B[$TOP$[B]]$}{POP$(B)$\;}
+			}
+		}
+	\end{procedure}
+\end{frame}
+
+\begin{frame}{Having Found a Strong Components}
+	\begin{algorithm}[H]
+		\caption{A Part of High-Level Algorithm}
+		\If{the last vertex $v_k$ of $P$ has an edge $(v_k, w)$ }{
+			$\cdots$\;
+		}\Else{
+			output $v_k$ as a vertex of the strong component graph\;
+			delete $v_k$ from both $H$ and $P$\;
+		}
+	\end{algorithm}
+	\begin{procedure}[H]
+		\caption{A Part of DFS(v)}
+		\If(\tcc*[h]{number vertices of the next strong component}){$I[v]=B[$TOP$(B)]$} {
+			POP$(B)$\;
+			$c = c + 1$\;
+			\While{$I[v]\leq $TOP$[S]$}{$I[$POP$(S)]=c$\;}
+		}
+	\end{procedure}
+\end{frame}
+
+\begin{frame}{Time Complexity}
+	\begin{itemize}
+		\item
+		Every vertex is pushed onto and popped from each stack $S$, $B$ exactly once.
+		So the algorithm spends $O(1)$ time on each vertex or edge.
+		\item
+		Time Complexity: $O(V+E)$
+		\item
+		Intuitively, from another view, this algorithm is based on DFS, and no loop
+		is executed on one vertex or one edge.
+	\end{itemize}
+\end{frame}
+
+
+
+\section{Biconnected Components}
+
+\subsection{Concepts}
+
+\begin{frame}{Concepts: Biconnected Component}
+	\begin{itemize}
+		\item
+		A \emph{biconnected component} of G is a maximal set of edges such that any
+		two edges in the set lie on a common simple cycle.		
+	\end{itemize}
+	\begin{center}
+		\includegraphics<1>[height=3cm]{biconnected_0.png}%
+	\end{center}
+\end{frame}
+
+\begin{frame}{Concepts: Hypergraph}
+	\begin{itemize}
+		\item
+		A \emph{hypergraph} $H=(V,E)$ is a generalization of a graph in which
+		an edge can join any number of vertices.
+		\item
+		In the following hypergraph, 
+	\end{itemize}
+	\begin{center}
+		$V = \{v_1, v_2, v_3, v_4, v_5, v_6, v_7\}$
+		\begin{align*}
+			E &= \{e_1,e_2,e_3,e_4\}\\
+			&= \{\{v_1,v_2,v_3\},\{v_2,v_3\},\{v_3,v_5,v_6\},\{v_4\}\}
+		\end{align*}
+		\includegraphics<1>[height=3cm]{hypergraph_0.png}%
+	\end{center}
+\end{frame}
+
+\begin{frame}{Concepts: Hypergraph}
+	\begin{itemize}
+		\item
+		Therefore, we need redefine the \emph{edge}, \emph{path}, \emph{cycle}, $\cdots$, 
+		and nearly all concepts as long as it is relative to edge.
+		\item
+		A \emph{path} is a sequence $(v_1, e_1, \cdots, v_k, e_k)$ of distinct vertices
+		$v_i$ and distinct edges $e_i$, $1\leq i\leq k$, with $v_1\in e_1$ and $v_i\in e_{i-1}\cap e_i$
+		for every $1 < i\leq k$.
+		\item
+		An important property:
+		$$v_{i+1}\in e_i-v_i, \quad 1\leq i < k$$
+		\item
+		Merging a set of edges is to replace old edges with the new one:
+		$$e_{new}=\bigcup_{i=1}^ke_i$$
+	\end{itemize}
+\end{frame}
+
 \section*{Summary}
 
 \begin{frame}{Summary}
@@ -1085,52 +1178,37 @@ contract the cycle v_i(w), ... , v_k, both in H and in P; /* w and v_i are ident
 \end{frame}
 
 
-\subsection{Discussion}
-
-\begin{frame}{Correctness}
-	\begin{itemize}
-		\item
-		Null
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Time Complexity}
-	\begin{itemize}
-		\item
-		Null.
-	\end{itemize}
-\end{frame}
 
 
 % All of the following is optional and typically not needed.
-\appendix
-\section<presentation>*{\appendixname}
-\subsection<presentation>*{For Further Reading}
+% \appendix
+% \section<presentation>*{\appendixname}
+% \subsection<presentation>*{For Further Reading}
 
-\begin{frame}[allowframebreaks]
-  \frametitle<presentation>{For Further Reading}
+% \begin{frame}[allowframebreaks]
+  % \frametitle<presentation>{For Further Reading}
 
-  \begin{thebibliography}{10}
+  % \begin{thebibliography}{10}
 
-  \beamertemplatebookbibitems
+  % \beamertemplatebookbibitems
   % Start with overview books.
 
-  \bibitem{Author1990}
-    A.~Author.
-    \newblock {\em Handbook of Everything}.
-    \newblock Some Press, 1990.
+  % \bibitem{Author1990}
+    % A.~Author.
+    % \newblock {\em Handbook of Everything}.
+    % \newblock Some Press, 1990.
 
 
-  \beamertemplatearticlebibitems
+  % \beamertemplatearticlebibitems
   % Followed by interesting articles. Keep the list short.
 
-  \bibitem{Someone2000}
-    S.~Someone.
-    \newblock On this and that.
-    \newblock {\em Journal of This and That}, 2(1):50--100,
-    2000.
-  \end{thebibliography}
-\end{frame}
+  % \bibitem{Someone2000}
+    % S.~Someone.
+    % \newblock On this and that.
+    % \newblock {\em Journal of This and That}, 2(1):50--100,
+    % 2000.
+  % \end{thebibliography}
+% \end{frame}
 
 \end{document}
 
