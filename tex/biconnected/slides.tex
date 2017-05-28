@@ -384,22 +384,22 @@ contract the cycle v_i(w), ... , v_k, both in H and in P; /* w and v_i are ident
 \begin{frame}{Data Structure Used in Algorithm}
 	\begin{itemize}
 		\item
-		In DFS, the \alert{path P} from root to each node is almost always significant. So it is in this algorithm.
+		In DFS, the \alert{path $P$} from root to each node is almost always significant. So it is in this algorithm.
 		\item
-		A \alert{stack S} contains the sequence of vertices in P.
+		A \alert{stack $S$} contains the sequence of vertices in $P$.
 		\item
-		A \alert{stack B} contains the boundaries between contracted vertices.
+		A \alert{stack $B$} contains the boundaries between contracted vertices.
 		\item
-		An array I\alert{$[1\ldots n]$} is used to store stack indices corresponding to vertices.
+		An array \alert{$I[1\ldots n]$} is used to store stack indices corresponding to vertices.
 	\end{itemize}
 \end{frame}
 
 \begin{frame}{Contraction Makes Much Difference}
 	\begin{itemize}
 		\item
-		When contraction is excuted, some vertices merges into a set.
+		When contraction is executed, some vertices merges into a set.
 		\item
-		It is possible that several elements in stack S are in the same vertex in path P.
+		It is possible that several elements in stack $S$ are in the same vertex in path $P$.
 		More formal, 
 		\begin{center}
 			$v_i={S[j]:\, B[i]\leq j< B[i+1]}$
@@ -408,11 +408,13 @@ contract the cycle v_i(w), ... , v_k, both in H and in P; /* w and v_i are ident
 		By the way, the formal definition of $I[v]$ is
 		\begin{center} % TODO
 			$I[j]=\begin{cases}
-			0, & \text{if} \\
-			j, & \text{if} \\
-			c, & \text{if}
+			0, & \text{if }v\text{ has never been in P;} \\
+			j, & \text{if }v\text{ is currently in P and }S[j]=v\text{;} \\
+			c, & \text{if the strong component containing }v\text{ has}\\
+			& \text{been deleted and numbered as }c\text{.}
 			\end{cases}$
 		\end{center}
+		where $c$ counts from $n+1$.
 	\end{itemize}
 \end{frame}
 
@@ -420,14 +422,14 @@ contract the cycle v_i(w), ... , v_k, both in H and in P; /* w and v_i are ident
 	\begin{procedure}[H]
 		\small
 		\caption{STRONG(G)}
-		empty stacks S and B\;
+		empty stacks $S$ and $B$\;
 		\For{$v\in V$}{
 			$I[v]=0$\;
 		}
 		$c=n$\;
 		\For{$v\in V$}{
 			\If{$I[v]=0$}{
-				DFS($v$)\;
+				DFS$(v)$\;
 			}
 		}
 	\end{procedure}
@@ -437,19 +439,19 @@ contract the cycle v_i(w), ... , v_k, both in H and in P; /* w and v_i are ident
 	\begin{procedure}[H]
 		\scriptsize
 		\caption{DFS(v)}
-		PUSH(v,S);\quad I[v]$=$TOP(S);\quad PUSH(I[v],B)\;
-		\tcc{add v to the end of P}
+		PUSH$(v,S)$;\quad $I[v]=$TOP$(S)$;\quad PUSH$([v],B)$\;
+		\tcc{add $v$ to the end of $P$}
 		\For{egdes$(v,w)\in E$}{
 			\uIf{$I[v]=0$}{
-				DFS(w)\;
+				DFS$(w)$\;
 			}\Else(\tcc*[h]{contract if necessary}){
-				\While{$I[w]<B[TOP[B]]$}{POP(B)\;}
+				\While{$I[w]<B[$TOP$[B]]$}{POP$(B)$\;}
 			}
-			\If{$I[v]=B[TOP(B)]$} {
+			\If{$I[v]=B[$TOP$(B)]$} {
 				\tcc{number vertices of the next strong component}
-				POP(B)\;
-				increase c by 1\;
-				\While{$I[v]\leq TOP[S]$}{I[POP(S)]$=$c\;}
+				POP$(B)$\;
+				$c = c + 1$\;
+				\While{$I[v]\leq $TOP$[S]$}{$I[$POP$(S)]=c$\;}
 			}
 		}
 	\end{procedure}
@@ -1082,6 +1084,22 @@ contract the cycle v_i(w), ... , v_k, both in H and in P; /* w and v_i are ident
   \end{itemize}
 \end{frame}
 
+
+\subsection{Discussion}
+
+\begin{frame}{Correctness}
+	\begin{itemize}
+		\item
+		Null
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Time Complexity}
+	\begin{itemize}
+		\item
+		Null.
+	\end{itemize}
+\end{frame}
 
 
 % All of the following is optional and typically not needed.
