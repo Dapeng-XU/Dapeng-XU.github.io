@@ -266,11 +266,11 @@
 		\While{$H$ still has a vertex $v$}{
 			start a new path $P = (v)$\;
 			\While(\tcc*[h]{Grows path $P$}){$P$ is not empty}{
-				\If{the last vertex $v_k$ of $P$ has an edge $(v_k, w)$ }{
-					\If(\tcc*[h]{$w$ and $v_i$ are identical.}){$w\notin P$}{
+				\If{the last vertex $v_k$ of $P$ has an edge $(v_k, w)$ }{ % TODO
+					\If{$w\notin P$}{
 						add $w$ to $P$, as the new last vertex of $P$\;
-					}\Else{
-						contract the cycle $v_i,\, v_{i+1},\,\cdots \,,v_k$, both in $H$ and in $P$\;
+					}\Else(\tcc*[h]{$w$ and $v_i$ are identical.}){
+						contract the cycle $v_i,\, v_{i+1},\,\cdots,\,v_k$, both in $H$ and in $P$\;
 					}
 				}\Else{
 					output $v_k$ as a vertex of the strong component graph\;
@@ -298,7 +298,7 @@
 	\end{itemize}
 	\begin{center}
 		\texttt{\small 
-		contract the cycle $v_i,\, v_{i+1},\,\cdots \,,v_k$, both in $H$ and in $P$;
+		contract the cycle $v_i,\, v_{i+1},\,\cdots,\,v_k$, both in $H$ and in $P$;
 		}
 	\end{center}	
 	\begin{itemize}
@@ -312,7 +312,7 @@
 
 \subsection{Contribution}
 
-\begin{frame}{His Contribution}%{Subtitles are optional.}
+\begin{frame}{Gabow's Contribution}%{Subtitles are optional.}
   % - A title should summarize the slide in an understandable fashion
   %   for anyone how does not follow everything on the slide itself.
 
@@ -384,19 +384,19 @@
 	\SetAlFnt{\small}
 	\begin{procedure}[H]
 		\caption{DFS(v)}
-		PUSH$(v,S)$;\quad $I[v]=$TOP$(S)$;\quad PUSH$([v],B)$\;
+		PUSH$(v,S)$;\quad $I[v]=$TOP$(S)$;\quad PUSH$(I[v],B)$\;
 		\tcc{add $v$ to the end of $P$}
 		\For{egdes$(v,w)\in E$}{
-			\uIf{$I[v]=0$}{
+			\uIf{$I[w]=0$}{
 				DFS$(w)$\;
 			}\Else(\tcc*[h]{contract if necessary}){
-				\While{$I[w]<B[$TOP$[B]]$}{POP$(B)$\;}
+				\While{$I[w]<B[$TOP$(B)]$}{POP$(B)$\;}
 			}
 		}
 		\If(\tcc*[h]{number vertices of the next strong component}){$I[v]=B[$TOP$(B)]$} {
 			POP$(B)$\;
 			$c = c + 1$\;
-			\While{$I[v]\leq $TOP$[S]$}{$I[$POP$(S)]=c$\;}
+			\While{$I[v]\leq $TOP$(S)$}{$I[$POP$(S)]=c$\;}
 		}
 	\end{procedure}
 \end{frame}
@@ -1024,7 +1024,7 @@
 			$\cdots$\;
 		}
 	\end{algorithm}
-		\begin{procedure}[H]
+	\begin{procedure}[H]
 		\caption{STRONG(G)}
 		empty stacks $S$ and $B$\;
 		\For{$v\in V$}{
@@ -1044,26 +1044,27 @@
 	\begin{algorithm}[H]
 		\caption{A Part of High-Level Algorithm}
 		\If{the last vertex $v_k$ of $P$ has an edge $(v_k, w)$ }{
-			\If(\tcc*[h]{$w$ and $v_i$ are identical.}){$w\notin P$}{
+			\If{$w\notin P$}{
 				add $w$ to $P$, as the new last vertex of $P$\;
-			}\Else{
-				contract the cycle $v_i,\, v_{i+1},\,\cdots \,,v_k$, both in $H$ and in $P$\;
+			}\Else(\tcc*[h]{$w$ and $v_i$ are identical.}){
+				contract the cycle $v_i,\, v_{i+1},\,\cdots,\,v_k$, both in $H$ and in $P$\;
 			}
 		}
 	\end{algorithm}
 	\begin{procedure}[H]
 		\caption{A Part of DFS(v)}
 		\For{egdes$(v,w)\in E$}{
-			\uIf{$I[v]=0$}{
+			\uIf{$I[w]=0$}{
 				DFS$(w)$\;
 			}\Else(\tcc*[h]{contract if necessary}){
-				\While{$I[w]<B[$TOP$[B]]$}{POP$(B)$\;}
+				\While{$I[w]<B[$TOP$(B)]$}{POP$(B)$\;}
 			}
 		}
 	\end{procedure}
 \end{frame}
 
 \begin{frame}{Having Found a Strong Components}
+	\SetAlFnt{\small}
 	\begin{algorithm}[H]
 		\caption{A Part of High-Level Algorithm}
 		\If{the last vertex $v_k$ of $P$ has an edge $(v_k, w)$ }{
@@ -1078,7 +1079,7 @@
 		\If(\tcc*[h]{number vertices of the next strong component}){$I[v]=B[$TOP$(B)]$} {
 			POP$(B)$\;
 			$c = c + 1$\;
-			\While{$I[v]\leq $TOP$[S]$}{$I[$POP$(S)]=c$\;}
+			\While{$I[v]\leq $TOP$(S)$}{$I[$POP$(S)]=c$\;}
 		}
 	\end{procedure}
 \end{frame}
@@ -1100,7 +1101,7 @@
 
 \section{Biconnected Components}
 
-\subsection{Concepts}
+\subsection{Thinking about Biconnected Components}
 
 \begin{frame}{Concepts: Biconnected Component}
 	\begin{itemize}
@@ -1111,6 +1112,32 @@
 	\begin{center}
 		\includegraphics<1>[height=3cm]{biconnected_0.png}%
 	\end{center}
+\end{frame}
+
+\subsection{High-Level Algorithm}
+
+\begin{frame}{Pseudo Code}
+	\SetAlFnt{\small}
+	\begin{algorithm}[H]
+		\caption{Biconnected Components}
+		$H=G$\;
+		\While{$H$ still has an edge $\{v,w\}$}{
+			start a new path $P = (v,\{v,w\})$\;
+			\While(\tcc*[h]{Grows path $P$}){$P$ is not empty}{ % TODO
+				\If{the last vertex $v_k$ of $P$ has an edge $(v_k, w)$ }{
+					\If(\tcc*[h]{$V\{P\}$ is the set of all vertices in $P$}){$w\notin V{P}$}{
+						add $v,\{v,w\}$ to the end of $P$, as the new last vertex and edge of $P$\;
+					}\Else(\tcc*[h]{$w\in e_i-v_{i+1}$, but most likely $w\neq v_i$}){
+						replace the cycle $w,\,e_i,\,v_{i+1},\,e_{i+1},\,\cdots,\,v_k,\,e_k,\,v,\,\{v,\,w\}$
+						to a new edge $e=\bigcup_{j=i}^ke_j$, both in $H$ and in $P$\;
+					}
+				}\Else{
+					output $v_k$ as a vertex of the strong component graph\;
+					delete $v_k$ from both $H$ and $P$\;
+				}
+			}
+		}
+	\end{algorithm}
 \end{frame}
 
 \begin{frame}{Concepts: Hypergraph}
@@ -1149,32 +1176,62 @@
 	\end{itemize}
 \end{frame}
 
+\subsection{Gabow's Algorithms}
+
+\begin{frame}{Algorithms}
+	\SetAlFnt{\normalsize}
+	\begin{procedure}[H]
+		\caption{BICONN(G)}
+		empty stacks $S$ and B\;
+		\For{$v\in V$}{
+			$I[v]=0$\;
+		}
+		$c=n$\;
+		\For{$v\in V$}{
+			\If{$I[v]=0$ and $v$ is not isolated}{
+				DFS$(v)$\;
+			}
+		}
+	\end{procedure}
+\end{frame}
+
+\begin{frame}{Algorithms}
+	\SetAlFnt{\small}
+	\begin{procedure}[H]
+		\caption{DFS(v)}
+		PUSH$(v,S)$;\quad $I[v]=$TOP$(S)$\;
+		\If(\tcc*[h]{create a filled arrow on $B$}){$I[v] > 1$}{
+			PUSH$(I[v],B)$\;
+		}
+		\For{egdes$\{v,w\}\in E$}{
+			\uIf(\tcc*[h]{create an open arrow on $B$}){$I[w]=0$}{
+				PUSH$(I[v],B)$;\quad DFS$(w)$\;
+			}\Else(\tcc*[h]{possible merge}){
+				\While{$I[v]>1$ and $I[w]<B[$TOP$(B)-1]$}{POP$(B)$;\quad POP$(B)$\;}
+			}
+		}
+		\uIf{$I[v]=1$}{$I[$POP$(S)]=c$\;}
+		\ElseIf{$I[v]=B[$TOP$(B)]$} {
+			POP$(B)$;\quad POP$(B)$;\quad $c = c + 1$\;
+			\lWhile{$I[v]\leq $TOP$(S)$}{$I[$POP$(S)]=c$}
+		}
+	\end{procedure}
+\end{frame}
+
+
+
 \section*{Summary}
 
 \begin{frame}{Summary}
-
-  % Keep the summary *very short*.
-  \begin{itemize}
-  \item
-    The \alert{first main message} of your talk in one or two lines.
-  \item
-    The \alert{second main message} of your talk in one or two lines.
-  \item
-    Perhaps a \alert{third message}, but not more than that.
-  \end{itemize}
-
-  % The following outlook is optional.
-  \vskip0pt plus.5fill
-  \begin{itemize}
-  \item
-    Outlook
-    \begin{itemize}
-    \item
-      Something you haven't solved.
-    \item
-      Something else you haven't solved.
-    \end{itemize}
-  \end{itemize}
+	% Keep the summary *very short*.
+	\begin{itemize}
+		\item
+		Gabow gave algorithms to find the strong components and biconnected components more effectively.
+		They are one-pass algorithms while do not need a disjoint-set data structure.
+		\item
+		There is a close relationship between strong components and biconnected components, like two faces of a coin:
+		one is directed graph, another is undirected graph.
+	\end{itemize}
 \end{frame}
 
 
@@ -1211,5 +1268,3 @@
 % \end{frame}
 
 \end{document}
-
-
