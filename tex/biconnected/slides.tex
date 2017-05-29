@@ -148,7 +148,54 @@
 	\end{tikzpicture}
 }
 
+\newcommand{\mygraphd}[6]{
+	\begin{tikzpicture}
+		[scale=.5,auto=left]
+		% text
+		\draw node at (0.5, 0.5) {B};
+		\draw node at (2.5, 0.5) {S};
+		\draw node at (5.5, 0.5) {I};
+		\foreach \x in {1,2,3,4,5,6,7} {
+			\draw node at (4.5, -\x+0.5) {\x};
+		}
+		% vertical line
+		\draw [gray, thick, dashed] (4,1) -- (4,-7);
+		% grid					
+		\foreach \x in {0,-1,-2,-3,-4,-5,-6} {
+			\draw [semithick] (0, \x) rectangle (1, \x-1);
+			\draw [semithick] (2, \x) rectangle (3, \x-1);
+			\draw [semithick] (5, \x) rectangle (6, \x-1);
+		}
+		% stack B text
+		\foreach \x/\y in {#1} {
+			\draw node at (0.5, -\x+0.5) {\y};
+		}
+		% rightarrow
+		\foreach \x in {#2}
+			\draw node at (1.5, -\x+0.5) {$\rightarrow$};
+		% stack S text
+		\foreach \x/\y in {#3} {
+			\draw node at (2.5, -\x+0.5) {\y};
+		}
+		% leftarrow
+		\foreach \x in {#4}
+			\draw node at (3.5, -\x+0.5) {$\leftarrow$};
+		% array I text
+		\foreach \x/\y in {#5} {
+			\draw node at (5.5, -\x+0.5) {\y};
+		}
+		#6
+	\end{tikzpicture}
+}
 
+\newcommand{\myarrowa}[2]{
+	% filled arrows
+	\foreach \x in {#1}
+		\draw [-{Latex[length=2mm]}] (1.1,-\x+0.75) -- (1.9,-\x+0.75);
+	% open arrows
+	\foreach \x in {#2}
+		\draw [-{Classical TikZ Rightarrow[length=1mm]}] (1.1,-\x+0.25) -- (1.9,-\x+0.25);
+}
 
 
 
@@ -255,9 +302,9 @@
 	\end{itemize}
 	\begin{center}
 	\mygrapha{n1/n2, n1/n3, n2/n3, n2/n4,n4/n3, n4/n5,n5/n2, n5/n6, n6/n3, n6/n4}{}{
-		\fill [yellow, nearly transparent] (1,0) -- (0,5) -- (1,7) -- (8,0) -- cycle;
-		\fill [yellow, nearly transparent] (3,6) rectangle (5,8);
-		\fill [yellow, nearly transparent] (6,4) rectangle (8,6);
+		\fill [yellow, semitransparent] (1,0) -- (0,5) -- (1,7) -- (8,0) -- cycle;
+		\fill [yellow, semitransparent] (3,6) rectangle (5,8);
+		\fill [yellow, semitransparent] (6,4) rectangle (8,6);
 	}
 	\end{center}
 \end{frame}
@@ -282,8 +329,8 @@
 \begin{frame}{Purdom and Munro's High-Level Algorithm: Plain text}
 	\begin{itemize}
 		\item
-		If H has no vertices stop. Otherwise \emph{start a new path $P$} by choosing a vertex $v$ and
-		setting $P=(v)$. Continue by growing $P$ as follows.
+		Initially $H$ is the given graph $G$. If $H$ has no vertices stop. Otherwise \emph{start a new path $P$}
+		by choosing a vertex $v$ and setting $P=(v)$. Continue by growing $P$ as follows.
 		\item
 		To grow the path $P=(v_1,\cdots ,v_k)$ choose an edge $(v_k,w)$ directed from the last
 		vertex of $P$ and do the following:
@@ -502,24 +549,28 @@
 		\begin{column}{4cm}
 			\begin{exampleblock}{Data in memory}
 				B and S: stack. I: array. \newline
-				\mygraphb{}{}{}{}{1/0,2/0,3/0,4/0,5/0,6/0}{
-					
+				\only<1>{
+					\mygraphb{}{}{}{}{1/0,2/0,3/0,4/0,5/0,6/0}{
+					}
 				}
 			\end{exampleblock}
 		\end{column}
 		\begin{column}{5.5cm}
 			\begin{exampleblock}{Graph H}
-				\mygrapha{n1/n2, n1/n3, n2/n3, n2/n4,n4/n3, n4/n5,n5/n2, n5/n6, n6/n3, n6/n4}{}{
-					
+				\only<1>{
+					\mygrapha{n1/n2, n1/n3, n2/n3, n2/n4,n4/n3, n4/n5,n5/n2, n5/n6, n6/n3, n6/n4}{}{
+					}
 				}
 			\end{exampleblock}
 		\end{column}
 	\end{columns}
 	\begin{itemize}
-		\item
-		Call Stack: STRONG()
-		\item
-		This state is the first after initialized. DFS(1) is going to be called.
+		\only<1>{
+			\item
+			Call Stack: STRONG()
+			\item
+			This state is the first after initialized. DFS(1) is going to be called.
+		}
 	\end{itemize}
 \end{frame}
 
@@ -627,7 +678,7 @@
 			\begin{exampleblock}{Graph H}
 				\mygrapha{n1/n3, n4/n3, n4/n5,n5/n2, n5/n6, n6/n3, n6/n4, n2/n3}{n1/n2, n2/n4}{
 					% component node 3
-					\fill [yellow, nearly transparent] (6,4) rectangle (8,6);
+					\fill [yellow, semitransparent] (6,4) rectangle (8,6);
 					% discard node 3
 					\draw [thick, red] (6.5, 5.5) -- (7.5, 4.5);
 					\draw [thick, red] (6.5, 4.5) -- (7.5, 5.5);
@@ -661,7 +712,7 @@
 			\begin{exampleblock}{Graph H}
 				\mygrapha{n1/n3, n4/n3, n5/n2, n5/n6, n6/n3, n6/n4, n2/n3}{n1/n2, n2/n4, n4/n5}{
 					% component node 3
-					\fill [yellow, nearly transparent] (6,4) rectangle (8,6);
+					\fill [yellow, semitransparent] (6,4) rectangle (8,6);
 					% discard node 3
 					\draw [thick, red] (6.5, 5.5) -- (7.5, 4.5);
 					\draw [thick, red] (6.5, 4.5) -- (7.5, 5.5);
@@ -695,7 +746,7 @@
 			\begin{exampleblock}{Graph H}
 				\mygrapha{n1/n3, n4/n3, n5/n6, n6/n3, n6/n4, n2/n3}{n1/n2, n2/n4, n4/n5, n5/n2}{
 					% component node 3
-					\fill [yellow, nearly transparent] (6,4) rectangle (8,6);
+					\fill [yellow, semitransparent] (6,4) rectangle (8,6);
 					% discard node 3
 					\draw [thick, red] (6.5, 5.5) -- (7.5, 4.5);
 					\draw [thick, red] (6.5, 4.5) -- (7.5, 5.5);
@@ -729,7 +780,7 @@
 			\begin{exampleblock}{Graph H}
 				\mygrapha{n1/n3, n4/n3, n5/n6, n6/n3, n6/n4, n2/n3}{n1/n2, n2/n4, n4/n5, n5/n2}{
 					% component node 3
-					\fill [yellow, nearly transparent] (6,4) rectangle (8,6);
+					\fill [yellow, semitransparent] (6,4) rectangle (8,6);
 					% discard node 3
 					\draw [thick, red] (6.5, 5.5) -- (7.5, 4.5);
 					\draw [thick, red] (6.5, 4.5) -- (7.5, 5.5);
@@ -763,12 +814,12 @@
 			\begin{exampleblock}{Graph H}
 				\mygrapha{n1/n3, n4/n3, n6/n3, n6/n4, n2/n3, n5/n2, n5/n6}{n1/n2, n2/n4, n4/n5}{
 					% component node 3
-					\fill [yellow, nearly transparent] (6,4) rectangle (8,6);
+					\fill [yellow, semitransparent] (6,4) rectangle (8,6);
 					% discard node 3
 					\draw [thick, red] (6.5, 5.5) -- (7.5, 4.5);
 					\draw [thick, red] (6.5, 4.5) -- (7.5, 5.5);
 					% component nodes 2,4,5
-					\fill [yellow, nearly transparent] (1,0) -- (0,5) -- (1,7) -- (6,3) -- (3,0) -- cycle;
+					\fill [yellow, semitransparent] (1,0) -- (0,5) -- (1,7) -- (6,3) -- (3,0) -- cycle;
 				}
 			\end{exampleblock}
 		\end{column}
@@ -799,12 +850,12 @@
 			\begin{exampleblock}{Graph H}
 				\mygrapha{n1/n3, n4/n3, n6/n3, n6/n4, n2/n3, n5/n2}{n1/n2, n2/n4, n4/n5, n5/n6}{
 					% component node 3
-					\fill [yellow, nearly transparent] (6,4) rectangle (8,6);
+					\fill [yellow, semitransparent] (6,4) rectangle (8,6);
 					% discard node 3
 					\draw [thick, red] (6.5, 5.5) -- (7.5, 4.5);
 					\draw [thick, red] (6.5, 4.5) -- (7.5, 5.5);
 					% component nodes 2,4,5
-					\fill [yellow, nearly transparent] (1,0) -- (0,5) -- (1,7) -- (6,3) -- (3,0) -- cycle;
+					\fill [yellow, semitransparent] (1,0) -- (0,5) -- (1,7) -- (6,3) -- (3,0) -- cycle;
 				}
 			\end{exampleblock}
 		\end{column}
@@ -835,12 +886,12 @@
 			\begin{exampleblock}{Graph H}
 				\mygrapha{n1/n3, n4/n3, n6/n3, n2/n3, n5/n2}{n1/n2, n2/n4, n4/n5, n5/n6, n6/n4}{
 					% component node 3
-					\fill [yellow, nearly transparent] (6,4) rectangle (8,6);
+					\fill [yellow, semitransparent] (6,4) rectangle (8,6);
 					% discard node 3
 					\draw [thick, red] (6.5, 5.5) -- (7.5, 4.5);
 					\draw [thick, red] (6.5, 4.5) -- (7.5, 5.5);
 					% component nodes 2,4,5
-					\fill [yellow, nearly transparent] (1,0) -- (0,5) -- (1,7) -- (6,3) -- (3,0) -- cycle;
+					\fill [yellow, semitransparent] (1,0) -- (0,5) -- (1,7) -- (6,3) -- (3,0) -- cycle;
 				}
 			\end{exampleblock}
 		\end{column}
@@ -871,12 +922,12 @@
 			\begin{exampleblock}{Graph H}
 				\mygrapha{n1/n3, n4/n3, n6/n3, n2/n3, n5/n2, n6/n4}{n1/n2, n2/n4, n4/n5, n5/n6}{
 					% component node 3
-					\fill [yellow, nearly transparent] (6,4) rectangle (8,6);
+					\fill [yellow, semitransparent] (6,4) rectangle (8,6);
 					% discard node 3
 					\draw [thick, red] (6.5, 5.5) -- (7.5, 4.5);
 					\draw [thick, red] (6.5, 4.5) -- (7.5, 5.5);
 					% component nodes 2,4,5,6
-					\fill [yellow, nearly transparent] (1,0) -- (0,5) -- (1,7) -- (8,0) -- cycle;
+					\fill [yellow, semitransparent] (1,0) -- (0,5) -- (1,7) -- (8,0) -- cycle;
 				}
 			\end{exampleblock}
 		\end{column}
@@ -907,12 +958,12 @@
 			\begin{exampleblock}{Graph H}
 				\mygrapha{n1/n3, n4/n3, n6/n3, n2/n3, n5/n2, n6/n4, n5/n6}{n1/n2, n2/n4, n4/n5}{
 					% component node 3
-					\fill [yellow, nearly transparent] (6,4) rectangle (8,6);
+					\fill [yellow, semitransparent] (6,4) rectangle (8,6);
 					% discard node 3
 					\draw [thick, red] (6.5, 5.5) -- (7.5, 4.5);
 					\draw [thick, red] (6.5, 4.5) -- (7.5, 5.5);
 					% component nodes 2,4,5,6
-					\fill [yellow, nearly transparent] (1,0) -- (0,5) -- (1,7) -- (8,0) -- cycle;
+					\fill [yellow, semitransparent] (1,0) -- (0,5) -- (1,7) -- (8,0) -- cycle;
 				}
 			\end{exampleblock}
 		\end{column}
@@ -943,12 +994,12 @@
 			\begin{exampleblock}{Graph H}
 				\mygrapha{n1/n3, n4/n3, n6/n3, n2/n3, n5/n2, n6/n4, n5/n6, n4/n5}{n1/n2, n2/n4}{
 					% component node 3
-					\fill [yellow, nearly transparent] (6,4) rectangle (8,6);
+					\fill [yellow, semitransparent] (6,4) rectangle (8,6);
 					% discard node 3
 					\draw [thick, red] (6.5, 5.5) -- (7.5, 4.5);
 					\draw [thick, red] (6.5, 4.5) -- (7.5, 5.5);
 					% component nodes 2,4,5,6
-					\fill [yellow, nearly transparent] (1,0) -- (0,5) -- (1,7) -- (8,0) -- cycle;
+					\fill [yellow, semitransparent] (1,0) -- (0,5) -- (1,7) -- (8,0) -- cycle;
 				}
 			\end{exampleblock}
 		\end{column}
@@ -979,12 +1030,12 @@
 			\begin{exampleblock}{Graph H}
 				\mygrapha{n1/n3, n4/n3, n6/n3, n2/n3, n5/n2, n6/n4, n5/n6, n4/n5, n2/n4}{n1/n2}{
 					% component node 3
-					\fill [yellow, nearly transparent] (6,4) rectangle (8,6);
+					\fill [yellow, semitransparent] (6,4) rectangle (8,6);
 					% discard node 3
 					\draw [thick, red] (6.5, 5.5) -- (7.5, 4.5);
 					\draw [thick, red] (6.5, 4.5) -- (7.5, 5.5);
 					% component nodes 2,4,5,6
-					\fill [yellow, nearly transparent] (1,0) -- (0,5) -- (1,7) -- (8,0) -- cycle;
+					\fill [yellow, semitransparent] (1,0) -- (0,5) -- (1,7) -- (8,0) -- cycle;
 				}
 			\end{exampleblock}
 		\end{column}
@@ -1015,12 +1066,12 @@
 			\begin{exampleblock}{Graph H}
 				\mygrapha{n1/n3, n4/n3, n6/n3, n2/n3, n5/n2, n6/n4, n5/n6, n4/n5, n2/n4}{n1/n2}{
 					% component node 3
-					\fill [yellow, nearly transparent] (6,4) rectangle (8,6);
+					\fill [yellow, semitransparent] (6,4) rectangle (8,6);
 					% discard node 3
 					\draw [thick, red] (6.5, 5.5) -- (7.5, 4.5);
 					\draw [thick, red] (6.5, 4.5) -- (7.5, 5.5);
 					% component nodes 2,4,5,6
-					\fill [yellow, nearly transparent] (1,0) -- (0,5) -- (1,7) -- (8,0) -- cycle;
+					\fill [yellow, semitransparent] (1,0) -- (0,5) -- (1,7) -- (8,0) -- cycle;
 					% discard nodes 2,4,5,6
 					\draw [thick, red] (0.5, 5.5) -- (1.5, 4.5);
 					\draw [thick, red] (0.5, 4.5) -- (1.5, 5.5);
@@ -1060,12 +1111,12 @@
 			\begin{exampleblock}{Graph H}
 				\mygrapha{n1/n3, n4/n3, n6/n3, n2/n3, n5/n2, n6/n4, n5/n6, n4/n5, n2/n4, n1/n2}{}{
 					% component node 3
-					\fill [yellow, nearly transparent] (6,4) rectangle (8,6);
+					\fill [yellow, semitransparent] (6,4) rectangle (8,6);
 					% discard node 3
 					\draw [thick, red] (6.5, 5.5) -- (7.5, 4.5);
 					\draw [thick, red] (6.5, 4.5) -- (7.5, 5.5);
 					% component nodes 2,4,5,6
-					\fill [yellow, nearly transparent] (1,0) -- (0,5) -- (1,7) -- (8,0) -- cycle;
+					\fill [yellow, semitransparent] (1,0) -- (0,5) -- (1,7) -- (8,0) -- cycle;
 					% discard nodes 2,4,5,6
 					\draw [thick, red] (0.5, 5.5) -- (1.5, 4.5);
 					\draw [thick, red] (0.5, 4.5) -- (1.5, 5.5);
@@ -1079,7 +1130,7 @@
 					\draw [thick, red] (3.5, 7.5) -- (4.5, 6.5);
 					\draw [thick, red] (3.5, 6.5) -- (4.5, 7.5);
 					% component node 1
-					\fill [yellow, nearly transparent] (3,6) rectangle (5,8);
+					\fill [yellow, semitransparent] (3,6) rectangle (5,8);
 				}
 			\end{exampleblock}
 		\end{column}
@@ -1245,6 +1296,38 @@
 	\end{itemize}
 \end{frame}
 
+\begin{frame}{Addtional Concepts We Need}
+	\begin{itemize}
+		\item
+		The \emph{block hypergraph} $H$ of $G$ is the hypergraph formed by merging the edges of each biconnected component of $G$.
+		\item
+		The set of all vertices in edges of $P$ is denoted
+		\begin{center}
+			$V(P)=\bigcup_{i=1}^ke_i$
+		\end{center}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{High-Level Algorithm in Plain Text}
+	\begin{itemize}
+		\item
+		Initially $H$ is the given graph $G$. If $H$ has no edges stop. Otherwise start a new path $P$ by choosing an edge 
+		$\{v,\,w\}$ and setting $P=(v,\,\{v,\,w\})$. Continue by growing $P$.
+		\item
+		To grow the path $P=(v_1,\,e_1,\,\cdots,\,v_k,\,e_k)$ choose an edge $\{v,\,w\}\neq e_k$ with $v\in e_k-v_k$ and do:
+		\begin{itemize}
+			\item
+			If $w\notin V(P)$, add $v,\,\{v,\,w\}$ to the end of $P$. Continue growing $P$.
+			\item
+			If $w\in V(P)$, say $w\in e_i-v_{i+1}$, merge the edges of the cycle $w,\,e_i,\,v_{i+1},\,e_{i+1},\,\cdots,\,v_k,\,e_k,\,v,\,\{v,\,w\}$
+			to a new edge $e=\bigcup_{j=i}^ke_j$, both in $H$ and in $P$. Continue growing $P$.
+			\item
+			If no edge leaves $e_k-v_k$, output $e_k$ as an edge of the block hypergraph. Delete $e_k$ from $H$ and delete $(v_k,\,e_k)$
+			from $P$. If $P$ is now nonempty continue growing $P$. Otherwise try to start a new path $P$.
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
 \begin{frame}{Pseudo Code}
 	\SetAlFnt{\small}
 	\begin{algorithm}[H]
@@ -1315,20 +1398,198 @@
 	\begin{columns}
 		\begin{column}{4cm}
 			\begin{exampleblock}{Data in memory}
-				Here is a memory map.
+				B and S: stack. I: array. \newline
+				\only<1>{
+					\mygraphd{}{}{}{}{1/0,2/0,3/0,4/0,5/0,6/0,7/0}{
+						\myarrowa{}{}
+					}
+				}
+				\only<2>{
+					\mygraphd{1/1}{}{1/1}{}{1/1,2/0,3/0,4/0,5/0,6/0,7/0}{
+						\myarrowa{}{1}
+					}
+				}
+				\only<3>{
+					\mygraphd{1/1,2/2,3/2}{}{1/1,2/2}{}{1/1,2/2,3/0,4/0,5/0,6/0,7/0}{
+						\myarrowa{2}{1,2}
+					}
+				}
+				\only<4>{
+					\mygraphd{1/1,2/2}{}{1/1,2/2,3/3}{}{1/1,2/2,3/3,4/0,5/0,6/0,7/0}{
+						\myarrowa{2}{1}
+					}
+				}
+				\only<5>{
+					\mygraphd{1/1,2/2,3/3}{}{1/1,2/2,3/3}{}{1/1,2/2,3/3,4/0,5/0,6/0,7/0}{
+						\myarrowa{2}{1,3}
+					}
+				}
+				\only<6>{
+					\mygraphd{1/1,2/2}{}{1/1,2/2,3/3,4/4}{}{1/1,2/2,3/3,4/4,5/0,6/0,7/0}{
+						\myarrowa{2}{1}
+					}
+				}
+				\only<7>{
+					\mygraphd{1/1,2/2,3/4}{}{1/1,2/2,3/3,4/4}{}{1/1,2/2,3/3,4/4,5/0,6/0,7/0}{
+						\myarrowa{2}{1,4}
+					}
+				}
+				\only<8>{
+					\mygraphd{1/1,2/2}{}{1/1,2/2,3/3,4/4,5/5}{}{1/1,2/2,3/3,4/4,5/5,6/0,7/0}{
+						\myarrowa{2}{1}
+					}
+				}
+				\only<9>{
+					\mygraphd{1/1,2/2,3/5}{}{1/1,2/2,3/3,4/4,5/5}{}{1/1,2/2,3/3,4/4,5/5,6/0,7/0}{
+						\myarrowa{2}{1,5}
+					}
+				}
+				\only<10>{
+					\mygraphd{1/1,2/2,3/5,4/6,5/6}{}{1/1,2/2,3/3,4/4,5/5,6/6}{}{1/1,2/2,3/3,4/4,5/5,6/6,7/0}{
+						\myarrowa{2,6}{1,5,6}
+					}
+				}
+				\only<11>{
+					\mygraphd{1/1,2/2,3/5,4/6}{}{1/1,2/2,3/3,4/4,5/5,6/6,7/7}{}{1/1,2/2,3/3,4/4,5/5,6/6,7/7}{
+						\myarrowa{2,6}{1,5}
+					}
+				}
+				\only<12>{
+					\mygraphd{1/1,2/2,3/5,4/6}{}{1/1,2/2,3/3,4/4,5/5,6/6,7/7}{}{1/1,2/2,3/3,4/4,5/5,6/6,7/7}{
+						\myarrowa{2,6}{1,5}
+					}
+				}
+				\only<13>{
+					\mygraphd{1/1,2/2}{}{1/1,2/2,3/3,4/4,5/5}{}{1/1,2/2,3/3,4/4,5/5,6/8,7/8}{
+						\myarrowa{2}{1}
+					}
+				}
+				\only<14>{
+					\mygraphd{1/1,2/2}{}{1/1,2/2,3/3,4/4,5/5}{}{1/1,2/2,3/3,4/4,5/5,6/8,7/8}{
+						\myarrowa{2}{1}
+					}
+				}
+				\only<15>{
+					\mygraphd{1/1,2/2}{}{1/1,2/2,3/3,4/4,5/5}{}{1/1,2/2,3/3,4/4,5/5,6/8,7/8}{
+						\myarrowa{2}{1}
+					}
+				}
+				\only<16>{
+					\mygraphd{1/1,2/2}{}{1/1,2/2,3/3,4/4,5/5}{}{1/1,2/2,3/3,4/4,5/5,6/8,7/8}{
+						\myarrowa{2}{1}
+					}
+				}
+				\only<17>{
+					\mygraphd{}{}{1/1}{}{1/1,2/9,3/9,4/9,5/9,6/8,7/8}{
+						\myarrowa{}{}
+					}
+				}
+				\only<18>{
+					\mygraphd{}{}{}{}{1/9,2/9,3/9,4/9,5/9,6/8,7/8}{
+						\myarrowa{}{}
+					}
+				}
 			\end{exampleblock}
 		\end{column}
 		\begin{column}{5.5cm}
 			\begin{exampleblock}{Graph}
-				\mygraphc{n1/n2, n1/n3, n2/n3, n2/n4, n3/n4, n3/n5, n4/n5, n5/n6, n5/n7, n6/n7}{}{
-					\draw [yellow, semitransparent, line width=10] (1,1) -- (5,1) -- (5,5) -- (1,5) -- cycle;
-				} 
+				\only<1>{
+					\mygraphc{n1/n2, n1/n3, n2/n3, n2/n4, n3/n4, n3/n5, n4/n5, n5/n6, n5/n7, n6/n7}{}{
+					}
+				}
+				\only<2>{
+					\mygraphc{n1/n3, n2/n3, n2/n4, n3/n4, n3/n5, n4/n5, n5/n6, n5/n7, n6/n7}{n1/n2}{
+					}
+				}
+				\only<3>{
+					\mygraphc{n1/n3, n2/n4, n3/n4, n3/n5, n4/n5, n5/n6, n5/n7, n6/n7}{n1/n2, n2/n3}{
+					}
+				}
+				\only<4>{
+					\mygraphc{n2/n4, n3/n4, n3/n5, n4/n5, n5/n6, n5/n7, n6/n7}{n1/n2, n2/n3, n1/n3}{
+					}
+				}
+				\only<5>{
+					\mygraphc{n1/n3, n2/n4, n3/n5, n4/n5, n5/n6, n5/n7, n6/n7}{n1/n2, n2/n3, n3/n4}{
+					}
+				}
+				\only<6>{
+					\mygraphc{n1/n3, n3/n5, n4/n5, n5/n6, n5/n7, n6/n7}{n1/n2, n2/n3, n3/n4, n2/n4}{
+					}
+				}
+				\only<7>{
+					\mygraphc{n1/n3, n2/n4, n3/n5, n5/n6, n5/n7, n6/n7}{n1/n2, n2/n3, n3/n4, n4/n5}{
+					}
+				}
+				\only<8>{
+					\mygraphc{n1/n3, n2/n4, n3/n5, n5/n6, n5/n7, n6/n7}{n1/n2, n2/n3, n3/n4, n4/n5}{
+					}
+				}
+				\only<9>{
+					\mygraphc{n1/n3, n2/n4, n3/n5, n5/n7, n6/n7}{n1/n2, n2/n3, n3/n4, n4/n5, n5/n6}{
+					}
+				}
+				\only<10>{
+					\mygraphc{n1/n3, n2/n4, n3/n5, n5/n7}{n1/n2, n2/n3, n3/n4, n4/n5, n5/n6, n6/n7}{
+					}
+				}
+				\only<11>{
+					\mygraphc{n1/n3, n2/n4, n3/n5}{n1/n2, n2/n3, n3/n4, n4/n5, n5/n6, n6/n7, n5/n7}{
+					}
+				}
+				\only<12>{
+					\mygraphc{n1/n3, n2/n4, n3/n5, n5/n7}{n1/n2, n2/n3, n3/n4, n4/n5, n5/n6, n6/n7}{
+					}
+				}
+				\only<13>{
+					\mygraphc{n1/n3, n2/n4, n3/n5, n5/n7, n6/n7}{n1/n2, n2/n3, n3/n4, n4/n5, n5/n6}{
+					}
+				}
+				\only<14>{
+					\mygraphc{n1/n3, n2/n4, n3/n5, n5/n6, n5/n7, n6/n7}{n1/n2, n2/n3, n3/n4, n4/n5}{
+					}
+				}
+				\only<15>{
+					\mygraphc{n1/n3, n2/n4, n3/n5, n4/n5, n5/n6, n5/n7, n6/n7}{n1/n2, n2/n3, n3/n4}{
+					}
+				}
+				\only<16>{
+					\mygraphc{n1/n3, n2/n4, n3/n4, n3/n5, n4/n5, n5/n6, n5/n7, n6/n7}{n1/n2, n2/n3}{
+					}
+				}
+				\only<17>{
+					\mygraphc{n1/n3, n2/n3, n2/n4, n3/n4, n3/n5, n4/n5, n5/n6, n5/n7, n6/n7}{n1/n2}{
+					}
+				}
+				\only<18>{
+					\mygraphc{n1/n2, n1/n3, n2/n3, n2/n4, n3/n4, n3/n5, n4/n5, n5/n6, n5/n7, n6/n7}{}{
+					}
+				}
+				% \draw [yellow, semitransparent, line width=10] (1,1) -- (5,1) -- (5,5) -- (1,5) -- cycle;
 			\end{exampleblock}
 		\end{column}
 	\end{columns}
 	\begin{itemize}
 		\item
-		Null.
+		Current procedure:
+		\only<1>{BICONN(G)}
+		\only<2>{DFS(1): w=2}
+		\only<3>{DFS(2): w=3}
+		\only<4>{DFS(3): w=1}
+		\only<5>{DFS(3): w=4}
+		\only<6>{DFS(4): w=2}
+		\only<7>{DFS(4): w=5}
+		\only<8>{DFS(5): w=3}
+		\only<9>{DFS(5): w=6}
+		\only<10>{DFS(6): w=7}
+		\only<11>{DFS(7): w=5}
+		\only<12>{DFS(7): End}
+		\only<13>{DFS(6): End}
+		\only<14>{DFS(5): End(No operation when w=7)}
+		\only<15>{DFS(4): End}
+		\only<16>{DFS(3): End(No operation when w=5)}
+		\only<17>{DFS(2): End}
+		\only<18>{DFS(1): End}
 	\end{itemize}
 \end{frame}
 
