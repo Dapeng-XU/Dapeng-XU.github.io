@@ -301,7 +301,7 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{A simple example}
+\begin{frame}{How to implement by DFS?}
 	\begin{center}
 		\begin{tikzpicture}[scale=.5,auto=left]
 			\node (v0) at (0,0) {};
@@ -323,9 +323,27 @@
 		\item
 		For the node adjacent to $v_s$ but also in the $SCC$, after running Sub-DFS() on this node, 
 		it will be removed with the SCC.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{How to implement by DFS?}
+	\begin{center}
+		\begin{tikzpicture}[scale=.75,auto=left]
+			\node (v0) at (0,2) {};
+			\node [circle,draw,semithick,fill=orange!20,radius=0.4] (v1) at (0,0) {$v_1$};
+			\node [circle,draw,semithick,fill=blue!20,radius=0.4] (v2) at (-1.732,1) {$v_2$};
+			\node [circle,draw,semithick,fill=blue!20,radius=0.4] (v3) at (-1.732,-1) {$v_3$};
+			\node [circle,draw,semithick,fill=blue!20,radius=0.4] (v4) at (1.732,1) {$v_4$};
+			\node [circle,draw,semithick,fill=blue!20,radius=0.4] (v5) at (1.732,-1) {$v_5$};
+			\foreach \from/\to in {v0/v1, v1/v2, v2/v3, v3/v1, v1/v4, v4/v5, v5/v1}
+				\draw [-{Stealth[length=2mm]}][black, thick] (\from) -- (\to);
+		\end{tikzpicture}
+	\end{center}
+	\begin{itemize}
 		\item
-		For nodes in strong components $(v_r,\,\cdots,\,v_s,\,\cdots,\,v_t)$, they will be
-		not deleted(but be contracted first) until the Sub-DFS() on $v_r$ is finished.
+		For nodes in strong components $(v_r,\,\cdots,\,v_s,\,\cdots,\,v_t)$, they cannot be
+		deleted(but be contracted first) until the Sub-DFS() on the last vertex $v_r$ in this
+		SCC is finished.
 	\end{itemize}
 \end{frame}
 
@@ -352,7 +370,7 @@
 				contract the cycle $v_i,\, v_{i+1},\,\cdots,\,v_k$, both in $H$ and in $P$\;
 			}
 		}
-		\If{no edge leaves $v$}{
+		\If{no edge leaves $v$ and $v$ is the last DFS-finished vertex in a SCC}{
 			output $v$ as a vertex of the strong component graph\;
 			delete $v$ from both $H$ and $P$\;
 		}
@@ -1144,7 +1162,7 @@
 	\SetAlFnt{\small}
 	\begin{algorithm}[H]
 		\caption{A Part of High-Level Algorithm}
-		\If{no edge leaves $v$}{
+		\If{no edge leaves $v$ and $v$ is the last DFS-finished vertex in a SCC}{
 			output $v$ as a vertex of the strong component graph\;
 			delete $v$ from both $H$ and $P$\;
 		}
@@ -1176,9 +1194,9 @@
 
 \section{Biconnected Components}
 
-\subsection{Thinking about Biconnected Components}
+\subsection{Review}
 
-\begin{frame}{Concepts: Biconnected Component}
+\begin{frame}{Review: Biconnected Component}
 	\begin{itemize}
 		\item
 		A \emph{biconnected component} of G is a maximal set of edges such that any
