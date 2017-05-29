@@ -58,6 +58,7 @@
 \usepackage{tikz}
 \usepgflibrary{arrows.meta}
 \usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.pathmorphing}
 \usetikzlibrary{calc}
 
 
@@ -126,6 +127,26 @@
 	\end{tikzpicture}
 }
 
+\newcommand{\mygraphc}[3]{
+	\begin{tikzpicture}
+		[scale=.5,auto=left,every node/.style={circle,draw,semithick,fill=blue!20,radius=0.4}]
+		\node (n1) at (1,5)	{1};
+		\node (n2) at (1,1)	{2};
+		\node (n3) at (5,5)	{3};
+		\node (n4) at (5,1)	{4};
+		\node (n5) at (7,3)	{5};
+		\node (n6) at (9,5)	{6};
+		\node (n7) at (9,1)	{7};
+
+		% black edge
+		\foreach \from/\to in {#1}
+			\draw [black, thick] (\from) -- (\to);
+		% red edge
+		\foreach \from/\to in {#2}
+			\draw [red, thick] (\from) -- (\to);
+		#3
+	\end{tikzpicture}
+}
 
 
 
@@ -216,7 +237,7 @@
 		\alert{One-pass algorithm.} But for the algorithm of strong components, what we have learned from
 		the textbook is a two-pass algorithm, by which we must traverse the whole graph twice. 
 		\item
-		\alert{Lower time and space complexity.} This algorithm only use stacks and an array, and do not
+		\alert{Lower time and space complexity.} This algorithm only use two stacks and an array, and do not
 		employ a disjoint-set data structure.
 	\end{itemize}
 \end{frame}
@@ -224,7 +245,7 @@
 
 \section{Strong Components}
 
-\subsection{Thinking about Strong Components}
+\subsection{Reviews}
 
 
 \begin{frame}{Review: What have we learned from the textbook?}{Concepts of Strong Components}
@@ -232,7 +253,6 @@
 		\item
 		Two \alert{mutually reachable} vertices are in the same \emph{strong component}.
 	\end{itemize}
-	\begin{exampleblock}{Example}
 	\begin{center}
 	\mygrapha{n1/n2, n1/n3, n2/n3, n2/n4,n4/n3, n4/n5,n5/n2, n5/n6, n6/n3, n6/n4}{}{
 		\fill [yellow, nearly transparent] (1,0) -- (0,5) -- (1,7) -- (8,0) -- cycle;
@@ -240,17 +260,18 @@
 		\fill [yellow, nearly transparent] (6,4) rectangle (8,6);
 	}
 	\end{center}
-	\end{exampleblock}
 \end{frame}
 
 \begin{frame}{Review: What have we learned from the textbook?}{Algorithms to Find Strong Components}
 	\begin{itemize}
 		\item
-		Idea: Run DFS twice. Once on the original graph $G$, once on the \emph{tranposition} of $G^T$.
+		Idea: Run DFS twice. Once on the original graph $G$, once on its \emph{tranposition} $G^T$.
 		\item
 		Trick: Using \emph{finishing times} of each vertex computed by the first DFS.
 		\item
 		Linear time complexity: $O(V+E)$
+		\item
+		Proposed by S. Rao Kosaraju, known as the \emph{Kosaraju's Algorithm}.
 	\end{itemize}
 \end{frame}
 
@@ -258,25 +279,82 @@
 \subsection{Purdom and Munro's High-Level Algorithm}
 % This high-level algorithm was originally proposed by Purdom and Munro, mentioned after the pseudo-code in the paper.
 
-\begin{frame}{Purdom and Munro's High-Level Algorithm}
-	\SetAlFnt{\small}
+\begin{frame}{Purdom and Munro's High-Level Algorithm: Plain text}
+	\begin{itemize}
+		\item
+		If H has no vertices stop. Otherwise \emph{start a new path $P$} by choosing a vertex $v$ and
+		setting $P=(v)$. Continue by growing $P$ as follows.
+		\item
+		To grow the path $P=(v_1,\cdots ,v_k)$ choose an edge $(v_k,w)$ directed from the last
+		vertex of $P$ and do the following:
+		\begin{itemize}
+			\item
+			If $w\notin P$, \emph{add $w$ to $P$}, making it the new last vertex of $P$. Continue growing $P$.
+			\item
+			If $w\in P$, say $w=v_i$, contract the cycle $v_i, v_{i+1}, \cdots, v_k$, both in $H$
+			and in $P$. $P$ is now a path in the new graph $H$. Continue growing $P$.
+			\item
+			If no edge leaves $v_k$, output $v_k$ as a vertex of the strong component graph. Delete $v_k$
+			from both $H$ and $P$. If $P$ is now nonempty continue growing $P$. Otherwise try to start a
+			new path $P$.
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{A simple example}
+	\begin{center}
+		\begin{tikzpicture}[scale=.5,auto=left]
+			\node (v0) at (0,0) {};
+			\node [circle,draw,semithick,fill=orange!20,radius=0.4] (vr) at (2,0) {$v_r$};
+			\node [circle,draw,semithick,fill=orange!20,radius=0.4] (vs) at (5,0) {$v_s$};
+			\node [circle,draw,semithick,fill=blue!20,radius=0.4] (vt) at (5,-3) {$v_t$};
+			\node [circle,draw,semithick,fill=blue!20,radius=1] (SCC) at (8,0) {$SCC$};
+			\draw [-{Stealth[length=2mm]}][black, thick] (v0) -- (vr);
+			\draw [decorate,decoration={coil,aspect=0},-{Stealth[length=2mm]}][black, thick] (vr) -- (vs);
+			\draw [decorate,decoration={coil,aspect=0},-{Stealth[length=2mm]}][black, thick] (vs) -- (vt);
+			\draw [decorate,decoration={coil,aspect=0},-{Stealth[length=2mm]}][black, thick] (vt) -- (vr);
+			\draw [-{Stealth[length=2mm]}][black, thick] (vs) -- (SCC);
+		\end{tikzpicture}
+	\end{center}
+	\begin{itemize}
+		\item
+		Assume the current node is $v_s$ which has at least two adjacent nodes.
+		The current path is $P=(\cdots,\,v_r,\,\cdots,\,v_s)$.
+		\item
+		For the node adjacent to $v_s$ but also in the $SCC$, after running Sub-DFS() on this node, 
+		it will be removed with the SCC.
+		\item
+		For nodes in strong components $(v_r,\,\cdots,\,v_s,\,\cdots,\,v_t)$, they will be
+		not deleted(but be contracted first) until the Sub-DFS() on $v_r$ is finished.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Pseudo Code}
+	\SetAlFnt{\normalsize}
 	\begin{algorithm}[H]
-		\caption{Strong Components}
+		\caption{Strong components: Main-DFS(G) (DFS caller)}
 		$H=G$\;
 		\While{$H$ still has a vertex $v$}{
-			start a new path $P = (v)$\;
-			\While(\tcc*[h]{Grows path $P$}){$P$ is not empty}{
-				\If{the last vertex $v_k$ of $P$ has an edge $(v_k, w)$ }{ % TODO
-					\If{$w\notin P$}{
-						add $w$ to $P$, as the new last vertex of $P$\;
-					}\Else(\tcc*[h]{$w$ and $v_i$ are identical.}){
-						contract the cycle $v_i,\, v_{i+1},\,\cdots,\,v_k$, both in $H$ and in $P$\;
-					}
-				}\Else{
-					output $v_k$ as a vertex of the strong component graph\;
-					delete $v_k$ from both $H$ and $P$\;
-				}
+			Sub-DFS(v)\tcc*[l]{start a new path $P = (v)$}
+		}
+	\end{algorithm}
+\end{frame}
+
+\begin{frame}{Pseudo Code}
+	\SetAlFnt{\normalsize}
+	\begin{algorithm}[H]
+		\caption{Strong components: Sub-DFS(v) (DFS callee)}
+		add the $v$ as the new last vertex of path $P$\;
+		\For{$w\in \{$vertices adjacent to $v\}$}{
+			\If{$w\notin P$}{
+				Sub-DFS$(w)$\;
+			}\Else(\tcc*[h]{$w=v_i$, and $v=v_k$}){
+				contract the cycle $v_i,\, v_{i+1},\,\cdots,\,v_k$, both in $H$ and in $P$\;
 			}
+		}
+		\If{no edge leaves $v$}{
+			output $v$ as a vertex of the strong component graph\;
+			delete $v$ from both $H$ and $P$\;
 		}
 	\end{algorithm}
 \end{frame}
@@ -1017,11 +1095,10 @@
 \begin{frame}{Framework of STRONG(G)}
 	\SetAlFnt{\small}
 	\begin{algorithm}[H]
-		\caption{Framework of High-Level Algorithm}
+		\caption{Strong components: Main-DFS(G) (DFS caller)}
 		$H=G$\;
 		\While{$H$ still has a vertex $v$}{
-			start a new path $P = (v)$\;
-			$\cdots$\;
+			Sub-DFS(v)\tcc*[l]{start a new path $P = (v)$}
 		}
 	\end{algorithm}
 	\begin{procedure}[H]
@@ -1043,10 +1120,10 @@
 	\SetAlFnt{\small}
 	\begin{algorithm}[H]
 		\caption{A Part of High-Level Algorithm}
-		\If{the last vertex $v_k$ of $P$ has an edge $(v_k, w)$ }{
+		\For{$w\in \{$vertices adjacent to $v\}$}{
 			\If{$w\notin P$}{
-				add $w$ to $P$, as the new last vertex of $P$\;
-			}\Else(\tcc*[h]{$w$ and $v_i$ are identical.}){
+				Sub-DFS$(w)$\;
+			}\Else(\tcc*[h]{$w=v_i$, and $v=v_k$}){
 				contract the cycle $v_i,\, v_{i+1},\,\cdots,\,v_k$, both in $H$ and in $P$\;
 			}
 		}
@@ -1067,11 +1144,9 @@
 	\SetAlFnt{\small}
 	\begin{algorithm}[H]
 		\caption{A Part of High-Level Algorithm}
-		\If{the last vertex $v_k$ of $P$ has an edge $(v_k, w)$ }{
-			$\cdots$\;
-		}\Else{
-			output $v_k$ as a vertex of the strong component graph\;
-			delete $v_k$ from both $H$ and $P$\;
+		\If{no edge leaves $v$}{
+			output $v$ as a vertex of the strong component graph\;
+			delete $v$ from both $H$ and $P$\;
 		}
 	\end{algorithm}
 	\begin{procedure}[H]
@@ -1116,30 +1191,6 @@
 
 \subsection{High-Level Algorithm}
 
-\begin{frame}{Pseudo Code}
-	\SetAlFnt{\small}
-	\begin{algorithm}[H]
-		\caption{Biconnected Components}
-		$H=G$\;
-		\While{$H$ still has an edge $\{v,w\}$}{
-			start a new path $P = (v,\{v,w\})$\;
-			\While(\tcc*[h]{Grows path $P$}){$P$ is not empty}{ % TODO
-				\If{the last vertex $v_k$ of $P$ has an edge $(v_k, w)$ }{
-					\If(\tcc*[h]{$V\{P\}$ is the set of all vertices in $P$}){$w\notin V{P}$}{
-						add $v,\{v,w\}$ to the end of $P$, as the new last vertex and edge of $P$\;
-					}\Else(\tcc*[h]{$w\in e_i-v_{i+1}$, but most likely $w\neq v_i$}){
-						replace the cycle $w,\,e_i,\,v_{i+1},\,e_{i+1},\,\cdots,\,v_k,\,e_k,\,v,\,\{v,\,w\}$
-						to a new edge $e=\bigcup_{j=i}^ke_j$, both in $H$ and in $P$\;
-					}
-				}\Else{
-					output $v_k$ as a vertex of the strong component graph\;
-					delete $v_k$ from both $H$ and $P$\;
-				}
-			}
-		}
-	\end{algorithm}
-\end{frame}
-
 \begin{frame}{Concepts: Hypergraph}
 	\begin{itemize}
 		\item
@@ -1174,6 +1225,30 @@
 		Merging a set of edges is to replace old edges with the new one:
 		$$e_{new}=\bigcup_{i=1}^ke_i$$
 	\end{itemize}
+\end{frame}
+
+\begin{frame}{Pseudo Code}
+	\SetAlFnt{\small}
+	\begin{algorithm}[H]
+		\caption{Biconnected Components}
+		$H=G$\;
+		\While{$H$ still has an edge $\{v,w\}$}{
+			start a new path $P = (v,\{v,w\})$\;
+			\While(\tcc*[h]{Grows path $P$}){$P$ is not empty}{ % TODO
+				\If{the last vertex $v_k$ of $P$ has an edge $(v_k, w)$ }{
+					\If(\tcc*[h]{$V\{P\}$ is the set of all vertices in $P$}){$w\notin V{P}$}{
+						add $v,\{v,w\}$ to the end of $P$, as the new last vertex and edge of $P$\;
+					}\Else(\tcc*[h]{$w\in e_i-v_{i+1}$, but most likely $w\neq v_i$}){
+						replace the cycle $w,\,e_i,\,v_{i+1},\,e_{i+1},\,\cdots,\,v_k,\,e_k,\,v,\,\{v,\,w\}$
+						to a new edge $e=\bigcup_{j=i}^ke_j$, both in $H$ and in $P$\;
+					}
+				}\Else{
+					output $v_k$ as a vertex of the strong component graph\;
+					delete $v_k$ from both $H$ and $P$\;
+				}
+			}
+		}
+	\end{algorithm}
 \end{frame}
 
 \subsection{Gabow's Algorithms}
@@ -1218,7 +1293,26 @@
 	\end{procedure}
 \end{frame}
 
-
+\begin{frame}{Demo: Gabow's biconnected components algorithm}
+	\begin{columns}
+		\begin{column}{4cm}
+			\begin{exampleblock}{Data in memory}
+				Here is a memory map.
+			\end{exampleblock}
+		\end{column}
+		\begin{column}{5.5cm}
+			\begin{exampleblock}{Graph}
+				\mygraphc{n1/n2, n1/n3, n2/n3, n2/n4, n3/n4, n3/n5, n4/n5, n5/n6, n5/n7, n6/n7}{}{
+					\draw [yellow, semitransparent, line width=10] (1,1) -- (5,1) -- (5,5) -- (1,5) -- cycle;
+				} 
+			\end{exampleblock}
+		\end{column}
+	\end{columns}
+	\begin{itemize}
+		\item
+		Null.
+	\end{itemize}
+\end{frame}
 
 \section*{Summary}
 
