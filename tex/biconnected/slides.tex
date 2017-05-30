@@ -1151,7 +1151,7 @@
 \subsection{Discussion}
 
 \begin{frame}{Correctness of Gabow's Strong Components Algorithm}
-	\begin{theorem}[Correctness and Time Complexity]
+	\begin{theorem}[Correctness and complexity]
 		When STRONG(G) halts each vertex $v\in V$ belongs to the strong component numbered $I[v]$.
 		The time and space are both $O(V+E)$.
 	\end{theorem}
@@ -1289,7 +1289,7 @@
 		for every $1 < i\leq k$.
 		\item
 		An important property:
-		$$v_{i+1}\in e_i-v_i, \quad 1\leq i < k$$
+		$$v_{i+1}\in e_i-v_i \text{, or } v_{i}\in e_i-v_{i+1}, \quad 1\leq i < k$$
 		\item
 		Merging a set of edges is to replace old edges with the new one:
 		$$e_{new}=\bigcup_{i=1}^ke_i$$
@@ -1301,10 +1301,8 @@
 		\item
 		The \emph{block hypergraph} $H$ of $G$ is the hypergraph formed by merging the edges of each biconnected component of $G$.
 		\item
-		The set of all vertices in edges of $P$ is denoted
-		\begin{center}
-			$V(P)=\bigcup_{i=1}^ke_i$
-		\end{center}
+		The set of \emph{all vertices in edges of $P$} is denoted
+		$$V(P)=\bigcup_{i=1}^ke_i$$
 	\end{itemize}
 \end{frame}
 
@@ -1331,28 +1329,62 @@
 \begin{frame}{Pseudo Code}
 	\SetAlFnt{\small}
 	\begin{algorithm}[H]
-		\caption{Biconnected Components}
+		\caption{Biconnected Components: Main-DFS (DFS caller)}
 		$H=G$\;
-		\While{$H$ still has an edge $\{v,w\}$}{
-			start a new path $P = (v,\{v,w\})$\;
-			\While(\tcc*[h]{Grows path $P$}){$P$ is not empty}{ % TODO
-				\If{the last vertex $v_k$ of $P$ has an edge $(v_k, w)$ }{
-					\If(\tcc*[h]{$V\{P\}$ is the set of all vertices in $P$}){$w\notin V{P}$}{
-						add $v,\{v,w\}$ to the end of $P$, as the new last vertex and edge of $P$\;
-					}\Else(\tcc*[h]{$w\in e_i-v_{i+1}$, but most likely $w\neq v_i$}){
-						replace the cycle $w,\,e_i,\,v_{i+1},\,e_{i+1},\,\cdots,\,v_k,\,e_k,\,v,\,\{v,\,w\}$
-						to a new edge $e=\bigcup_{j=i}^ke_j$, both in $H$ and in $P$\;
-					}
-				}\Else{
-					output $v_k$ as a vertex of the strong component graph\;
-					delete $v_k$ from both $H$ and $P$\;
-				}
-			}
+		\While{$H$ still has an edge $\{v,\,w\}$}{
+			Sub-DFS(v)\tcc*[l]{start a new path $P = (v,\,\{v,\,w\})$}
 		}
 	\end{algorithm}
 \end{frame}
 
+\begin{frame}{Pseudo Code}
+	\SetAlFnt{\small}
+	\begin{algorithm}[H]
+		\caption{Biconnected Components: Sub-DFS (DFS callee)}
+		add the $v$ as the new last vertex of path $P$\;
+		\For(\tcc*[h]{Grows path $P$}){$w\in \{$vertices adjacent to $v\}$}{
+			\If{$w\notin V\{P\}$}{
+				add $\{v,\,w\}$ to the end of $P$, as the new last edge of $P$\;
+				Sub-DFS$(w)$\;
+				remove the edge $\{v,\,w\}$ if necessary\;
+			}\Else(\tcc*[h]{$w\in e_i-v_{i+1}$, but most likely $w\neq v_i$}){
+				replace the cycle $w,\,e_i,\,v_{i+1},\,e_{i+1},\,\cdots,\,v_k,\,e_k,\,v$
+				to a new edge $e=\bigcup_{j=i}^ke_j$, both in $H$ and in $P$\;
+			}
+		}
+		\If{no edge leaves $e_k-v_k$}{ %  and $v_k$ is the last DFS-finished vertex in a SCC
+			output $e_k$ as an edge of the block hypergraph\;
+			delete $e_k$ from $H$ and delete $(v_k,\,e_k)$ from $P$\;
+		}
+	\end{algorithm}
+\end{frame}
+
+\begin{frame}{Correctness}
+	\begin{itemize}
+		\item
+		When $v,\,\{v,\,w\}$ is added to $P$ the result is a valid path, by the
+		condition $v\in e_k-v_k$. When edges are merged they form a valid cycle,
+		by the condition $\{v,\,w\}\neq e_k$.
+		\item
+		The algorithm correctly forms the finest acyclic merging of $G$, it finds
+		the block hypergraph as desired.
+	\end{itemize}
+\end{frame}
+
 \subsection{Gabow's Algorithms}
+
+\begin{frame}{Data Structure Used in Algorithm}
+	\begin{itemize}
+		\item
+		A \alert{stack $S$} contains the vertices $V(P)$.
+		\item
+		A \alert{stack $B$} contains the boundaries between edges of $P$, two vertices per boundary.
+		\item
+		An array \alert{$I[1\ldots n]$} is used to store stack indices corresponding to vertices.
+		\item
+		All of above are similar to these in strong components.
+	\end{itemize}
+\end{frame}
 
 \begin{frame}{Algorithms}
 	\SetAlFnt{\normalsize}
@@ -1575,13 +1607,7 @@
 		\only<1>{BICONN(G)}
 		\only<2>{DFS(1): w=2}
 		\only<3>{DFS(2): w=3}
-		\only<4>{DFS(3): w=1}
-		\only<5>{DFS(3): w=4}
-		\only<6>{DFS(4): w=2}
-		\only<7>{DFS(4): w=5}
-		\only<8>{DFS(5): w=3}
-		\only<9>{DFS(5): w=6}
-		\only<10>{DFS(6): w=7}
+		\only<4>{DFS(3): w=1}\only<5>{DFS(3): w=4}\only<6>{DFS(4): w=2}\only<7>{DFS(4): w=5}\only<8>{DFS(5): w=3}\only<9>{DFS(5): w=6}\only<10>{DFS(6): w=7}
 		\only<11>{DFS(7): w=5}
 		\only<12>{DFS(7): End}
 		\only<13>{DFS(6): End}
@@ -1591,6 +1617,17 @@
 		\only<17>{DFS(2): End}
 		\only<18>{DFS(1): End}
 	\end{itemize}
+\end{frame}
+
+\begin{frame}{Correctness}
+	\begin{itemize}
+		\item
+		In order to keep the completeness, the correctness is given as follow.
+	\end{itemize}
+	\begin{theorem}[Correctness and complexity]
+		When BICONN(G) halts any edge $\{v,\,w\}\in E$ belongs to the biconnected component numbered $\min\{I[v],\,I[w]\}$.
+		The time and space are both $O(m+n)$.
+	\end{theorem}
 \end{frame}
 
 \section*{Summary}
