@@ -87,6 +87,26 @@
 	\end{tikzpicture}
 }
 
+\newcommand{\mygraphadiscardthree}[0]{
+	% component node 3
+	\fill [yellow, semitransparent] (6,4) rectangle (8,6);
+	% discard node 3
+	\draw [thick, red] (6.5, 5.5) -- (7.5, 4.5);
+	\draw [thick, red] (6.5, 4.5) -- (7.5, 5.5);
+}
+
+\newcommand{\mygraphadiscardtwofourfivesix}[0]{
+	% discard nodes 2,4,5,6
+	\draw [thick, red] (0.5, 5.5) -- (1.5, 4.5);
+	\draw [thick, red] (0.5, 4.5) -- (1.5, 5.5);
+	\draw [thick, red] (3.5, 3.5) -- (4.5, 2.5);
+	\draw [thick, red] (3.5, 2.5) -- (4.5, 3.5);
+	\draw [thick, red] (1.5, 1.5) -- (2.5, 0.5);
+	\draw [thick, red] (1.5, 0.5) -- (2.5, 1.5);
+	\draw [thick, red] (5.5, 1.5) -- (6.5, 0.5);
+	\draw [thick, red] (5.5, 0.5) -- (6.5, 1.5);
+}
+
 \newcommand{\mygraphb}[6]{
 	\begin{tikzpicture}
 		[scale=.5,auto=left]
@@ -299,6 +319,8 @@
 	\begin{itemize}
 		\item
 		Two \alert{mutually reachable} vertices are in the same \emph{strong component}.
+		\item
+		It is a \alert{equivalence relation}.
 	\end{itemize}
 	\begin{center}
 	\mygrapha{n1/n2, n1/n3, n2/n3, n2/n4,n4/n3, n4/n5,n5/n2, n5/n6, n6/n3, n6/n4}{}{
@@ -350,7 +372,7 @@
 
 \begin{frame}{Demo: P\&M's High-Level Algorithm}
 	\begin{itemize}
-	% \begin{overlayarea}{4cm}{2.5cm}
+	\begin{overlayarea}{10cm}{5cm}
 		\only<1>{
 			\item
 			\begin{center}
@@ -391,6 +413,7 @@
 			\item
 			\begin{center}
 				\mygrapha{n1/n3, n2/n3, n2/n4, n4/n3, n4/n5, n5/n2, n5/n6, n6/n3, n6/n4}{n1/n2}{
+					\mygraphadiscardthree
 				}
 			\end{center}
 			\item Path $P=\{ \, \{1\},\, \{2\} \, \}$
@@ -400,6 +423,7 @@
 			\item
 			\begin{center}
 				\mygrapha{n1/n3, n2/n3, n4/n3, n4/n5, n5/n2, n5/n6, n6/n3, n6/n4}{n1/n2, n2/n4}{
+					\mygraphadiscardthree
 				}
 			\end{center}
 			\item Path $P=\{ \, \{1\},\, \{2\},\, \{4\} \, \}$
@@ -409,6 +433,7 @@
 			\item
 			\begin{center}
 				\mygrapha{n1/n3, n2/n3, n4/n3, n5/n2, n5/n6, n6/n3, n6/n4}{n1/n2, n2/n4, n4/n5}{
+					\mygraphadiscardthree
 				}
 			\end{center}
 			\item Path $P=\{ \, \{1\},\, \{2\},\, \{4\},\, \{5\} \, \}$
@@ -418,6 +443,9 @@
 			\item
 			\begin{center}
 				\mygrapha{n1/n3, n2/n3, n4/n3, n5/n6, n6/n3, n6/n4}{n1/n2, n2/n4, n4/n5, n5/n2}{
+					\mygraphadiscardthree
+					% component nodes 2,4,5
+					\fill [yellow, semitransparent] (1,0) -- (0,5) -- (1,7) -- (6,3) -- (3,0) -- cycle;
 				}
 			\end{center}
 			\item Path $P=\{ \, \{1\},\, \{2,\,4,\,5\} \, \}$
@@ -427,6 +455,9 @@
 			\item
 			\begin{center}
 				\mygrapha{n1/n3, n2/n3, n4/n3, n5/n2, n6/n3, n6/n4}{n1/n2, n2/n4, n4/n5, n5/n6}{
+					\mygraphadiscardthree
+					% component nodes 2,4,5
+					\fill [yellow, semitransparent] (1,0) -- (0,5) -- (1,7) -- (6,3) -- (3,0) -- cycle;
 				}
 			\end{center}
 			\item Path $P=\{ \, \{1\},\, \{2,\,4,\,5\},\,6 \, \}$
@@ -436,6 +467,9 @@
 			\item
 			\begin{center}
 				\mygrapha{n1/n3, n2/n3, n4/n3, n5/n2, n6/n3}{n1/n2, n2/n4, n4/n5, n5/n6, n6/n4}{
+					\mygraphadiscardthree
+					% component nodes 2,4,5,6
+					\fill [yellow, semitransparent] (1,0) -- (0,5) -- (1,7) -- (8,0) -- cycle;
 				}
 			\end{center}
 			\item Path $P=\{ \, \{1\},\, \{2,\,4,\,5,\,6\} \, \}$
@@ -445,6 +479,10 @@
 			\item
 			\begin{center}
 				\mygrapha{n1/n3, n2/n3, n4/n3, n5/n2, n6/n3}{n1/n2, n2/n4, n4/n5, n5/n6, n6/n4}{
+					\mygraphadiscardthree
+					% component nodes 2,4,5,6
+					\fill [yellow, semitransparent] (1,0) -- (0,5) -- (1,7) -- (8,0) -- cycle;
+					\mygraphadiscardtwofourfivesix
 				}
 			\end{center}
 			\item Path $P=\{ \, \{1\},\, \{2,\,4,\,5,\,6\} \, \}$
@@ -454,6 +492,15 @@
 			\item
 			\begin{center}
 				\mygrapha{n1/n2, n1/n3, n2/n3, n4/n3, n5/n2, n6/n3, n2/n4, n4/n5, n5/n6, n6/n4}{}{
+					\mygraphadiscardthree
+					% component nodes 2,4,5,6
+					\fill [yellow, semitransparent] (1,0) -- (0,5) -- (1,7) -- (8,0) -- cycle;
+					\mygraphadiscardtwofourfivesix
+					% discard node 1
+					\draw [thick, red] (3.5, 7.5) -- (4.5, 6.5);
+					\draw [thick, red] (3.5, 6.5) -- (4.5, 7.5);
+					% component node 1
+					\fill [yellow, semitransparent] (3,6) rectangle (5,8);
 				}
 			\end{center}
 			\item Path $P=\{ \, \{1\} \, \}$
@@ -463,12 +510,30 @@
 			\item
 			\begin{center}
 				\mygrapha{n1/n2, n1/n3, n2/n3, n4/n3, n5/n2, n6/n3, n2/n4, n4/n5, n5/n6, n6/n4}{}{
+					\mygraphadiscardthree
+					% component nodes 2,4,5,6
+					\fill [yellow, semitransparent] (1,0) -- (0,5) -- (1,7) -- (8,0) -- cycle;
+					\mygraphadiscardtwofourfivesix
+					% discard node 1
+					\draw [thick, red] (3.5, 7.5) -- (4.5, 6.5);
+					\draw [thick, red] (3.5, 6.5) -- (4.5, 7.5);
+					% component node 1
+					\fill [yellow, semitransparent] (3,6) rectangle (5,8);
 				}
 			\end{center}
 			\item Path $P=\{ \, \, \}$
 			\item Now graph $H$ is \alert{empty}, which has no vertex.
 		}
-	% \end{overlayarea}
+	\end{overlayarea}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Correctness}
+	\begin{itemize}
+		\item
+		Correctness: If no edge leaves $v_k$ then $v_k$ is a vertex of the finest acyclic contraction.
+		\item
+		Easy to prove by contradiction: Assume there is an edge leaves $v_k\,\cdots$
 	\end{itemize}
 \end{frame}
 
@@ -492,34 +557,34 @@
 	\end{center}
 	\begin{itemize}
 		\item
-		Assume the current node is $v_s$ which has at least two adjacent nodes.
+		Assume the current node is $v_s$ which has two adjacent nodes.
 		The current path is $P=(\cdots,\,v_r,\,\cdots,\,v_s)$.
 		\item
-		For the node adjacent to $v_s$ but also in the $SCC$, after running Sub-DFS() on this node, 
-		it will be removed with the SCC.
+		For the node $v_u$ incident from $v_s$ but also in the $SCC$, after running Sub-DFS() on this node, 
+		$v_u$ will be removed with the SCC.
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{How to implement by DFS?}
-	\begin{center}
-		\begin{tikzpicture}[scale=.75,auto=left]
-			\node (v0) at (0,2) {};
-			\node [circle,draw,semithick,fill=orange!20,radius=0.4] (v1) at (0,0) {$v_1$};
-			\node [circle,draw,semithick,fill=blue!20,radius=0.4] (v2) at (-1.732,1) {$v_2$};
-			\node [circle,draw,semithick,fill=blue!20,radius=0.4] (v3) at (-1.732,-1) {$v_3$};
-			\node [circle,draw,semithick,fill=blue!20,radius=0.4] (v4) at (1.732,1) {$v_4$};
-			\node [circle,draw,semithick,fill=blue!20,radius=0.4] (v5) at (1.732,-1) {$v_5$};
-			\foreach \from/\to in {v0/v1, v1/v2, v2/v3, v3/v1, v1/v4, v4/v5, v5/v1}
-				\draw [-{Stealth[length=2mm]}][black, thick] (\from) -- (\to);
-		\end{tikzpicture}
-	\end{center}
-	\begin{itemize}
-		\item
-		For nodes in strong components $(v_r,\,\cdots,\,v_s,\,\cdots,\,v_t)$, they \emph{cannot be deleted}
-		(but be contracted first) until the Sub-DFS() on the last vertex $v_r$ in this
-		SCC is finished.
-	\end{itemize}
-\end{frame}
+% \begin{frame}{How to implement by DFS?}
+	% \begin{center}
+		% \begin{tikzpicture}[scale=.75,auto=left]
+			% \node (v0) at (0,2) {};
+			% \node [circle,draw,semithick,fill=orange!20,radius=0.4] (v1) at (0,0) {$v_1$};
+			% \node [circle,draw,semithick,fill=blue!20,radius=0.4] (v2) at (-1.732,1) {$v_2$};
+			% \node [circle,draw,semithick,fill=blue!20,radius=0.4] (v3) at (-1.732,-1) {$v_3$};
+			% \node [circle,draw,semithick,fill=blue!20,radius=0.4] (v4) at (1.732,1) {$v_4$};
+			% \node [circle,draw,semithick,fill=blue!20,radius=0.4] (v5) at (1.732,-1) {$v_5$};
+			% \foreach \from/\to in {v0/v1, v1/v2, v2/v3, v3/v1, v1/v4, v4/v5, v5/v1}
+				% \draw [-{Stealth[length=2mm]}][black, thick] (\from) -- (\to);
+		% \end{tikzpicture}
+	% \end{center}
+	% \begin{itemize}
+		% \item
+		% For nodes in strong components $(v_r,\,\cdots,\,v_s,\,\cdots,\,v_t)$, they \emph{cannot be deleted}
+		% (but be contracted first) until the Sub-DFS() on the last vertex $v_r$ in this
+		% SCC is finished.
+	% \end{itemize}
+% \end{frame}
 
 \begin{frame}{Pseudo Code}
 	\SetAlFnt{\normalsize}
@@ -551,14 +616,7 @@
 	\end{algorithm}
 \end{frame}
 
-\begin{frame}{Assessment}
-	\begin{itemize}
-		\item
-		Note that \emph{contracting} means selecting one vertex as a representation and \alert{merging} others rather than deleting them.
-		\item
-		Correctness: If no edge leaves $v_k$ then $v_k$ is a vertex of the finest acyclic contraction.
-	\end{itemize}
-\end{frame}
+
 
 \begin{frame}{Assessment}
 	\begin{itemize}
@@ -678,54 +736,52 @@
 				B and S: stack. I: array. \\\
 			\begin{overlayarea}{3.5cm}{3.5cm}
 				\only<1>{
-					\mygraphb{}{}{}{}{1/0,2/0,3/0,4/0,5/0,6/0}{
-					}
+					\mygraphb{}{}{}{}{1/0,2/0,3/0,4/0,5/0,6/0}{}
 				}
 				\only<2>{
-					\mygraphb{1/1}{}{1/1}{}{1/1,2/0,3/0,4/0,5/0,6/0}{
-					}
+					\mygraphb{1/1}{1}{1/1}{}{1/1,2/0,3/0,4/0,5/0,6/0}{}
 				}
 				\only<3>{
-					\mygraphb{1/1,2/2}{}{1/1,2/2}{}{1/1,2/2,3/0,4/0,5/0,6/0}{}
+					\mygraphb{1/1,2/2}{1,2}{1/1,2/2}{}{1/1,2/2,3/0,4/0,5/0,6/0}{}
 				}
 				\only<4>{
-					\mygraphb{1/1,2/2,3/3}{}{1/1,2/2,3/3}{}{1/1,2/2,3/3,4/0,5/0,6/0}{}
+					\mygraphb{1/1,2/2,3/3}{1,2,3}{1/1,2/2,3/3}{}{1/1,2/2,3/3,4/0,5/0,6/0}{}
 				}
 				\only<5>{
-					\mygraphb{1/1,2/2,3/3}{}{1/1,2/2,3/4}{}{1/1,2/2,3/7,4/3,5/0,6/0}{}
+					\mygraphb{1/1,2/2,3/3}{1,2,3}{1/1,2/2,3/4}{}{1/1,2/2,3/7,4/3,5/0,6/0}{}
 				}
 				\only<6>{
-					\mygraphb{1/1,2/2,3/3,4/4}{}{1/1,2/2,3/4,4/5}{}{1/1,2/2,3/7,4/3,5/4,6/0}{}
+					\mygraphb{1/1,2/2,3/3,4/4}{1,2,3,4}{1/1,2/2,3/4,4/5}{}{1/1,2/2,3/7,4/3,5/4,6/0}{}
 				}
 				\only<7>{
-					\mygraphb{1/1,2/2,3/3,4/4}{}{1/1,2/2,3/4,4/5}{}{1/1,2/2,3/7,4/3,5/4,6/0}{}
+					\mygraphb{1/1,2/2,3/3,4/4}{1,2,3,4}{1/1,2/2,3/4,4/5}{}{1/1,2/2,3/7,4/3,5/4,6/0}{}
 				}
 				\only<8>{
-					\mygraphb{1/1,2/2}{}{1/1,2/2,3/4,4/5}{}{1/1,2/2,3/7,4/3,5/4,6/0}{}
+					\mygraphb{1/1,2/2}{1,2}{1/1,2/2,3/4,4/5}{}{1/1,2/2,3/7,4/3,5/4,6/0}{}
 				}
 				\only<9>{
-					\mygraphb{1/1,2/2}{}{1/1,2/2,3/4,4/5}{}{1/1,2/2,3/7,4/3,5/4,6/0}{}
+					\mygraphb{1/1,2/2}{1,2}{1/1,2/2,3/4,4/5}{}{1/1,2/2,3/7,4/3,5/4,6/0}{}
 				}
 				\only<10>{
-					\mygraphb{1/1,2/2,3/5}{}{1/1,2/2,3/4,4/5,5/6}{}{1/1,2/2,3/7,4/3,5/4,6/5}{}
+					\mygraphb{1/1,2/2,3/5}{1,2,5}{1/1,2/2,3/4,4/5,5/6}{}{1/1,2/2,3/7,4/3,5/4,6/5}{}
 				}
 				\only<11>{
-					\mygraphb{1/1,2/2,3/5}{}{1/1,2/2,3/4,4/5,5/6}{}{1/1,2/2,3/7,4/3,5/4,6/5}{}
+					\mygraphb{1/1,2/2,3/5}{1,2,5}{1/1,2/2,3/4,4/5,5/6}{}{1/1,2/2,3/7,4/3,5/4,6/5}{}
 				}
 				\only<12>{
-					\mygraphb{1/1,2/2}{}{1/1,2/2,3/4,4/5,5/6}{}{1/1,2/2,3/7,4/3,5/4,6/5}{}
+					\mygraphb{1/1,2/2}{1,2}{1/1,2/2,3/4,4/5,5/6}{}{1/1,2/2,3/7,4/3,5/4,6/5}{}
 				}
 				\only<13>{
-					\mygraphb{1/1,2/2}{}{1/1,2/2,3/4,4/5,5/6}{}{1/1,2/2,3/7,4/3,5/4,6/5}{}
+					\mygraphb{1/1,2/2}{1,2}{1/1,2/2,3/4,4/5,5/6}{}{1/1,2/2,3/7,4/3,5/4,6/5}{}
 				}
 				\only<14>{
-					\mygraphb{1/1,2/2}{}{1/1,2/2,3/4,4/5,5/6}{}{1/1,2/2,3/7,4/3,5/4,6/5}{}
+					\mygraphb{1/1,2/2}{1,2}{1/1,2/2,3/4,4/5,5/6}{}{1/1,2/2,3/7,4/3,5/4,6/5}{}
 				}
 				\only<15>{
-					\mygraphb{1/1,2/2}{}{1/1,2/2,3/4,4/5,5/6}{}{1/1,2/2,3/7,4/3,5/4,6/5}{}
+					\mygraphb{1/1,2/2}{1,2}{1/1,2/2,3/4,4/5,5/6}{}{1/1,2/2,3/7,4/3,5/4,6/5}{}
 				}
 				\only<16>{
-					\mygraphb{1/1}{}{1/1}{}{1/1,2/8,3/7,4/8,5/8,6/8}{}
+					\mygraphb{1/1}{1}{1/1}{}{1/1,2/8,3/7,4/8,5/8,6/8}{}
 				}
 				\only<17>{
 					\mygraphb{}{}{}{}{1/9,2/8,3/7,4/8,5/8,6/8}{}
@@ -873,14 +929,7 @@
 						% component nodes 2,4,5,6
 						\fill [yellow, semitransparent] (1,0) -- (0,5) -- (1,7) -- (8,0) -- cycle;
 						% discard nodes 2,4,5,6
-						\draw [thick, red] (0.5, 5.5) -- (1.5, 4.5);
-						\draw [thick, red] (0.5, 4.5) -- (1.5, 5.5);
-						\draw [thick, red] (3.5, 3.5) -- (4.5, 2.5);
-						\draw [thick, red] (3.5, 2.5) -- (4.5, 3.5);
-						\draw [thick, red] (1.5, 1.5) -- (2.5, 0.5);
-						\draw [thick, red] (1.5, 0.5) -- (2.5, 1.5);
-						\draw [thick, red] (5.5, 1.5) -- (6.5, 0.5);
-						\draw [thick, red] (5.5, 0.5) -- (6.5, 1.5);
+						\mygraphadiscardtwofourfivesix
 					}
 				}
 				\only<17>{
@@ -893,14 +942,7 @@
 						% component nodes 2,4,5,6
 						\fill [yellow, semitransparent] (1,0) -- (0,5) -- (1,7) -- (8,0) -- cycle;
 						% discard nodes 2,4,5,6
-						\draw [thick, red] (0.5, 5.5) -- (1.5, 4.5);
-						\draw [thick, red] (0.5, 4.5) -- (1.5, 5.5);
-						\draw [thick, red] (3.5, 3.5) -- (4.5, 2.5);
-						\draw [thick, red] (3.5, 2.5) -- (4.5, 3.5);
-						\draw [thick, red] (1.5, 1.5) -- (2.5, 0.5);
-						\draw [thick, red] (1.5, 0.5) -- (2.5, 1.5);
-						\draw [thick, red] (5.5, 1.5) -- (6.5, 0.5);
-						\draw [thick, red] (5.5, 0.5) -- (6.5, 1.5);
+						\mygraphadiscardtwofourfivesix
 						% discard node 1
 						\draw [thick, red] (3.5, 7.5) -- (4.5, 6.5);
 						\draw [thick, red] (3.5, 6.5) -- (4.5, 7.5);
@@ -1200,7 +1242,7 @@
 		for every $1 < i\leq k$.
 		\item
 		An important property:
-		$$v_{i+1}\in e_i-v_i \text{, or } v_{i}\in e_i-v_{i+1}, \quad 1\leq i < k$$
+		$$v_{i+1}\in e_i-\{v_i\} \text{, or } v_{i}\in e_i-\{v_{i+1}\}, \quad 1\leq i < k$$
 		\item
 		Merging a set of edges is to replace old edges with the new one:
 		$$e_{new}=\bigcup_{i=1}^ke_i$$
@@ -1223,15 +1265,15 @@
 		Initially $H$ is the given graph $G$. If $H$ has no edges stop. Otherwise start a new path $P$ by choosing an edge 
 		$\{v,\,w\}$ and setting $P=(v,\,\{v,\,w\})$. Continue by growing $P$.
 		\item
-		To grow the path $P=(v_1,\,e_1,\,\cdots,\,v_k,\,e_k)$ choose an edge $\{v,\,w\}\neq e_k$ with $v\in e_k-v_k$ and do:
+		To grow the path $P=(v_1,\,e_1,\,\cdots,\,v_k,\,e_k)$ choose an edge $\{v,\,w\}\neq e_k$ with $v\in e_k-\{v_k\}$ and do:
 		\begin{itemize}
 			\item
 			If $w\notin V(P)$, add $v,\,\{v,\,w\}$ to the end of $P$. Continue growing $P$.
 			\item
-			If $w\in V(P)$, say $w\in e_i-v_{i+1}$, merge the edges of the cycle $w,\,e_i,\,v_{i+1},\,e_{i+1},\,\cdots,\,v_k,\,e_k,\,v,\,\{v,\,w\}$
+			If $w\in V(P)$, say $w\in e_i-\{v_{i+1}\}$, merge the edges of the cycle $w,\,e_i,\,v_{i+1},\,e_{i+1},\,\cdots,\,v_k,\,e_k,\,v,\,\{v,\,w\}$
 			to a new edge $e=\bigcup_{j=i}^ke_j$, both in $H$ and in $P$. Continue growing $P$.
 			\item
-			If no edge leaves $e_k-v_k$, output $e_k$ as an edge of the block hypergraph. Delete $e_k$ from $H$ and delete $(v_k,\,e_k)$
+			If no edge leaves $e_k-\{v_k\}$, output $e_k$ as an edge of the block hypergraph. Delete $e_k$ from $H$ and delete $(v_k,\,e_k)$
 			from $P$. If $P$ is now nonempty continue growing $P$. Otherwise try to start a new path $P$.
 		\end{itemize}
 	\end{itemize}
