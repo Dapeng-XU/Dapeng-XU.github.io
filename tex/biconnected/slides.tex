@@ -244,7 +244,7 @@
 % is a graphic format that can be processed by latex or pdflatex,
 % resp., then you can add a logo as follows:
 
-\pgfdeclareimage[height=0.75cm]{university-logo}{sdulogo}
+\pgfdeclareimage[height=0.75cm]{university-logo}{sdulogo.jpg}
 \logo{\pgfuseimage{university-logo}}
 
 
@@ -416,7 +416,7 @@
 					\mygraphadiscardthree
 				}
 			\end{center}
-			\item Path $P=\{ \, \{1\},\, \{2\} \, \}$
+			\item Path $P=\{ \, \{1\},\, \{2\} \, \} \quad \{3\}$
 			\item As $v_3$ is isolated, no edge leaves from $v_3$, so just \alert{delete} it.
 		}
 		\only<6>{
@@ -426,7 +426,7 @@
 					\mygraphadiscardthree
 				}
 			\end{center}
-			\item Path $P=\{ \, \{1\},\, \{2\},\, \{4\} \, \}$
+			\item Path $P=\{ \, \{1\},\, \{2\},\, \{4\} \, \} \quad \{3\}$
 			\item Grow $P$ by adding $v_4$.
 		}
 		\only<7>{
@@ -436,7 +436,7 @@
 					\mygraphadiscardthree
 				}
 			\end{center}
-			\item Path $P=\{ \, \{1\},\, \{2\},\, \{4\},\, \{5\} \, \}$
+			\item Path $P=\{ \, \{1\},\, \{2\},\, \{4\},\, \{5\} \, \} \quad \{3\}$
 			\item Grow $P$ by adding $v_5$.
 		}
 		\only<8>{
@@ -448,7 +448,7 @@
 					\fill [yellow, semitransparent] (1,0) -- (0,5) -- (1,7) -- (6,3) -- (3,0) -- cycle;
 				}
 			\end{center}
-			\item Path $P=\{ \, \{1\},\, \{2,\,4,\,5\} \, \}$
+			\item Path $P=\{ \, \{1\},\, \{2,\,4,\,5\} \, \} \quad \{3\}$
 			\item The cycle $v_2,\,v_4,\,v_5$ in $P$ is detected. Contract this cyclc.
 		}
 		\only<9>{
@@ -460,7 +460,7 @@
 					\fill [yellow, semitransparent] (1,0) -- (0,5) -- (1,7) -- (6,3) -- (3,0) -- cycle;
 				}
 			\end{center}
-			\item Path $P=\{ \, \{1\},\, \{2,\,4,\,5\},\,6 \, \}$
+			\item Path $P=\{ \, \{1\},\, \{2,\,4,\,5\},\,\{6\} \, \} \quad \{3\}$
 			\item Grow $P$ by adding $v_6$.
 		}
 		\only<10>{
@@ -472,7 +472,7 @@
 					\fill [yellow, semitransparent] (1,0) -- (0,5) -- (1,7) -- (8,0) -- cycle;
 				}
 			\end{center}
-			\item Path $P=\{ \, \{1\},\, \{2,\,4,\,5,\,6\} \, \}$
+			\item Path $P=\{ \, \{1\},\, \{2,\,4,\,5,\,6\} \, \} \quad \{3\}$
 			\item The cycle $\{v_2,\,v_4,\,v_5\},\,v_6,\,v_4$ in $P$ is detected. \alert{Contract} this cyclc.
 		}
 		\only<11>{
@@ -485,7 +485,7 @@
 					\mygraphadiscardtwofourfivesix
 				}
 			\end{center}
-			\item Path $P=\{ \, \{1\},\, \{2,\,4,\,5,\,6\} \, \}$
+			\item Path $P=\{ \, \{1\}\,  \} \quad \{2,\,4,\,5,\,6\},\,\{3\}$
 			\item No edge leaves from $\{v_2,\,v_4,\,v_5,\,v_6\}$, so we \alert{delete} it.
 		}
 		\only<12>{
@@ -503,7 +503,7 @@
 					\fill [yellow, semitransparent] (3,6) rectangle (5,8);
 				}
 			\end{center}
-			\item Path $P=\{ \, \{1\} \, \}$
+			\item Path $P=\{ \, \, \} \quad \{1\},\,\{2,\,4,\,5,\,6\},\,\{3\}$
 			\item No edge leaves from $\{v_1\}$, so we \alert{delete} it.
 		}
 		\only<13>{
@@ -521,7 +521,7 @@
 					\fill [yellow, semitransparent] (3,6) rectangle (5,8);
 				}
 			\end{center}
-			\item Path $P=\{ \, \, \}$
+			\item Path $P=\{ \, \, \} \quad \{1\},\,\{2,\,4,\,5,\,6\},\,\{3\}$
 			\item Now graph $H$ is \alert{empty}, which has no vertex.
 		}
 	\end{overlayarea}
@@ -533,7 +533,28 @@
 		\item
 		Correctness: If no edge leaves $v_k$ then $v_k$ is a vertex of the finest acyclic contraction.
 		\item
-		Easy to prove by contradiction: Assume there is an edge leaves $v_k\,\cdots$
+		Easy to prove by contradiction: If no edge leaves $v_k$, but $v_k$ is not a vertex of the finest acyclic contraction.
+		That is to say, $v_k$ is a part of some strong component $S'$, so there is a vertex $v'\in S'$, which satisfies $v_k\neq v'$
+		but $v_k$ and $v'$ are mutually reachable. Therefore, one edge at least leaving $v_k$ must be existent.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Three Cases When Growing Path}
+	\begin{itemize}
+		\item
+		To grow the path $P=(v_1,\cdots ,v_k)$ choose an edge $(v_k,w)$ directed from the last
+		vertex of $P$ and do the following:
+		\begin{itemize}
+			\item
+			If $w\notin P$, \emph{add $w$ to $P$}, making it the new last vertex of $P$. Continue growing $P$.
+			\item
+			If $w\in P$, say $w=v_i$, contract the cycle $v_i, v_{i+1}, \cdots, v_k$, both in $H$
+			and in $P$. $P$ is now a path in the new graph $H$. Continue growing $P$.
+			\item
+			If no edge leaves $v_k$, output $v_k$ as a vertex of the strong component graph. Delete $v_k$
+			from both $H$ and $P$. If $P$ is now nonempty continue growing $P$. Otherwise try to start a
+			new path $P$.
+		\end{itemize}
 	\end{itemize}
 \end{frame}
 
@@ -609,7 +630,7 @@
 				contract the cycle $v_i,\, v_{i+1},\,\cdots,\,v_k$, both in $H$ and in $P$\;
 			}
 		}
-		\If{no edge leaves $v$ and $v$ is the last DFS-finished vertex in a SCC}{
+		\If{no edge leaves $v$}{
 			output $v$ as a vertex of the strong component graph\;
 			delete $v$ from both $H$ and $P$\;
 		}
@@ -1165,7 +1186,7 @@
 	\SetAlFnt{\small}
 	\begin{algorithm}[H]
 		\caption{A Part of High-Level Algorithm}
-		\If{no edge leaves $v$ and $v$ is the last DFS-finished vertex in a SCC}{
+		\If{no edge leaves $v$}{
 			output $v$ as a vertex of the strong component graph\;
 			delete $v$ from both $H$ and $P$\;
 		}
@@ -1278,11 +1299,11 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Explanations}
-	\begin{itemize}
+% \begin{frame}{Explanations}
+	% \begin{itemize}
 		% \item The condition that 'no edge leaves $e_k-\{v_k\}\,\cdots$' doesn't mean $v_k$ is a articulation point.
-	\end{itemize}
-\end{frame}
+	% \end{itemize}
+% \end{frame}
 
 \begin{frame}{Pseudo Code}
 	\SetAlFnt{\small}
@@ -1361,20 +1382,6 @@
 	\end{procedure}
 \end{frame}
 
-\begin{frame}{Representations}
-	\begin{itemize}
-		\item
-		\emph{Open arrows}: They point to the vertices $v_i$ of $P$.
-		$$v_i=S[B[2i-1]],\quad i=1,\,\cdots,\,k$$
-		\emph{Filled arrows}: They demarcate the sets $e_i-v_i$; these sets
-		are the "nonfirst" vertices of edges $e_i$ of $P$.
-		$$e_i-\{v_i\}=\{S[j]:\,B[2i]\leq j < B[2i+2]\},\quad i=1,\,\cdots,\,k$$
-		\item
-		\emph{Biconnected components}: Each edge $\{v,\,w\}$ belongs to the
-		biconnected component with number $\min\{I[v],\,I[w]\}$.
-	\end{itemize}
-\end{frame}
-
 \begin{frame}{Algorithms}
 	\SetAlFnt{\small}
 	\begin{procedure}[H]
@@ -1396,6 +1403,20 @@
 			\lWhile{$I[v]\leq $TOP$(S)$}{$I[$POP$(S)]=c$}
 		}
 	\end{procedure}
+\end{frame}
+
+\begin{frame}{Representations}
+	\begin{itemize}
+		\item
+		\emph{Open arrows}: They point to the vertices $v_i$ of $P$.
+		$$v_i=S[B[2i-1]],\quad i=1,\,\cdots,\,k$$
+		\emph{Filled arrows}: They demarcate the sets $e_i-\{v_i\}$; these sets
+		are the "nonfirst" vertices of edges $e_i$ of $P$.
+		$$e_i-\{v_i\}=\{S[j]:\,B[2i]\leq j < B[2i+2]\},\quad i=1,\,\cdots,\,k$$
+		\item
+		\emph{Biconnected components}: Each edge $\{v,\,w\}$ belongs to the
+		biconnected component with number $\min\{I[v],\,I[w]\}$.
+	\end{itemize}
 \end{frame}
 
 \begin{frame}{Demo: Gabow's biconnected components algorithm}
