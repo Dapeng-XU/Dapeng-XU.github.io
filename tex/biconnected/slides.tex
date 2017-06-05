@@ -1131,6 +1131,8 @@
 	\begin{itemize}
 		\item
 		The key of proof is to show that STRONG(G) is a valid implementation of the P\&M's high-level algorithm.
+		\item
+		Tip: Use induction as a tool.
 	\end{itemize}
 \end{frame}
 
@@ -1331,7 +1333,7 @@
 				to a new edge $e=\bigcup_{j=i}^ke_j$, both in $H$ and in $P$\;
 			}
 		}
-		\If{no edge leaves $e_k-v_k$}{ %  and $v_k$ is the last DFS-finished vertex in a SCC
+		\If{no edge leaves $e_k-\{v_k\}$}{ %  and $v_k$ is the last DFS-finished vertex in a SCC
 			output $e_k$ as an edge of the block hypergraph\;
 			delete $e_k$ from $H$ and delete $(v_k,\,e_k)$ from $P$\;
 		}
