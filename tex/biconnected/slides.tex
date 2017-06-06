@@ -691,13 +691,18 @@
 \begin{frame}{Contraction Makes Much Difference}
 	\begin{itemize}
 		\item
+		$S$ and $B$ correspond to $P=(v_1,\,\cdots,\,v_k)$ where $k=TOP(B)$ and for $i=1,\,\cdots,\,k$.
+		\item
 		When contraction is executed, some vertices merges into a set.
 		\item
 		It is possible that several elements in stack $S$ are in the same vertex in path $P$.
 		More formal, 
-		\begin{center}
-			$v_i=\{S[j]:\, B[i]\leq j< B[i+1]\}$
-		\end{center}
+		$$v_i=\{S[j]\vert\, B[i]\leq j< B[i+1]\}$$
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Contraction Makes Much Difference}
+	\begin{itemize}
 		\item
 		By the way, the formal definition of $I[v]$ is
 		\begin{center}
@@ -1353,7 +1358,7 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}
+\begin{frame}{Correctness: Finest Acyclic Merging}
 	\begin{itemize}
 		\item
 		\alert{Pseudo code}:
@@ -1436,7 +1441,7 @@
 		$$v_i=S[B[2i-1]],\quad i=1,\,\cdots,\,k$$
 		\emph{Filled arrows}: They demarcate the sets $e_i-\{v_i\}$; these sets
 		are the "nonfirst" vertices of edges $e_i$ of $P$.
-		$$e_i-\{v_i\}=\{S[j]:\,B[2i]\leq j < B[2i+2]\},\quad i=1,\,\cdots,\,k$$
+		$$e_i-\{v_i\}=\{S[j]\vert\,B[2i]\leq j < B[2i+2]\},\quad i=1,\,\cdots,\,k$$
 		\item
 		\emph{Biconnected components}: Each edge $\{v,\,w\}$ belongs to the
 		biconnected component with number $\min\{I[v],\,I[w]\}$.
