@@ -1,0 +1,206 @@
+\documentclass[14pt, letterpaper, UTF8, fontset=windowsnew, heading=true]{article}
+\usepackage[UTF8]{ctex}
+\usepackage{graphicx}
+\usepackage{amsmath}
+
+\usepackage{amssymb}
+
+\usepackage{commath}
+\usepackage{bm}
+
+\author{徐大鹏}
+\title{数值计算复习笔记}
+
+\providecommand{\abs}[1]{\left\vert#1\right\vert}
+\providecommand{\norm}[1]{\left\Vert#1\right\Vert}
+
+\begin{document}
+
+\maketitle
+
+\part{概论}
+\textbf{提到的考点}：1.1 -- 1.3.9 适定的、不适定的；误差来源和表示、条件数；
+机器精度；舍入误差：大数吃小数、抵消。
+\par
+\textbf{条件数}：\textbf{解}的相对变化与\textbf{输入数据}相对变化的比值。
+$$\text{condition number}=\frac{\abs{\frac{(\hat{y}-y)}{y}}}{\abs{\frac{(\hat{x}-x)}{x}}}
+=\left\vert\frac{\frac{\Delta y}{y}}{\frac{\Delta x}{x}}\right\vert
+=\left\vert\frac{x\cdot\Delta y}{y\cdot\Delta x}\right\vert$$
+条件数刻画了问题的\textbf{病态性}，病态性的另一种说法是\textbf{敏感性}。也就是如果输入数据只变化了
+一点点，那么输出数据会变化多少。这个概念和在数学建模的灵敏性分析中使用的概念相一致。如果敏感性越强，
+意味着输入数据变化相同的范围，输出数据会有更大的变化，在上述定义式中，也就是分子更大，这样的结果就是
+条件数更大。
+\par
+
+使用导数的概念可以得到条件数在某一点$x$的近似表示。
+$$\text{condition number}=\left\vert\frac{x}{y}\cdot\frac{\Delta y}{\Delta x}\right\vert
+\stackrel{x\rightarrow \infty}{=}\left\vert\frac{x}{y}\cdot y'(x)\right\vert
+\stackrel{y=f(x)}{=}\left\vert\frac{x\cdot f'(x)}{f(x)}\right\vert$$
+这种表示形式的最大好处在于，只和自变量$x$相关，便于分析和计算。上面这种形式的条件数是最常用的计算形式
+，必须熟记。
+\par
+
+对于反函数$x = f^{-1}(y) = g(y)$而言，它的条件数是
+$$\text{condition number}\stackrel{y\rightarrow\infty}{=}\left\vert\frac{y\cdot g'(y)}{x}\right\vert
+=\left\vert\frac{y\cdot \frac{1}{f'(x)}}{x}\right\vert
+=\left\vert\frac{y}{x\cdot f'(x)}\right\vert
+=\left\vert\frac{f(x)}{x\cdot f'(x)}\right\vert$$
+正好就是原函数的条件数的倒数。
+\par
+
+\textbf{条件数的概念会和第二章线性方程组、第五章非线性方程组有联系。当$x$或$y$为零时，无法计算条件数，
+只能使用绝对条件数代替。}$$\text{absolute condition number}=\left\vert\frac{\Delta y}{\Delta x}\right\vert$$
+\par
+
+\textbf{浮点系统}可以使用四个参数完备地表示：基数$\beta$、精度$p$、$L$、$U$。它们的含义是什么？
+$$x=\pm\left( \sum_{i=0}^p\frac{d_i}{\beta^i} \right)\beta^E$$
+正规化浮点系统的下溢限
+$$\text{UFL}=\beta^L$$
+上溢限
+$$\text{OFL}=\beta^{U+1}(1-\beta^{-p})$$
+正规化浮点数的总个数
+$$2(\beta-1)\beta^{p-1}(U-L+1)+1$$
+截断舍入的机器精度
+$$\epsilon_{mach}=\beta^{1-p}$$
+最近舍入的机器精度
+$$\epsilon_{mach}=\frac{1}{2}\beta^{1-p}$$
+
+\par \textbf{机器精度的含义是什么？}
+
+\par \textbf{舍入误差分析的标准模型}：
+$$\text{fl}(x\text{ op }y)=(x\text{ op }y)(1+\delta)$$
+其中op可以是加、减、乘、除中的任意一种，相对扰动$\vert\delta\vert\leq\epsilon_{mach}$。
+
+\part{线性方程组}
+
+\textbf{提到的考点}：2.3 --- 2.4.8 范数、性质、条件数、误差限、影响因素、残差；高斯消去法、LU分解。
+2.5 特殊线性方程组的解法：对称正定方程组的求解、带状方程组的求解。
+2.6 迭代法（参考第11章）：雅克比方法、高斯-赛德尔方法、SOR方法。
+
+\par
+\textbf{向量的$p$-范数}：
+$$\Vert \bm{x}\Vert_p=\left(\sum_{i=1}^n\vert x_i\vert^p\right)^{\frac{1}{p}}$$
+注意表达式里，每一个分量$x_i$都取了绝对值。
+
+\par
+\textbf{矩阵范数}：定义$m\times n$的矩阵$\bm{A}$的（向量诱导）范数是
+$$\Vert \bm{A}\Vert=\max_{\bm{x}\neq \bm{0}}\frac{\Vert\bm{Ax}\Vert}{\Vert\bm{x}\Vert}$$
+
+使用向量1-范数、$\infty$-范数的结果不太容易推导，直接记住形式：
+$$\Vert\bm{A}\Vert_1=\max_j\sum_{i=1}^m\vert a_{ij}\vert$$
+$$\Vert\bm{A}\Vert_\infty=\max_i\sum_{j=1}^n\vert a_{ij}\vert$$
+一个是按行求和，一个是按列求和。
+
+\par
+\textbf{矩阵条件数的性质}：
+\begin{itemize}
+	\item
+	对任意$\bm{A}$，$\text{cond}(\bm{A})\geq 1$。\\
+	不会证。
+	\item
+	对任意$\bm{A}$及非零标量$\gamma$，$\text{cond}(\gamma\bm{A})=\text{cond}(\bm{A})$。 \\
+	% 因为$\bm{I}=(\gamma\bm{A})\cdot(\gamma\bm{A})^{-1}=(\gamma\bm{A})\cdot(\gamma^{-1}\bm{A}^{-1})$，
+	% $$\begin{aligned}
+		% \text{cond}(\gamma\bm{A}) &= \norm{\gamma\bm{A}}\cdot\norm{\gamma^{-1}\bm{A}^{-1}} \\
+		% &= \abs{\gamma}\cdot\norm{\bm{A}}\cdot\abs{\gamma^{-1}\cdot\norm{\bm{A}^{-1}} \\
+		% &= \norm{\bm{A}}\cdot\norm{\bm{A}^{-1}} = \text{cond}(\bm{A})
+	% \end{aligned}$$
+	\item
+	对任意对角阵，$\bm{D}=\text{diag}(d_i)$，$\text{cond}(\bm{D})=\frac{\max_i\abs{d_i}}{\min_i\abs{d_i}}$。 \\
+	显然。
+\end{itemize}
+\par
+条件数$\text{cond}(\bm{A})$刻画了矩阵接近奇异的程度。行列式$\text{det}(\bm{A})$刻画了矩阵是否是奇异的。
+
+\par
+第2.3.4节主要讲了求解线性方程组的误差限表示、误差限和什么相关，以及如何推导误差限的问题。推导得到了两个
+主要结论。第一个是，右端向量带有扰动的方程组$\bm{A}(\bm{x}+\Delta\bm{x})=\bm{b}+\Delta\bm{b}$的解的估计式是
+$$\frac{\norm{\Delta x}}{\norm{x}} \leq \text{cond}(\bm{A})\cdot \frac{\norm{\Delta \bm{b}}}{\bm{b}}$$
+第二个是，矩阵$\bm{A}$的元素带有扰动的方程组$(\bm{A}+\bm{E})(\bm{x}+\Delta\bm{x})=\bm{b}$的解的估计式是
+$$\frac{\Delta\bm{x}}{\norm{\bm{x}+\Delta\bm{x}}}\leq \text{cond}(\bm{A})\frac{\norm{\bm{E}}}{\norm{\bm{A}}}$$
+注意直接使用不等式推得的第二个结论中，左边分母上是带扰动的输入$\bm{x}+\Delta\bm{x}$。
+
+\par
+
+\textbf{使用更精确的方法改进第二个结论？}然后可以得到最终的结论：
+$$\frac{\Delta\bm{x}}{\norm{\bm{x}}}\leq \text{cond}(\bm{A})\left(\frac{\norm{\Delta\bm{b}}}{\norm{\bm{b}}}
++\frac{\norm{\bm{E}}}{\norm{\bm{A}}}\right)$$
+上式左侧的分式是向前误差，右侧的分式是向后误差。条件数是输出误差对输入误差的一个估计。一个输入数据的误差输入数据
+的误差就是数据传播误差。浮点系统的数据传播误差的大小由机器精度$\epsilon_{mach}$决定。可以将上式写成这种形式
+$$\frac{\Delta\bm{x}}{\norm{\bm{x}}} \lessapprox \text{cond}(\bm{A})\epsilon_{mach}$$
+
+\par
+矩阵条件数$\text{cond}(A)$太大的原因：
+\begin{enumerate}
+	\item
+	矩阵本身是接近奇异的，也就是行向量之间接近线性相关；
+	\item
+	观测的数据相差太大，比如某个列向量大了很多个数量级
+\end{enumerate}
+
+\par
+\textbf{残差}：$$\bm{r}=\bm{b}-\bm{A}\hat{\bm{x}}$$
+\textbf{相对残差}：$$\frac{\norm{\bm{r}}}{\norm{\bm{A}}\cdot\norm{\hat{\bm{x}}}}$$
+稳定算法产生的相对残差总是很小。
+
+\par
+线性方程组的求解：相互等价的两种算法，Gauss消去法和LU分解。
+\begin{figure}[h]
+	\includegraphics[width=0.8\textwidth]{Gauss-Elimination.PNG}
+	\centering
+\end{figure}
+这里，我们构造了一个初等消去阵
+$$\bm{M}_k=\bm{I}-\bm{m}\bm{e}_k^T$$
+，其中
+$$\bm{m}=(0,\,\cdots,\,0,\,m_{k+1},\,\cdots,\, m_n)$$
+考虑到$m_i=a_i/a_k$，上式可写作
+$$\bm{m}=(0,\,\cdots,\,0,\,\frac{a_{i+1}}{a_k},\,\cdots,\, \frac{a_n}{a_k})$$
+$\bm{M}_k$是一个单位下三角矩阵，然后后面就很显然了，果然没什么好推的。
+
+\par
+\textbf{选主元}：\textbf{每次循环时选择最大的元素作为主元}，因为主元$a_k$出现在$m_i=a_i/a_k$的分母上。
+如果$a_k$比较小，会产生一个非常大的乘数$m_i$，从而造成大数吃小数的（抵消）问题，导致误差。
+选主元的结果是在$\bm{A}$上乘以了一个排列矩阵$\bm{P}$，使
+$$\bm{PA}=\bm{LU}$$
+这样，求解$\bm{Ax}=\bm{b}$的问题等价转化为求解$\bm{PAx}=\bm{Pb}$的问题。特别注意，排列阵$\bm{P}$具有性质
+$$P^{-1}=P^T$$
+另外，这个性质实际上说明排列阵$\bm{P}$是一个正交矩阵。
+
+\par
+\textbf{高斯-若当（Gauss-Jordan）消去法}：这种方法的区别在于，开始于
+$$\left[\begin{array}{c|c} \bm{A} &\bm{I} \end{array}\right]$$
+但是行化简的方式，是将非对角线上的元素一次消去，是一种彻底的消元法。消元后，
+乘以一个对角矩阵将左侧矩阵的对角元素化为全1。最终得到的结果是
+$$\left[\begin{array}{c|c} \bm{I} &\bm{A^{-1}} \end{array}\right]$$
+这种方法更适合于求出逆矩阵$\bm{A}^{-1}$。
+
+\par
+\textbf{对称正定方程组}：如果$\bm{A}$是对称正定的，那么$\bm{A}=\bm{LL}^T>0$
+
+\part{线性最小二乘}
+
+\textbf{提到的考点}：正规方程组、增广方程组、QR分解（House-Hold方法、Givens旋转、Gram-Schmidt正交化方法）
+、奇异值分解。
+
+\textbf{House-Hold变换}。
+$$\bm{H} = \bm{I} - 2\frac{\bm{vv}^T}{\bm{v}^T\bm{v}}$$
+$$HH^T=HH^{-1}=I$$
+$$\begin{aligned}
+\bm{HH}^T &= \left(\bm{I} - 2\frac{\bm{vv}^T}{\bm{v}^T\bm{v}}\
+\end{aligned}$$
+
+\part{非线性方程组}
+
+\textbf{提到的考点}：5.1, 5.4 --- 5.5.5：收敛速度、收敛性；二分法、牛顿法、反二次方法。迭代收敛准则。例题5.9
+
+\part{插值}
+
+\textbf{提到的考点}：7.3 三种基函数：单项式、拉格朗日、牛顿。7.3.1 --- 7.3.3, 7.3.5 余项定理。
+7.4.2 三次样条。例题7.6
+
+\part{积分和微分}
+
+\textbf{提到的考点}：待定系数法。 8.3 牛顿科特斯方法、高斯方法。简单求积公式构造出复杂的求积公式。
+8.6 差分公式和推导。积分：代数精度、验证法确定。
+	
+\end{document}
