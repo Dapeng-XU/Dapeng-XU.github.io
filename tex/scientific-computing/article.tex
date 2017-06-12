@@ -18,7 +18,7 @@
 
 \maketitle
 
-\part{概论}
+\section{概论}
 \textbf{提到的考点}：1.1 -- 1.3.9 适定的、不适定的；误差来源和表示、条件数；
 机器精度；舍入误差：大数吃小数、抵消。
 \par
@@ -71,11 +71,13 @@ $$\epsilon_{mach}=\frac{1}{2}\beta^{1-p}$$
 $$\text{fl}(x\text{ op }y)=(x\text{ op }y)(1+\delta)$$
 其中op可以是加、减、乘、除中的任意一种，相对扰动$\vert\delta\vert\leq\epsilon_{mach}$。
 
-\part{线性方程组}
+\section{线性方程组}
 
 \textbf{提到的考点}：2.3 --- 2.4.8 范数、性质、条件数、误差限、影响因素、残差；高斯消去法、LU分解。
 2.5 特殊线性方程组的解法：对称正定方程组的求解、带状方程组的求解。
 2.6 迭代法（参考第11章）：雅克比方法、高斯-赛德尔方法、SOR方法。
+
+\subsection{回顾：赋范线性空间}
 
 \par
 \textbf{向量的$p$-范数}：
@@ -90,6 +92,8 @@ $$\Vert \bm{A}\Vert=\max_{\bm{x}\neq \bm{0}}\frac{\Vert\bm{Ax}\Vert}{\Vert\bm{x}
 $$\Vert\bm{A}\Vert_1=\max_j\sum_{i=1}^m\vert a_{ij}\vert$$
 $$\Vert\bm{A}\Vert_\infty=\max_i\sum_{j=1}^n\vert a_{ij}\vert$$
 一个是按行求和，一个是按列求和。
+
+\subsection{矩阵的条件数、误差限、残差}
 
 \par
 \textbf{矩阵条件数的性质}：
@@ -143,6 +147,8 @@ $$\frac{\Delta\bm{x}}{\norm{\bm{x}}} \lessapprox \text{cond}(\bm{A})\epsilon_{ma
 \textbf{相对残差}：$$\frac{\norm{\bm{r}}}{\norm{\bm{A}}\cdot\norm{\hat{\bm{x}}}}$$
 稳定算法产生的相对残差总是很小。
 
+\subsection{一般方法：Gauss消去和LU分解}
+
 \par
 线性方程组的求解：相互等价的两种算法，Gauss消去法和LU分解。
 \begin{figure}[h]
@@ -174,31 +180,76 @@ $$\left[\begin{array}{c|c} \bm{A} &\bm{I} \end{array}\right]$$
 $$\left[\begin{array}{c|c} \bm{I} &\bm{A^{-1}} \end{array}\right]$$
 这种方法更适合于求出逆矩阵$\bm{A}^{-1}$。
 
+\subsection{特殊方程组：Cholesky分解和简化的LU分解}
+
 \par
 \textbf{对称正定方程组}：如果$\bm{A}$是对称正定的，那么$\bm{A}=\bm{LL}^T>0$
+\par
+楚列斯基分解的特点：
+\begin{enumerate}
+	\item
+	所需计算的$n$个平方根都是正数
+	\item
+	不需要选主元就可以保证数值稳定
+	\item
+	$\bm{A}$是对称正定的，上三角部分的元素用不到而且无需存储
+	\item
+	仅仅需要做$\frac{n^3}{6}$次乘法
+\end{enumerate}
+\par
+\textbf{Cholesky分解和LU分解的区别}：
+\begin{enumerate}
+	\item
+	Cholesky分解得到的下三角矩阵$\bm{L}$不一定是单位下三角矩阵。
+	\item
+	Cholesky分解不需要选主元
+	\item
+	Cholesky分解需要计算平方根
+\end{enumerate}
 
-\part{线性最小二乘}
+\par
+最后，带状方程组的求解，是LU分解求解一般方程组的一个特殊情况。
+
+\section{线性最小二乘}
 
 \textbf{提到的考点}：正规方程组、增广方程组、QR分解（House-Hold方法、Givens旋转、Gram-Schmidt正交化方法）
 、奇异值分解。
 
+\par
+目标是最小化残差向量$\bm{r}=\bm{b}-\bm{Ax}$。过程中最好选择2-范数，因为它与内积有关，具有正交性、光滑性、严格凸性。
+\par
+一个一维函数$f$是\textbf{严格凸的}，如果这个函数在区间$(x,\,y)$上满足
+$$\forall t\in (0,\,1),\quad f(tx+(1-t)y)<tf(x)+(1-t)f(y)$$
+\par
+\textbf{范德蒙矩阵}是列向量的每个分量上呈现等比关系的矩阵
+$$V=\begin{bmatrix}1&\alpha_{1}&\alpha_{1}^{2}&\cdots &\alpha_{1}^{n-1}\\
+1&\alpha_{2}&\alpha_{2}^{2}&\cdots &\alpha_{2}^{n-1}\\
+1&\alpha_{3}&\alpha_{3}^{2}&\cdots &\alpha_{3}^{n-1}\\
+\vdots &\vdots &\vdots &\ddots &\vdots \\
+1&\alpha_{m}&\alpha_{m}^{2}&\cdots &\alpha_{m}^{n-1}
+\end{bmatrix}$$
+它的每一个元素是
+$$\bm{V}_{i,j}=\alpha_i^{j-1}$$
+当它是$n$阶方阵时，行列式为
+$$\det(V)=\prod _{1\leq i<j\leq n}(\alpha _{j}-\alpha _{i})$$
+
+\par
+线性最小二乘的解唯一的条件是，矩阵$\bm{A}$是列满秩的。
+
 \textbf{House-Hold变换}。
 $$\bm{H} = \bm{I} - 2\frac{\bm{vv}^T}{\bm{v}^T\bm{v}}$$
 $$HH^T=HH^{-1}=I$$
-$$\begin{aligned}
-\bm{HH}^T &= \left(\bm{I} - 2\frac{\bm{vv}^T}{\bm{v}^T\bm{v}}\
-\end{aligned}$$
 
-\part{非线性方程组}
+\section{非线性方程组}
 
 \textbf{提到的考点}：5.1, 5.4 --- 5.5.5：收敛速度、收敛性；二分法、牛顿法、反二次方法。迭代收敛准则。例题5.9
 
-\part{插值}
+\section{插值}
 
 \textbf{提到的考点}：7.3 三种基函数：单项式、拉格朗日、牛顿。7.3.1 --- 7.3.3, 7.3.5 余项定理。
 7.4.2 三次样条。例题7.6
 
-\part{积分和微分}
+\section{积分和微分}
 
 \textbf{提到的考点}：待定系数法。 8.3 牛顿科特斯方法、高斯方法。简单求积公式构造出复杂的求积公式。
 8.6 差分公式和推导。积分：代数精度、验证法确定。
