@@ -97,22 +97,22 @@ $$\Vert\bm{A}\Vert_\infty=\max_i\sum_{j=1}^n\vert a_{ij}\vert$$
 
 \par
 \textbf{矩阵条件数的性质}：
-\begin{itemize}
+\begin{enumerate}
 	\item
 	对任意$\bm{A}$，$\text{cond}(\bm{A})\geq 1$。\\
 	不会证。
 	\item
 	对任意$\bm{A}$及非零标量$\gamma$，$\text{cond}(\gamma\bm{A})=\text{cond}(\bm{A})$。 \\
-	% 因为$\bm{I}=(\gamma\bm{A})\cdot(\gamma\bm{A})^{-1}=(\gamma\bm{A})\cdot(\gamma^{-1}\bm{A}^{-1})$，
-	% $$\begin{aligned}
-		% \text{cond}(\gamma\bm{A}) &= \norm{\gamma\bm{A}}\cdot\norm{\gamma^{-1}\bm{A}^{-1}} \\
-		% &= \abs{\gamma}\cdot\norm{\bm{A}}\cdot\abs{\gamma^{-1}\cdot\norm{\bm{A}^{-1}} \\
-		% &= \norm{\bm{A}}\cdot\norm{\bm{A}^{-1}} = \text{cond}(\bm{A})
-	% \end{aligned}$$
+	因为$\bm{I}=(\gamma\bm{A})\cdot(\gamma\bm{A})^{-1}=(\gamma\bm{A})\cdot(\gamma^{-1}\bm{A}^{-1})$，
+	$$\begin{aligned}
+		\text{cond}(\gamma\bm{A}) &= \norm{\gamma\bm{A}}\cdot\norm{\gamma^{-1}\bm{A}^{-1}} \\
+		&= \abs{\gamma}\cdot\norm{\bm{A}}\cdot\abs{\gamma^{-1}}\cdot\norm{\bm{A}^{-1}} \\
+		&= \norm{\bm{A}}\cdot\norm{\bm{A}^{-1}} = \text{cond}(\bm{A})
+	\end{aligned}$$
 	\item
 	对任意对角阵，$\bm{D}=\text{diag}(d_i)$，$\text{cond}(\bm{D})=\frac{\max_i\abs{d_i}}{\min_i\abs{d_i}}$。 \\
-	显然。
-\end{itemize}
+	证：显然。
+\end{enumerate}
 \par
 条件数$\text{cond}(\bm{A})$刻画了矩阵接近奇异的程度。行列式$\text{det}(\bm{A})$刻画了矩阵是否是奇异的。
 
@@ -215,6 +215,8 @@ $$\left[\begin{array}{c|c} \bm{I} &\bm{A^{-1}} \end{array}\right]$$
 \textbf{提到的考点}：正规方程组、增广方程组、QR分解（House-Hold方法、Givens旋转、Gram-Schmidt正交化方法）
 、奇异值分解。
 
+\subsection{目标、相关概念、惟一性}
+
 \par
 目标是最小化残差向量$\bm{r}=\bm{b}-\bm{Ax}$。过程中最好选择2-范数，因为它与内积有关，具有正交性、光滑性、严格凸性。
 \par
@@ -235,6 +237,29 @@ $$\det(V)=\prod _{1\leq i<j\leq n}(\alpha _{j}-\alpha _{i})$$
 
 \par
 线性最小二乘的解唯一的条件是，矩阵$\bm{A}$是列满秩的。
+
+\subsection{正规方程组}
+
+如果$\bm{A}$是列满秩的，则$n\times n$正定对称正规方程组$\bm{A}^T\bm{Ax}=\bm{A}^T\bm{b}$与$m\times n$
+最小二乘问题$\bm{Ax}\cong\bm{b}$同解。使用Cholesky分解求解这个线性方程组的解。
+
+\par
+正规方程组的敏感性很强，因为叉积矩阵$\bm{A}^T\bm{A}$的条件数是原矩阵条件数的平方。
+
+\subsection{QR分解}
+正交矩阵的特点：不会变化向量的2-范数。
+\par
+课本先说了QR分解是什么，后说了如何做QR分解。QR分解的核心在于，对于每个$m\times n$矩阵$\bm{A}$能找到一个
+$m\times m$的正交矩阵$\bm{Q}$，使得
+$$\bm{A}=\bm{Q}\begin{bmatrix}\bm{R}\\ \bm{0}\end{bmatrix}$$
+至于这个正交矩阵$\bm{Q}$是如何找到的，则是通过House-Hold变换、Givens旋转、Gram-Schmidt正交化等算法实现的。
+课本上所做的一个证明是，证明
+$$\bm{Q}\begin{bmatrix}\bm{R}\\ \bm{0}\end{bmatrix}\bm{x}\cong\bm{b}$$和
+$$\begin{bmatrix}\bm{R}\\ \bm{0}\end{bmatrix}\bm{x}\cong\bm{Q}^T\bm{b}$$
+是同解的。
+这样，我们只需验证House-Hold变换等算法是实现了QR分解的
+$$\bm{A}=\bm{Q}\begin{bmatrix}\bm{R}\\ \bm{0}\end{bmatrix}$$
+就能说明算法能够正确求解出线性最小二乘了。
 
 \textbf{House-Hold变换}。
 $$\bm{H} = \bm{I} - 2\frac{\bm{vv}^T}{\bm{v}^T\bm{v}}$$
