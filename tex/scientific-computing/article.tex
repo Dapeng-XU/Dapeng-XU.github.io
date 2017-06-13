@@ -327,6 +327,61 @@ $$\abs{\alpha}=\norm{\bm{a}_2}$$
 
 \textbf{提到的考点}：5.1, 5.4 --- 5.5.5：收敛速度、收敛性；二分法、牛顿法、反二次方法。迭代收敛准则。例题5.9
 
+\subsection{收敛速度和判停准则}
+第$k$步迭代的绝对误差是$\bm{e}_k=\bm{x}_k-\bm{x}^{\ast}$。考虑式子
+$$\lim_{k\rightarrow \infty}\frac{\norm{\bm{e}_{k+1}}}{\norm{\bm{e}_k}^r}=C$$
+其中，$C$是一个大于零的有限常数，$r$为迭代法的收敛速度。
+
+\par
+两种判停准则：
+\begin{enumerate}
+	\item
+	限定残差：
+	$$\norm{f(\bm{x}_k)} < \epsilon$$
+	\item
+	限定相对误差：
+	$$\frac{\norm{\bm{x}_{k+1}-\bm{x}_k}}{\max \left\{ \norm{\bm{x}_k},\, \bm{1} \right\} } < \epsilon$$
+\end{enumerate}
+
+\subsection{二分法}
+二分法使用的中点计算方式是
+$$m=a+\frac{b-a}{2}$$
+判断收缩区间的条件是
+$$\text{sgn}(f(a))=\text{sgn}(f(m))$$
+\textbf{他们的优点是什么？}（课本上有）
+
+\subsection{不动点迭代}
+迭代格式是
+$$\bm{x}_{k+1}=g(\bm{x}_k)$$
+收敛速度是线性的。迭代收敛的证明和收敛速度的证明，使用拉格朗日微分中值定理
+$$\bm{e}_{k+1}=\bm{x}_{k+1}-\bm{x}^{\ast}
+=g(\bm{x}_k)-g(\bm{x}^{\ast})=g'(\theta_k)(\bm{x}_k-\bm{x}^{\ast})
+=g'(\theta_k)\bm{e}_k$$
+如果需要证明平方收敛或者更高阶收敛，则使用泰勒中值定理。
+
+\subsection{牛顿法}
+迭代格式是
+$$\bm{x}_{k+1}=\bm{x}_k-\frac{f(\bm{x}_k)}{f'(\bm{x}_k)}$$
+收敛速度在单根情形的收敛速度是二次的，在重根的收敛速度是线性的。
+\par
+割线法略。
+
+\subsection{反二次插值}
+想法：改进割线法的一次函数，使用二次函数和$x$轴的交点横坐标作为下一个$x_{k+1}$。
+但是，二次函数可以与$x$轴没有交点，使用“反二次”就能保证一定有交点了。
+\par
+为方便起见，分别记自变量$x_{k-2}$、$x_{k-1}$、$x_{k}$为$a$、$b$、$c$，他们对应的函数值
+分别为$f_a$、$f_b$、$f_c$。
+\par
+构造反二次函数，即以$y$为自变量，$x$为因变量，
+$$x=m_0+m_1y+m_2y^2$$
+在上式中令$y=0$，可以求出曲线和$x$轴的交点
+$$x_{k+1}=m_0$$
+为确定$m_0$、$m_1$、$m_2$，使用拉格朗日插值公式：
+$$x(y)=a\frac{(y-f_b)(y-f_c)}{(f_a-f_b)(f_a-f_c)}+b\frac{(y-f_a)(y-f_c)}{(f_b-f_a)(f_b-f_c)}+c\frac{(y-f_a)(y-f_b)}{(f_c-f_a)(f_c-f_b)}$$
+取$y=0$得到
+$$x(0)=a\frac{f_bf_c}{(f_a-f_b)(f_a-f_c)}+b\frac{f_af_c}{(f_b-f_a)(f_b-f_c)}+c\frac{f_af_b}{(f_c-f_a)(f_c-f_b)}$$
+
 \section{插值}
 
 \textbf{提到的考点}：7.3 三种基函数：单项式、拉格朗日、牛顿。7.3.1 --- 7.3.3, 7.3.5 余项定理。
