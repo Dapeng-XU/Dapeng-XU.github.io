@@ -387,6 +387,29 @@ $$x(0)=a\frac{f_bf_c}{(f_a-f_b)(f_a-f_c)}+b\frac{f_af_c}{(f_b-f_a)(f_b-f_c)}+c\f
 \textbf{提到的考点}：7.3 三种基函数：单项式、拉格朗日、牛顿。7.3.1 --- 7.3.3, 7.3.5 余项定理。
 7.4.2 三次样条。例题7.6
 
+\subsection{牛顿多项式插值}
+对给定的数据点集$(t_j,\,y_j)$牛顿基函数
+$$\pi_j(t)=\prod_{k=1}^{j-1}(t-t_k), \quad j=1,\,\cdots,\,n$$
+对应的插值多项式
+$$p_{n-1}(t)=\sum_{j=1}^{n}x_j\pi_j(t)=\sum_{j=1}^{n}\left[x_j\prod_{k=1}^{j-1}(t-t_k)\right]$$
+为了求这个多项式，对应的基底矩阵$\bm{A}$是
+$$\begin{bmatrix}
+1&&\ldots &&0\\
+1&t_{1}-t_{0}&&&\\
+1&t_{2}-t_{0}&(t_{2}-t_{0})(t_{2}-t_{1})&&\vdots \\
+\vdots &\vdots &&\ddots &\\
+1&t_{k}-t_{0}&\ldots &\ldots &\prod_{{j=0}}^{{n-1}}(t_{n}-t_{j})
+\end{bmatrix}
+\begin{bmatrix}x_{0}\\ x_{1} \\ \vdots \\ \\ x_{n}
+\end{bmatrix}
+=
+\begin{bmatrix}y_{0}\\ y_{1} \\ \vdots \\ \\ y_{n}
+\end{bmatrix}$$
+这是一个下三角矩阵，每一个$x_j$由当前行和之前的所有行确定。这说明，当新增加一个数据点$t_{n+1},\,y_{n+1}$时，
+可以直接确定系数$x_{n+1}$的值，并且在$p_{n-1}$中增加一项
+$$x_{n+1}=\frac{y_{n+1}-p_n(t_{n+1})}{\pi_{n+1}(t_{n+1})}=\frac{y_{n+1}-p_n(t_{n+1})}{\prod_{k=1}^{n}(t_{n+1}-t_k)}$$
+就可以得到$p_{n}$。
+
 \section{积分和微分}
 
 \textbf{提到的考点}：待定系数法。 8.3 牛顿科特斯方法、高斯方法。简单求积公式构造出复杂的求积公式。
