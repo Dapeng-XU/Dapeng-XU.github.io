@@ -276,7 +276,7 @@ $$\bm{H} = \bm{I} - 2\frac{\bm{vv}^T}{\bm{v}^T\bm{v}}$$
 对于一个$m$维列向量$\bm{a}$，考虑分块
 $$\bm{a}=\begin{bmatrix}\bm{a}_1\\\bm{a}_2\end{bmatrix}$$
 其中$\bm{a}_1$是$k-1$维向量$(1\leq k< m)$。我们的任务是什么呢？是要做QR分解，是要确定一个向量$\bm{v}$，它能将
-$$\bm{H(\bm{a})}:\,
+$$\bm{H}(\bm{a}):\,
 \begin{bmatrix}\bm{a}_1\\ \bm{a}_2\end{bmatrix}
 \mapsto
 \begin{bmatrix}\bm{a}_1\\ \bm{0}\end{bmatrix} + \alpha \bm{e}_k
@@ -299,14 +299,29 @@ $$\begin{bmatrix}\bm{0}\\ \bm{a}_2\end{bmatrix} - \alpha \bm{e}_k
 $$\bm{v}=\frac{\bm{v}^T\bm{v}}{2\bm{v}^T\bm{a}}
 \left( \begin{bmatrix}\bm{0}\\ \bm{a}_2\end{bmatrix} - \alpha \bm{e}_k \right)$$
 为了计算简便，消去上式右端的标量系数是可行的。因为
-$$ \begin{aligned} H &=I-2 \frac{(\alpha \bm{v})( \alpha \bm{v})^T} {( \alpha \bm{v})^T 
-(\alpha \bm{v})} \\ &=I-2\frac{\alpha ^2 \bm{v} \bm{v}^T}{\alpha ^2 \bm{v}^T 
+$$ \begin{aligned} H &=I-2 \frac{(\beta \bm{v})( \beta \bm{v})^T} {( \beta \bm{v})^T 
+(\beta \bm{v})} \\ &=I-2\frac{\beta ^2 \bm{v} \bm{v}^T}{\beta ^2 \bm{v}^T 
 \bm{v}} \\ &= I-2\frac{ \bm{v} \bm{v}^T}{ \bm{v}^T  \bm{v}} \end{aligned} $$
 所以$\bm{v}$的标量系数在$\bm{H}$的计算过程中会被消去，没有影响。这就得到了要取的$\bm{v}$：
 $$\bm{v}=\begin{bmatrix}\bm{0}\\ \bm{a}_2\end{bmatrix}-\alpha \bm{e}_k$$
 其中
-$$\alpha=-\text{sgn} (a_k)\pm\norm{\bm{a}_2}_2$$
-
+$$\alpha=-\text{sgn} (a_k)\norm{\bm{a}_2}_2$$
+\par
+\textbf{但是，这里的$\alpha$为什么这么取值呢？}$\abs{\alpha}=\norm{a_2}_2$的依据是什么呢？
+对于任意向量$\bm{a}$，正交矩阵$\bm{H}$作用于$\bm{a}$得到的线性映射$\bm{H}(\bm{a})$有着性质
+$$\norm{\bm{a}}_2=\norm{\bm{Ha}}_2$$
+对于一个具体的向量
+$$\bm{a}=\begin{bmatrix}\bm{a}_1\\ \bm{a}_2\end{bmatrix}$$
+根据上面的讨论，如果将线性映射的结果表示成
+$$\bm{H}(\bm{a})=\begin{bmatrix}\bm{a}_1\\ \bm{0}\end{bmatrix} + \alpha \bm{e}_k$$
+那么它一定满足性质
+$$\norm{\begin{bmatrix}\bm{a}_1\\ \bm{a}_2\end{bmatrix}}=\norm{\begin{bmatrix}\bm{a}_1\\ \bm{0}\end{bmatrix} + \alpha \bm{e}_k}$$
+根据勾股定理，
+$$\norm{\begin{bmatrix}\bm{a}_1\\ \bm{a}_2\end{bmatrix}}_2^2=\norm{\bm{a}_1}_2^2+\norm{\bm{a}_2}_2^2$$
+$$\norm{\begin{bmatrix}\bm{a}_1\\ \bm{0}\end{bmatrix} + \alpha \bm{e}_k}_2^2=\norm{\bm{a}_1}_2^2 + \alpha^2$$
+因此
+$$\alpha^2=\norm{\bm{a}_2}_2^2$$
+$$\abs{\alpha}=\norm{\bm{a}_2}$$
 
 \section{非线性方程组}
 
