@@ -212,7 +212,7 @@ $$\left[\begin{array}{c|c} \bm{I} &\bm{A^{-1}} \end{array}\right]$$
 
 \section{线性最小二乘}
 
-\textbf{提到的考点}：正规方程组、增广方程组、QR分解（House-Hold方法、Givens旋转、Gram-Schmidt正交化方法）
+\textbf{提到的考点}：正规方程组、增广方程组、QR分解（Householder变换、Givens旋转、Gram-Schmidt正交化方法）
 、奇异值分解。
 
 \subsection{目标、相关概念、惟一性}
@@ -247,7 +247,13 @@ $$\det(V)=\prod _{1\leq i<j\leq n}(\alpha _{j}-\alpha _{i})$$
 正规方程组的敏感性很强，因为叉积矩阵$\bm{A}^T\bm{A}$的条件数是原矩阵条件数的平方。
 
 \subsection{QR分解}
-正交矩阵的特点：不会变化向量的2-范数。
+正交矩阵的特点：
+\begin{enumerate}
+\item
+不会变化向量的2-范数。
+\item
+$\bm{QQ}^T=\bm{QQ}^{-1}=I$
+\end{enumerate}
 \par
 课本先说了QR分解是什么，后说了如何做QR分解。QR分解的核心在于，对于每个$m\times n$矩阵$\bm{A}$能找到一个
 $m\times m$的正交矩阵$\bm{Q}$，使得
@@ -261,9 +267,46 @@ $$\begin{bmatrix}\bm{R}\\ \bm{0}\end{bmatrix}\bm{x}\cong\bm{Q}^T\bm{b}$$
 $$\bm{A}=\bm{Q}\begin{bmatrix}\bm{R}\\ \bm{0}\end{bmatrix}$$
 就能说明算法能够正确求解出线性最小二乘了。
 
-\textbf{House-Hold变换}。
+\subsection{Householder变换}
+
+\textbf{Householder变换}：通过反射变换，把向量映射到坐标轴上，实现消元。课本上先讨论了特殊形式，我在这里
+整理的是House-Hold变换的一般形式。变换矩阵$\bm{H}$的形式是
 $$\bm{H} = \bm{I} - 2\frac{\bm{vv}^T}{\bm{v}^T\bm{v}}$$
-$$HH^T=HH^{-1}=I$$
+在QR分解中，我们最终的目标是得到一个上三角矩阵$\bm{R}$。现在考虑每一个列向量是如何使用Householder变换消元的。
+对于一个$m$维列向量$\bm{a}$，考虑分块
+$$\bm{a}=\begin{bmatrix}\bm{a}_1\\\bm{a}_2\end{bmatrix}$$
+其中$\bm{a}_1$是$k-1$维向量$(1\leq k< m)$。我们的任务是什么呢？是要做QR分解，是要确定一个向量$\bm{v}$，它能将
+$$\bm{H(\bm{a})}:\,
+\begin{bmatrix}\bm{a}_1\\ \bm{a}_2\end{bmatrix}
+\mapsto
+\begin{bmatrix}\bm{a}_1\\ \bm{0}\end{bmatrix} + \alpha \bm{e}_k
+$$
+有了这个目标，我们看看如何确定那个$\bm{v}$。确定了$\bm{v}$也就确定了$\bm{H}$。
+一方面，
+$$\begin{aligned}
+\bm{Ha}
+&=\left(\bm{I}-2\frac{\bm{v}\bm{v}^T}{\bm{v}^T\bm{v}}\right)\bm{a}\\
+&=\bm{a}-2\bm{v}\frac{\bm{v}^T\bm{a}}{\bm{v}^T\bm{v}}\\
+&=\begin{bmatrix}\bm{a}_1\\ \bm{a}_2\end{bmatrix}-2\bm{v}\frac{\bm{v}^T\bm{a}}{\bm{v}^T\bm{v}}
+\end{aligned}$$
+另一方面，
+$$\bm{H}(\bm{a})=\bm{Ha}=\begin{bmatrix}\bm{a}_1\\ \bm{0}\end{bmatrix} + \alpha \bm{e}_k$$
+于是就有，
+$$\begin{bmatrix}\bm{a}_1\\ \bm{a}_2\end{bmatrix}-2\bm{v}\frac{\bm{v}^T\bm{a}}{\bm{v}^T\bm{v}}
+=\begin{bmatrix}\bm{a}_1\\ \bm{0}\end{bmatrix} + \alpha \bm{e}_k$$
+$$\begin{bmatrix}\bm{0}\\ \bm{a}_2\end{bmatrix} - \alpha \bm{e}_k 
+=2\bm{v}\frac{\bm{v}^T\bm{a}}{\bm{v}^T\bm{v}}$$
+$$\bm{v}=\frac{\bm{v}^T\bm{v}}{2\bm{v}^T\bm{a}}
+\left( \begin{bmatrix}\bm{0}\\ \bm{a}_2\end{bmatrix} - \alpha \bm{e}_k \right)$$
+为了计算简便，消去上式右端的标量系数是可行的。因为
+$$ \begin{aligned} H &=I-2 \frac{(\alpha \bm{v})( \alpha \bm{v})^T} {( \alpha \bm{v})^T 
+(\alpha \bm{v})} \\ &=I-2\frac{\alpha ^2 \bm{v} \bm{v}^T}{\alpha ^2 \bm{v}^T 
+\bm{v}} \\ &= I-2\frac{ \bm{v} \bm{v}^T}{ \bm{v}^T  \bm{v}} \end{aligned} $$
+所以$\bm{v}$的标量系数在$\bm{H}$的计算过程中会被消去，没有影响。这就得到了要取的$\bm{v}$：
+$$\bm{v}=\begin{bmatrix}\bm{0}\\ \bm{a}_2\end{bmatrix}-\alpha \bm{e}_k$$
+其中
+$$\alpha=-\text{sgn} (a_k)\pm\norm{\bm{a}_2}_2$$
+
 
 \section{非线性方程组}
 
