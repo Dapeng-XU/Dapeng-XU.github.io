@@ -148,7 +148,7 @@
 	
 	\item 论述分阶段开发模型的含义, 其基本分类及特点是什么？ (56 页) \\
 	2.2.6节，阶段化开发：增量和迭代。 \\
-	关键概念：\emph{循环周期}、\emph{产品系统}、\emph{开发系统}。
+	关键概念：\emph{循环周期}、\emph{产品系统}、\emph{开发系统}。\\
 	基本分类：
 	\begin{description}
 		\item[增量开发] 
@@ -160,8 +160,53 @@
 	
 %	// 在所有的软件开发过程模型中，你认为哪些过程给予你最大的灵活性以应对需求的变更？(81 页习题 11)
 
-	\item 什么是UP，RUP?
-	
+	\item 什么是UP，RUP? \\
+	\emph{统一软件开发过程}（英语：Rational Unified Process，缩写为RUP），一种软件工程方法，为迭代式软件开发流程。最早由Rational Software公司开发，因此冠上公司名称。因此名字上可以直接叫做\emph{统一过程}(UP)；Rational是公司名，也写作RUP。
+	\begin{description}
+		\item[统一过程] 用例驱动的、以基本架构为中心的、迭代式和增量性的软件开发过程框架。
+	\end{description}
+	统一过程将重复一系列\emph{生命周期}，这些生命期构成了
+	一个系统的寿命。每个生命周期都以向客户推出一个产品
+	版本而结束。统一过程的每个周期包括\emph{四个阶段}，
+	\begin{description}
+		\item[构思阶段(inception phase)] 包括用户沟通和计划活动两个方面，强调定义和细化用例，并将其作为主要模型。
+		\item[细化阶段(elaboration phase)] 包括用户沟通和建模活动，重点是创建分析和设计模型，强调类的定义和体系结构的表示。
+		\item[构建阶段(construction phase)] 将设计转化为实现，并进行集成和测试。
+		\item[移交阶段(transition phase)] 将产品发布给用户进行测试评价，并收集用户的意见，之后再次进行迭代修改产品使之完善。
+	\end{description}
+	每个阶段又可以进一步划分为多次迭代。
+	见图\ref{fig:developmentiterative}。\\
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.91\textwidth]{Development-iterative.png}
+		\caption{统一过程}
+		\label{fig:developmentiterative}
+	\end{figure}
+	统一过程（UP）定义了下列三个支持\emph{工序}(discipline)。（感觉看看就行）
+	\begin{enumerate}
+		\item 配置变更管理工序，用来管理系统和需求变更的配置。
+		\item 项目管理工序，用来管理项目。
+		\item 环境配置工序，用来配置项目的环境，包括所涉及到的过程和工具。
+	\end{enumerate}
+	统一过程定义了下列六个核心工序（这个和一般过程相似）
+	\begin{enumerate}
+		\item 业务模型工序，通过业务模型获取相关知识以理解需要系统自动完成的业务。
+		\item 需求工序，通过用例模型获取相关知识以理解自动完成业务的系统需求。
+		\item 分析设计工序，通过分析/设计模型以分析需求，设计系统结构。
+		\item 实现工序，基于实现模型实现系统。
+		\item 测试工序，通过测试模型进行针对需求的系统测试。
+		\item 部署工序，通过部署模型部署系统。
+	\end{enumerate}
+
+	进化式迭代开发（Iterative development）
+	\begin{enumerate}
+		\item 迭代开发是统一过程的关键实践
+		\item 开发被组织成一系列固定的短期小项目
+		\item 每次迭代都产生经过测试、集成并可执行的局部系统
+		\item 每次迭代都具有各自的需求分析、设计、实现和测试
+		\item 随着时间和一次次迭代，系统增量式完善
+	\end{enumerate}
+
 \end{enumerate}
 
 
@@ -183,7 +228,13 @@
 	计算上，要先求出最长路径，然后沿最长路径回溯，找到每一个活动的最早开始时间和最晚开始时间，然后求出每一个活动的时差。
 	
 	\item 软件团队人员应该具备的能力是什么？(96 页)\\
-	3.2.1节。\textbf{不明白}。
+	3.2.1节。见图\ref{fig:personalability}。
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.91\textwidth]{c3-2-1.PNG}
+		\caption{团队人员应该具备的能力}
+		\label{fig:personalability}
+	\end{figure}
 	
 	\item 软件项目组织的基本结构？(101 页) \\
 	主程序员负责制和忘我方法。根据实际情况可以结合这两种极端情况。主程序员负责制的组织结构如何？忘我方法适于那些情况？他们的对比？（对比见图\ref{fig:groupstructure}）
@@ -210,7 +261,7 @@
 	易。
 	
 	\item 找出图3.23和图3.24(P139)的关键路径。\\
-	章末必做练习题。
+	\textbf{章末必做练习题}。
 \end{enumerate}
 
 \section{获取需求}
@@ -247,12 +298,12 @@
 	5.1节开头，5.1.1节。\textbf{概念设计和技术设计没有找到}。
 	
 	\item 软件设计过程模型的几个阶段？ \\
-	跟第四章第二个提到的考点差不多。图\ref{fig:proceduredesignmodel}
+	跟第四章第二个提到的考点差不多。图\ref{fig:archtechturedev}
 	\begin{figure}[h]
 		\centering
-		\includegraphics[width=0.91\textwidth]{f4-1.PNG}
-		\caption{获取需求的过程}
-		\label{fig:proceduredesignmodel}
+		\includegraphics[width=0.91\textwidth]{f5-4.PNG}
+		\caption{软件体系结构开发过程}
+		\label{fig:archtechturedev}
 	\end{figure}
 	
 %	\item // 三种设计层次极其关系？(229 页) \\ 略。
