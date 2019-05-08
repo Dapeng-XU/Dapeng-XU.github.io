@@ -1,9 +1,5 @@
-# HomePages
+# Homepage
 
-I've used a template from Bootstrap, and here is the hyperlink to that page:
+This repository is preserved for Dapeng Xu's homepage.
 
-[link to the Bootstrap template](http://getbootstrap.com/getting-started/#examples)
-
-My Homepage is here:
-
-[link to my GitHub Homepage](https://dapeng-xu.github.io/)
+Now I am very busy recently and have no time to maintain my homepage, so this homepage is temporarily removed.
